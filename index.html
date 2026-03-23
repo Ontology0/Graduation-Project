@@ -15,7 +15,6 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
   <script>
-    // 이 부분이 핵심! 불러올 파일 이름을 README.md로 바꿨어요.
     fetch('README.md') 
       .then(res => res.text())
       .then(md => {
