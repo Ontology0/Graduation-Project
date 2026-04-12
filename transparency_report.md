@@ -1,4 +1,4 @@
-# AI 투명성 리포트 (AI Transparency Report)
+# AI 투명성 리포트
 
 ## 1. 단계별 AI 활용 현황
 
