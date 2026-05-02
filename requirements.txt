@@ -1,0 +1,15 @@
+torch
+transformers
+datasets
+peft
+trl
+accelerate
+huggingface-hub
+sentence-transformers
+faiss-cpu
+ragas
+python-dotenv
+pandas
+numpy
+scikit-learn
+tqdm
