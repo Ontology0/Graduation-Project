@@ -5,6 +5,12 @@
 
 <br/>
 
+## 저장소 상태 (research scaffold)
+
+이 저장소는 **research scaffold** 단계입니다. 벤치마크, 데이터셋, 평가 프로토콜은 **아직 미정**이며, `data/`, `doc/`, `eval/`, `finetuning/`, `rag/`, `results/`에는 각 폴더 목적을 적은 `README.md`가 있습니다. **실제로 실행 가능한 코드는** `rag/pipeline_stub.py`, `finetuning/train_stub.py`, `eval/evaluate_stub.py` **placeholder뿐**이며, 외부 API 호출·학습·점수 산출은 하지 않습니다.
+
+<br/>
+
 ## 🧭 프로젝트 개요
 
 LLM의 할루시네이션 문제를 해결하는 두 가지 접근—**파라미터 학습(Fine-tuning)** 과 **외부 지식 증강(RAG)**—을 동일한 벤치마크 위에서 실증 비교하고, 융합했을 때 시너지가 발생하는지 검증합니다.
@@ -149,13 +155,12 @@ flowchart LR
 <br/>
 
 
-| 모듈 | 실행 | 테스트 |
+| 모듈 | 실행 (placeholder) | 비고 |
 |:--:|:--|:--|
-| **Ontology** | `python ontology/extract.py` | `pytest ontology/` |
-| **RAG** | `python rag/pipeline.py` | `pytest rag/` |
-| **Fine-tuning** | `python finetuning/train.py` | `pytest finetuning/` |
-| **Eval** | `python eval/run_eval.py` | `pytest eval/` |
-| **전체 테스트** | | `pytest` |
+| **RAG** | `python rag/pipeline_stub.py` | 인터페이스만; 검색·생성 없음 |
+| **Fine-tuning** | `python finetuning/train_stub.py` | 인터페이스만; 학습 없음 |
+| **Eval** | `python eval/evaluate_stub.py` | 인터페이스만; 점수 없음 |
+| **테스트** | | 스캐폴드 단계에서 `pytest` 스위트는 아직 없을 수 있음 |
 
 <br/>
 
@@ -163,28 +168,27 @@ flowchart LR
 
 ```text
 Graduation-Project/
-├── data/          # 실증적 비교 연구를 위한 벤치마크 및 데이터셋
-├── doc/           # 프로젝트 관련 연구 문서 및 상세 가이드
-├── eval/          # 성능 평가 체계 (RAGAS, LLM-as-a-judge 등)
-├── finetuning/    # 모델 최적화 (LoRA/QLoRA) 및 학습 스크립트
-├── rag/           # RAG 파이프라인 (Chunking, Retrieval, Generation)
-├── results/       # 실험 결과 리포트 및 최종 성능 지표
-├── .env.example   # 환경 변수 설정을 위한 샘플 파일
-├── CNAME          # 커스텀 도메인 연결 설정 파일
-├── index.html     # 프로젝트 홍보 및 안내용 웹 페이지
-├── README.md      # 프로젝트 개요 및 통합 안내 문서
-├── CLAUDE.md      # 클로드 프로젝트 문서 정리 가이드
-└── requirements.txt # 프로젝트 실행을 위한 의존성 패키지 목록
-
+├── data/          # 데이터·전처리 산출물 (벤치마크 확정 후)
+├── doc/           # 연구 문서, 설계 초안, 회의·결정 기록
+├── eval/          # 평가 스크립트 예정 (프로토콜 미정)
+├── finetuning/    # LoRA/QLoRA 등 학습 코드 예정
+├── ontology/ 
+├── rag/           # RAG 베이스라인 예정 (현재 stub만)
+├── results/       # 실험 산출물 (실제 결과 없음; 날짜별 폴더 예정)
+├── .env.example
+├── CNAME
+├── index.html
+├── README.md
+├── CLAUDE.md
+└── requirements.txt
 ```
 
 ### 처음 보는 사람을 위한 읽는 순서
 
-1. `doc/`에서 연구 설계 문서로 전체 방향을 파악한다.
-2. `ontology/`에서 OWL 자동 추출 로직을 확인한다.
-3. `rag/`에서 RAG 파이프라인 구조를 확인한다.
-4. `finetuning/`에서 LoRA 파인튜닝 설정을 확인한다.
-5. `eval/`을 실행해 방법 A / B / C의 성능 지표를 비교한다.
+1. 위 **저장소 상태**와 각 폴더 `README.md`로 스캐폴드 범위를 확인한다.
+2. `doc/`에서 연구 방향·회의록·초안을 읽는다.
+3. `rag/pipeline_stub.py`, `finetuning/train_stub.py`, `eval/evaluate_stub.py`로 향후 코드 진입점 형태만 본다.
+4. 벤치마크와 프로토콜이 확정되면 `data/`, `eval/`, `results/`가 채워진다.
 
 <br/>
 
