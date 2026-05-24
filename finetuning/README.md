@@ -8,6 +8,13 @@ Future scripts and configs for parameter-efficient fine-tuning (e.g. LoRA, QLoRA
 
 Model family, training dataset, and hyperparameters are **not decided**. This folder intentionally contains **no** checkpoints, metrics, or logs that could be read as real experiment outcomes.
 
-## Planned contents
+## Layout
 
-Training entry scripts, config files, and reproducible launch notes will appear here after the experimental protocol is fixed.
+| Subfolder | Purpose |
+|---|---|
+| `dpo/` | DPO training scripts and launch configs |
+| `lora/` | LoRA / QLoRA adapter configs and PEFT settings |
+
+`train_stub.py` at this level remains the placeholder entrypoint until real training is wired up.
+
+See each subfolder's `README.md` for current status.

@@ -8,9 +8,14 @@ Holds datasets and preprocessing outputs for retrieval, fine-tuning, and evaluat
 
 No concrete dataset is committed or finalized yet. Paths and formats will be added when the benchmark and protocol are decided.
 
-## Planned layout
+## Layout
 
-Subfolders such as `raw/` and `processed/` may be introduced later to separate source dumps from cleaned or tokenized artifacts.
+| Subfolder | Purpose |
+|---|---|
+| `synthetic/` | DPO training data — synthetic conflict with unambiguous ground truth |
+| `natural/` | Natural conflict case studies for limitation / qualitative analysis only |
+
+See each subfolder's `README.md` for status and git policy.
 
 ## Git policy
 
