@@ -1,31 +1,32 @@
-# Minimal dependencies for research scaffold stubs and local dev.
-# Heavy or backend-specific packages are commented until actually used.
+# Core dependencies for RAG pipeline and planned training
+torch>=2.1.0
+transformers>=4.40.0
+datasets>=2.19.0
+peft>=0.11.0
+trl>=0.8.0
+accelerate>=0.30.0
+huggingface-hub>=0.23.0
+sentence-transformers>=3.0.0
+python-dotenv>=1.0.0
 
-# Core (stubs / planned training & inference)
-torch
-transformers
-datasets
-peft
-trl
-accelerate
-huggingface-hub
-sentence-transformers
-python-dotenv
+# Config loading
+PyYAML>=6.0
 
-# Baseline local vector store (choose one when retrieval is implemented)
-faiss-cpu
-# chromadb  # TODO: alternative local vector store
+# Vector store
+faiss-cpu>=1.8.0
+# chromadb>=0.5.0  # TODO: alternative if Chroma is chosen over FAISS
 
 # Evaluation (protocol TBD)
-ragas
+ragas>=0.1.0
 
 # Utilities
-pandas
-numpy
-scikit-learn
-tqdm
+pandas>=2.2.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+tqdm>=4.66.0
 
-# Optional / not required at scaffold stage
-# pytest  # TODO: add when test suite exists
-# opensearch-py  # TODO: scalable retrieval backend candidate (OpenSearch)
-# chromadb  # TODO: if Chroma is chosen over FAISS
+# Testing
+pytest>=8.0.0
+
+# Optional / not required at current stage
+# opensearch-py>=2.5.0  # TODO: scalable retrieval backend candidate
