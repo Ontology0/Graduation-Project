@@ -11,7 +11,7 @@
 - **This repository is currently a research scaffold.**
 - Implementation, training, and evaluation results will be updated progressively.
 - **No final experimental results are reported yet.**
-- RAG 파이프라인(`src/rag/`)은 모듈별로 구현 완료 (retrieval, generation 동작). 학습·평가는 scaffold 단계.
+- RAG 파이프라인(`src/rag/`)은 **1차 구현 초안**이 준비되어 있으며, 실제 벤치마크 기반 검증은 진행 전입니다. 학습(`src/training/`)·평가(`src/evaluation/`)는 scaffold 단계입니다.
 - 벤치마크, 데이터셋, 평가 프로토콜은 **확정 중**입니다. 상세 초안은 `docs/`를 참고.
 
 <br/>
@@ -164,9 +164,9 @@ python -m src.evaluation.evaluate
 ## 📁 저장소 구조
 
 ```text
-alltology/
+Graduation-Project/
 ├── src/                          # 소스 코드
-│   ├── rag/                      # RAG 파이프라인 (구현 완료)
+│   ├── rag/                      # RAG 파이프라인 (1차 구현 초안)
 │   │   ├── config.py             #   설정 로더
 │   │   ├── document_loader.py    #   문서 로딩 (txt/json/jsonl)
 │   │   ├── chunker.py            #   텍스트 청킹
@@ -185,13 +185,15 @@ alltology/
 │   └── prompts/                  # RAG·conflict-aware·judge 프롬프트
 ├── data/
 │   ├── schema/                   # conflict·preference JSON Schema
+│   ├── sample_docs/              # 로컬 smoke용 가상 conflict 문서
 │   ├── synthetic/                # DPO 학습용 synthetic conflict (planned)
 │   └── natural/                  # natural conflict case study (planned)
 ├── scripts/                      # CLI 실행 스크립트
 ├── tests/                        # 테스트 스위트
 ├── docs/                         # 연구 문서 (계획·벤치마크·실험 설계)
 ├── course/                       # 수업 제출물
-├── outputs/                      # 실험 산출물 (.gitignore)
+├── outputs/                      # 실험 산출물 (tracked: .gitkeep only)
+├── .env.example
 ├── pyproject.toml
 ├── requirements.txt
 └── README.md

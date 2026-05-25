@@ -24,7 +24,7 @@
 
 - **Placeholder:** PA-RAG (preference-aligned RAG generator) — base paper for informativeness, robustness, citation alignment.
 - **Relevance:** Multi-stage preference optimization; **does not explicitly target knowledge conflict** in the original framing.
-- **Local notes:** `docs/submission_materials/PA-RAG_paper/PA-RAG_reading.md`
+- **Local notes:** `course/pa_rag_reading.md`
 - **Summary:** *To be written.*
 
 ## Context-DPO / context-faithfulness

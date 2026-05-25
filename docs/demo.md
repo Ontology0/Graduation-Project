@@ -10,17 +10,18 @@ Show a **context–memory conflict** scenario where retrieved evidence and the m
 
 - **Setting:** Single user question with one retrieved passage that contradicts the answer the base model would give without conflict instructions.
 - **Example type:** Fictional or clearly labeled synthetic domain (no real-world entity claims requiring verification).
+- **Sample document:** `data/sample_docs/example_conflict.txt` (fictional Northwood Institute mascot color revision).
 - **To be updated:** Concrete question, context block, and resolution rule once a pilot dataset slice exists.
 
 ## Compared methods
 
 | Method | Config / prompt |
 |--------|-----------------|
-| Base RAG | `configs/rag_base.yaml`, `prompts/base_rag_prompt.md` |
-| Conflict-aware prompting | `configs/prompting_conflict_aware.yaml`, `prompts/conflict_aware_prompt.md` |
-| PA-RAG-style LoRA | `configs/lora_parrag_style.yaml` (when trained) |
-| Conflict-Aware RAG LoRA | `configs/lora_conflict_only.yaml` (when trained) |
-| Conflict-Aware PA-RAG LoRA | `configs/lora_conflict_parrag.yaml` (when trained) |
+| Base RAG | `configs/experiments/rag_base.yaml`, `configs/prompts/base_rag.md` |
+| Conflict-aware prompting | `configs/experiments/prompting_conflict_aware.yaml`, `configs/prompts/conflict_aware.md` |
+| PA-RAG-style LoRA | `configs/experiments/lora_parrag_style.yaml` (when trained) |
+| Conflict-Aware RAG LoRA | `configs/experiments/lora_conflict_only.yaml` (when trained) |
+| Conflict-Aware PA-RAG LoRA | `configs/experiments/lora_conflict_parrag.yaml` (when trained) |
 
 ## Demo result table (template)
 
@@ -42,4 +43,4 @@ Show a **context–memory conflict** scenario where retrieved evidence and the m
 
 - Emphasize **context–memory** scope; inter-context and intra-memory are out of main scope.
 - State clearly that results are **pilot / preliminary** until benchmark eval is complete.
-- Link to `docs/experiment_design.md` and `results/` for reproducible run folders when available.
+- Link to `docs/experiment_design.md` and `outputs/` for reproducible run folders when available.

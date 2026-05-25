@@ -7,7 +7,7 @@
 - **Conflict focus:** Primary research target is **context–memory conflict** (retrieved external context vs. internal/parametric knowledge).
 - **Preference format:** **Chosen/rejected pairs** for DPO-style training (see `data/schema/preference_pair.schema.json`).
 - **Compute strategy:** Primary training path is **DPO + LoRA**, not full fine-tuning as in original PA-RAG.
-- **Repository role:** This repo is a **research scaffold**; stubs in `rag/`, `finetuning/`, `eval/` define entrypoints only.
+- **Repository role:** This repo is a **research scaffold**; `src/rag/` is a first working draft; `src/training/` and `src/evaluation/` remain entrypoint scaffolds.
 
 ## Deferred (pending)
 
@@ -22,11 +22,12 @@
 
 - **Inter-context conflict** as the **primary** research object (may appear in data but not as the core problem statement).
 - **Intra-memory conflict** as a dedicated analysis track (parametric self-contradiction without retrieval conflict).
-- **Reporting fabricated metrics** or implying completed experiments in docs or `results/`.
+- **Reporting fabricated metrics** or implying completed experiments in docs or `outputs/`.
 
 ## History
 
 | Date | Decision | Notes |
 |------|----------|-------|
-| 2026-05 (scaffold) | `doc/` → `docs/` + `submission_materials/` | Preserve course/submission files under English paths |
+| 2026-05 (scaffold) | Course materials under `course/` | Former `doc/` / submission paths consolidated |
+| 2026-05 (paths) | `results/` → `outputs/`, prompts under `configs/prompts/` | Align docs and configs with `src/` layout |
 | TBD | Benchmark lock | Record here when finalized |

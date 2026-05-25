@@ -13,7 +13,8 @@ data/external/
 *.bin
 *.safetensors
 checkpoints/
-outputs/
+outputs/*
+!outputs/.gitkeep
 wandb/
 runs/
 logs/
