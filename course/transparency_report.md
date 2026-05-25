@@ -31,9 +31,15 @@
       <td>RAGAS 지표와 병행 교차 검증<br>(RTX 3090 × 4 환경 고려)</td>
     </tr>
     <tr>
-      <td><b>코드 구현 및 최적화 (예정)</b></td>
+      <td><b>코드 구현 및 리팩토링</b></td>
+      <td>Cursor (Claude Opus 4.6)</td>
+      <td>• RAG 파이프라인 모듈별 구현 (document loader, chunker, embedder, vector store, retriever, prompt builder, generator, pipeline)<br>• 프로젝트 폴더 구조 전면 리팩토링 (src/ 레이아웃 통합, configs/prompts 분리, pyproject.toml 추가 등)<br>• import 경로 일괄 수정 및 config 참조 경로 업데이트<br>• 커밋 메시지 작성 및 모듈별 커밋 분리</td>
+      <td>리팩토링 방향·폴더 네이밍은 연구진 결정.<br>모델 선택(phi-2, MiniLM-L6-v2), 백엔드(FAISS) 등 기술 선택도 연구진 판단.<br>생성된 코드는 팀원이 리뷰</td>
+    </tr>
+    <tr>
+      <td><b>학습 루프 및 최적화 (예정)</b></td>
       <td>Cursor<br>Claude (Code)</td>
-      <td>• PyTorch 기반 학습 루프 구현 보조<br>• DeepSpeed 커스텀 설정 및 오류 디버깅</td>
+      <td>• PyTorch 기반 DPO 학습 루프 구현 보조<br>• DeepSpeed 커스텀 설정 및 오류 디버깅</td>
       <td>단위 테스트 수행 및<br>핵심 로직 수식 대조 검증</td>
     </tr>
   </tbody>
