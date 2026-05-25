@@ -6,10 +6,10 @@ import logging
 from dataclasses import dataclass
 from typing import Sequence
 
-from rag.chunker import chunk_documents
-from rag.document_loader import Document
-from rag.embedder import Embedder
-from rag.vector_store import FaissVectorStore
+from src.rag.chunker import chunk_documents
+from src.rag.document_loader import Document
+from src.rag.embedder import Embedder
+from src.rag.vector_store import FaissVectorStore
 
 logger = logging.getLogger(__name__)
 

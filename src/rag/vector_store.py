@@ -10,7 +10,7 @@ from typing import Sequence
 import faiss
 import numpy as np
 
-from rag.document_loader import Document
+from src.rag.document_loader import Document
 
 logger = logging.getLogger(__name__)
 

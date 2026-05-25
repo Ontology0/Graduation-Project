@@ -6,7 +6,7 @@ retrieval:
   backend: null  # TODO: faiss | chroma | opensearch
   top_k: null
   embedding_model: null
-prompt_file: prompts/conflict_aware_prompt.md
+prompt_file: configs/prompts/conflict_aware.md
 training:
   enabled: false
 evaluation:

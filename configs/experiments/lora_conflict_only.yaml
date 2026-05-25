@@ -6,7 +6,7 @@ retrieval:
   backend: null
   top_k: null
   embedding_model: null
-prompt_file: prompts/base_rag_prompt.md  # TODO: align with training prompt format
+prompt_file: configs/prompts/base_rag.md  # TODO: align with training prompt format
 training:
   enabled: true
   method: dpo

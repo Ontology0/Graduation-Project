@@ -6,7 +6,7 @@ retrieval:
   backend: null
   top_k: null
   embedding_model: null
-prompt_file: prompts/base_rag_prompt.md  # TODO: PA-RAG prompt variant if different
+prompt_file: configs/prompts/base_rag.md  # TODO: PA-RAG prompt variant if different
 training:
   enabled: true
   method: dpo
@@ -20,4 +20,4 @@ training:
 evaluation:
   enabled: null
   metrics: []
-notes: "Planned — finetuning/train_stub.py is not a real trainer yet"
+notes: "Planned — see src/training/train.py"

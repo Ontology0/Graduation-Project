@@ -7,14 +7,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from rag.chunker import chunk_documents
-from rag.config import load_config, load_env
-from rag.document_loader import Document, load_documents
-from rag.embedder import Embedder
-from rag.generator import GenerationConfig, GenerationOutput, Generator
-from rag.prompt_builder import build_prompt
-from rag.retriever import Retriever
-from rag.vector_store import FaissVectorStore
+from src.rag.chunker import chunk_documents
+from src.rag.config import load_config, load_env
+from src.rag.document_loader import Document, load_documents
+from src.rag.embedder import Embedder
+from src.rag.generator import GenerationConfig, GenerationOutput, Generator
+from src.rag.prompt_builder import build_prompt
+from src.rag.retriever import Retriever
+from src.rag.vector_store import FaissVectorStore
 
 logger = logging.getLogger(__name__)
 
