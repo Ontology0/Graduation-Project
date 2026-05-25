@@ -1,3 +1,7 @@
+# Minimal dependencies for research scaffold stubs and local dev.
+# Heavy or backend-specific packages are commented until actually used.
+
+# Core (stubs / planned training & inference)
 torch
 transformers
 datasets
@@ -6,10 +10,22 @@ trl
 accelerate
 huggingface-hub
 sentence-transformers
-faiss-cpu
-ragas
 python-dotenv
+
+# Baseline local vector store (choose one when retrieval is implemented)
+faiss-cpu
+# chromadb  # TODO: alternative local vector store
+
+# Evaluation (protocol TBD)
+ragas
+
+# Utilities
 pandas
 numpy
 scikit-learn
 tqdm
+
+# Optional / not required at scaffold stage
+# pytest  # TODO: add when test suite exists
+# opensearch-py  # TODO: scalable retrieval backend candidate (OpenSearch)
+# chromadb  # TODO: if Chroma is chosen over FAISS

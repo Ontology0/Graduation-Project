@@ -1,0 +1,24 @@
+# Conflict-Aware PA-RAG LoRA (multi-criterion + conflict) — scaffold
+experiment_name: conflict_aware_parrag_lora
+model_name: null  # TODO
+dataset: null
+retrieval:
+  backend: null
+  top_k: null
+  embedding_model: null
+prompt_file: prompts/conflict_aware_prompt.md  # TODO: stage-specific prompts TBD
+training:
+  enabled: true
+  method: dpo
+  adapter: lora
+  stages: null  # TODO: PA-RAG stage order + conflict stage
+  lora_rank: null
+  lora_alpha: null
+  learning_rate: null
+  batch_size: null
+  epochs: null
+  preference_data: null
+evaluation:
+  enabled: null
+  metrics: []
+notes: "Planned main proposed arm — staging protocol not implemented"

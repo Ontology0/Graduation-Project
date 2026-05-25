@@ -12,6 +12,7 @@ No concrete dataset is committed or finalized yet. Paths and formats will be add
 
 | Subfolder | Purpose |
 |---|---|
+| `schema/` | JSON Schema for conflict annotations and DPO preference pairs (`example_annotation.json` is fictitious) |
 | `synthetic/` | DPO training data — synthetic conflict with unambiguous ground truth |
 | `natural/` | Natural conflict case studies for limitation / qualitative analysis only |
 

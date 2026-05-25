@@ -1,0 +1,15 @@
+# Base RAG — scaffold config (values TBD)
+experiment_name: base_rag
+model_name: null  # TODO: base generator model id
+dataset: null  # TODO: benchmark / split
+retrieval:
+  backend: null  # TODO: faiss | chroma | opensearch
+  top_k: null
+  embedding_model: null
+prompt_file: prompts/base_rag_prompt.md
+training:
+  enabled: false
+evaluation:
+  enabled: null  # TODO
+  metrics: []  # TODO: e.g. conflict resolution, faithfulness — not finalized
+notes: "No training. Placeholder entrypoint: rag/pipeline_stub.py"

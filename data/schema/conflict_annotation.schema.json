@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/conflict_annotation.schema.json",
+  "title": "ConflictAnnotation",
+  "description": "Schema for context-memory conflict annotations (research scaffold).",
+  "type": "object",
+  "required": [
+    "id",
+    "question",
+    "external_evidence",
+    "conflict_type",
+    "resolution_rule",
+    "chosen_answer",
+    "rejected_answer"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this annotation instance."
+    },
+    "question": {
+      "type": "string",
+      "description": "User question or task prompt."
+    },
+    "internal_answer": {
+      "type": "string",
+      "description": "Answer implied by model parametric knowledge (may be paraphrased or labeled)."
+    },
+    "external_evidence": {
+      "type": "string",
+      "description": "Retrieved passage(s) or summarized external evidence."
+    },
+    "evidence_source": {
+      "type": "string",
+      "description": "Provenance of external evidence (e.g., doc id, URL placeholder, dataset id)."
+    },
+    "conflict_type": {
+      "type": "string",
+      "description": "Conflict subtype label; primary project focus is context-memory.",
+      "enum": [
+        "context-memory",
+        "inter-context",
+        "intra-memory",
+        "other"
+      ]
+    },
+    "resolution_rule": {
+      "type": "string",
+      "description": "Human- or expert-defined rule for which source to prefer and why."
+    },
+    "chosen_answer": {
+      "type": "string",
+      "description": "Preferred response under the resolution rule (DPO chosen)."
+    },
+    "rejected_answer": {
+      "type": "string",
+      "description": "Dispreferred response violating the resolution rule (DPO rejected)."
+    },
+    "valid_time": {
+      "type": "string",
+      "description": "Temporal validity window or as-of date for time-sensitive facts."
+    },
+    "condition": {
+      "type": "string",
+      "description": "Scope or conditions under which the resolution rule applies."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Annotator notes, ambiguity flags, or review comments."
+    }
+  },
+  "additionalProperties": false
+}

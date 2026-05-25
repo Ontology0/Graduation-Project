@@ -1,50 +1,77 @@
 # 검색 결과와 내부 지식이 충돌할 때: Preference Learning 기반 RAG 정렬 연구
 ## Conflict-Aware PA-RAG
 
-> PA-RAG의 세 가지 정렬 기준(informativeness, robustness, citation quality)을 확장하여,  
-> **internal knowledge와 external evidence가 충돌하는 knowledge conflict 상황을 DPO + LoRA로 내재화할 수 있는지 탐구한다**
+> **주제:** LLM Knowledge Conflict 완화를 위한 RAG–Fine-tuning 융합 연구  
+> PA-RAG의 정렬 기준(informativeness, robustness, citation quality)을 확장하여, **internal knowledge와 external evidence가 충돌하는 상황**을 DPO + LoRA로 내재화할 수 있는지 탐구합니다.
 
 <br/>
 
 ## 저장소 상태 (research scaffold)
 
-이 저장소는 **research scaffold** 단계입니다. 벤치마크, 데이터셋, 평가 프로토콜은 **확정 중**이며, `data/`, `doc/`, `eval/`, `finetuning/`, `rag/`, `results/`에는 각 폴더 목적을 적은 `README.md`가 있습니다. **실제로 실행 가능한 코드는** `rag/pipeline_stub.py`, `finetuning/train_stub.py`, `eval/evaluate_stub.py` **placeholder뿐**이며, 외부 API 호출·학습·점수 산출은 하지 않습니다.
+- **This repository is currently a research scaffold.**
+- Implementation, training, and evaluation results will be updated progressively.
+- **No final experimental results are reported yet.**
+- 실행 가능한 코드는 `rag/pipeline_stub.py`, `finetuning/train_stub.py`, `eval/evaluate_stub.py` **placeholder**뿐이며, 외부 API 호출·학습·점수 산출은 하지 않습니다.
+- 벤치마크, 데이터셋, 평가 프로토콜은 **확정 중**입니다. 상세 초안은 `docs/`를 참고하세요.
+
+<br/>
+
+## 연구 범위
+
+본 연구는 knowledge conflict 중에서도 **context–memory conflict**를 다룹니다.
+
+| 용어 | 정의 | 본 연구 |
+|------|------|:------:|
+| **Context–memory conflict** | RAG에서 검색된 **external context**와 LLM **internal(parametric) knowledge**가 서로 다른 답을 가리키는 상황 | **핵심 범위** |
+| Inter-context conflict | 여러 검색 문서·문맥 간 상호 모순 | 메인 연구 대상 **아님** (벤치마크 참고 수준 가능) |
+| Intra-memory conflict | 파라미터 지식 내부의 자기 모순 (검색 없이) | 메인 연구 대상 **아님** |
+
+<br/>
+
+## 연구 문제
+
+RAG가 검색 문서를 제공하더라도 LLM이 **내부 지식에 의존해 다른 답**을 생성할 수 있습니다. 반대로, 신뢰할 수 없는 검색 결과를 맹목적으로 따를 수도 있습니다.
+
+| 충돌 상황 | 바람직한 행동 | 현재 문제 |
+|---|---|---|
+| 외부 문서가 최신·권위 정보 | 외부 근거 우선 | 모델이 내부 지식 고집 |
+| 외부 문서가 부정확·모호 | 내부 지식 또는 불확실성 표현 | 외부 문서 맹신 |
+| 둘 다 불확실 | abstention / 한계 명시 | 확신 있는 오답 |
+
+따라서 **단순 retrieval 성능**뿐 아니라, 충돌 상황에서 **어떤 근거를 우선할지** 학습·평가하는 것이 중요합니다. PA-RAG는 informativeness·robustness·citation을 다루지만, 위 **knowledge conflict**를 명시적 정렬 축으로 다루지 않습니다 — 본 연구의 확장 지점입니다.
+
+<br/>
+
+## 방법론 개요 (비교군)
+
+아래 다섯 arm을 동일한 retrieval·질문 설정에서 비교하는 것을 목표로 합니다 (`docs/experiment_design.md`).
+
+| # | Arm | 학습 | 역할 |
+|---|-----|:----:|------|
+| 1 | **Base RAG** | 없음 | 기본 RAG 하한선 |
+| 2 | **Conflict-aware prompting** | 없음 | 프롬프트만으로 충돌 처리 |
+| 3 | **PA-RAG-style LoRA** | DPO + LoRA | conflict 없이 PA-RAG식 정렬 |
+| 4 | **Conflict-Aware RAG LoRA** | DPO + LoRA | conflict preference만 학습 |
+| 5 | **Conflict-Aware PA-RAG LoRA** | DPO + LoRA | PA-RAG 단계 + conflict (**제안 방법**) |
+
+설정 파일: `configs/` · 프롬프트: `prompts/` · 데이터 스키마: `data/schema/`
+
+> **Full FT reference:** 자원 한계로 PA-RAG 원문의 full fine-tuning은 재현하지 않고, 필요 시 논문 수치를 **인용 비교**로만 활용합니다.
 
 <br/>
 
 ## 🧭 프로젝트 개요
 
-RAG(Retrieval-Augmented Generation) 시스템에서 generator를 preference optimization으로 정렬하는 **PA-RAG**를 base 논문으로 삼아, PA-RAG가 다루지 않는 **knowledge conflict** 상황을 네 번째 정렬 기준으로 추가하는 연구입니다.
-
-PA-RAG는 full fine-tuning을 전제로 하여 학부 수준의 자원에서 재현이 어렵습니다. 본 연구는 **DPO + LoRA** 조합으로 실험 환경을 확보하고, conflict resolution 능력을 모델에 내재화할 수 있는지 — 그리고 **어디까지 가능한지** 를 탐구합니다.
-
-<br/>
-
-## 문제의식
-
-LLM 기반 RAG 시스템은 강력하지만, 모델이 학습으로 알고 있는 것(internal knowledge)과 런타임에 검색된 문서(external evidence)가 **서로 다른 말을 할 때** 어떻게 행동해야 하는지 명확한 기준이 없습니다.
-
-| 충돌 상황 | 올바른 행동 | 현재 문제 |
-|---|---|---|
-| 외부 문서가 최신 정보 | 외부를 따라야 함 | 모델이 내부 지식을 고집 |
-| 외부 문서가 잘못된 정보 | 내부를 따라야 함 | 모델이 외부 문서를 맹목적으로 신뢰 |
-| 둘 다 불확실 | 불확실성을 표현해야 함 | 모델이 확신하며 틀린 답 생성 |
-
-**PA-RAG는 이 세 케이스를 명시적으로 다루지 않습니다.**
+RAG generator를 preference optimization으로 정렬하는 **PA-RAG**를 base로 삼고, **DPO + LoRA**로 학부 수준 자원에서 실험 가능성을 확보합니다. Conflict resolution을 **prompting/후처리**에 둘지 **preference learning으로 내재화**할지, 내재화한다면 **어디까지 가능한지**를 탐구합니다.
 
 <br/>
 
 ## 💡 핵심 연구 질문 (RQ)
 
-> *Internal knowledge와 external evidence가 충돌할 때, conflict resolution을 prompting이나 후처리 같은 외부 모듈로 둘 것인지, preference learning으로 모델에 내재화할 것인지 — 그리고 내재화한다면 어디까지 가능한지를 탐구한다.*
-
-```
-내재화한다면 어디까지 가능한지를 탐구한다.
-  ├── 단순한 충돌(factual contradiction)은 학습으로 해소할 수 있는가?
-  ├── 복잡하거나 미묘한 충돌(다중 source 신뢰도 판단)도 가능한가?
-  ├── LoRA 같은 경량 방식으로도 내재화가 되는가?
-  └── 내재화했을 때 다른 성능(informativeness 등)이 떨어지지는 않는가?
-```
+1. Preference learning으로 conflict resolution을 **내재화**할 수 있는가?
+2. 어떤 conflict pattern은 학습되고 어떤 것은 한계인가?
+3. **Prompting** 대비 **LoRA 내재화**는 얼마나 효과적인가? (프로토콜 확정 후 측정)
+4. Conflict 정렬이 informativeness 등 다른 축을 해치지 않는가?
 
 <br/>
 
@@ -58,159 +85,72 @@ flowchart LR
         C[Citation Quality]
     end
     subgraph OURS["본 연구 (확장)"]
-        D[Knowledge Conflict ← 추가]
+        D[Knowledge Conflict ← context–memory]
     end
     PA --> OURS
     style D fill:#ff6b6b,color:#fff
 ```
 
-| 기준 | 설명 | PA-RAG | 본 연구 |
-|---|---|:---:|:---:|
-| Informativeness | 답이 충분한 정보를 담는가 | ✅ | ✅ |
-| Robustness | 노이즈 문서에 흔들리지 않는가 | ✅ | ✅ |
-| Citation Quality | 출처 인용이 정확한가 | ✅ | ✅ |
-| **Knowledge Conflict** | **내부 지식 vs 외부 근거 충돌 시 올바르게 판단하는가** | ❌ | ✅ |
+| 기준 | PA-RAG | 본 연구 |
+|---|---|:---:|
+| Informativeness | ✅ | ✅ (비교·확장) |
+| Robustness | ✅ | ✅ |
+| Citation Quality | ✅ | ✅ |
+| **Knowledge Conflict (context–memory)** | ❌ | ✅ |
 
 <br/>
 
-## 🤖 연구 접근 방법
+## 📚 문서 및 벤치마크 (초안)
 
-```mermaid
-flowchart TD
-    subgraph DATA["데이터 구성"]
-        A[Conflict 유형 정의\n3~4가지 type\n난이도 spectrum으로 선정]
-        B[Annotation Schema 설계\nClaim / Evidence / Source\nConflict Type / Resolution Rule\nchosen answer / rejected answer]
-        C[DPO 학습 데이터 구성\nChosen: conflict를 올바르게 판단한 응답\nRejected: 잘못 판단한 응답]
-        A --> B --> C
-    end
-    subgraph TRAIN["학습"]
-        D[DPO + LoRA\n경량화로 학부 수준 자원에서 실험 가능]
-    end
-    subgraph EVAL["평가"]
-        E[정량 평가\nSynthetic conflict 벤치마크]
-        F[정성 분석\nNatural conflict case study]
-    end
-    C --> D --> E & F
-```
+| 문서 | 내용 |
+|------|------|
+| `docs/research_plan.md` | 문제 정의, RQ, 기여, 한계 |
+| `docs/related_work.md` | 관련 논문 citation placeholder |
+| `docs/benchmark_selection.md` | ClashEval, ConflictBank 등 후보 (**final decision pending**) |
+| `docs/experiment_design.md` | 비교군 상세 |
+| `docs/decision_log.md` | 확정·보류·제외 결정 |
+| `docs/submission_materials/` | 기존 `doc/` 자료 보존 (수업 제출, PA-RAG 독서 노트 등) |
+
+벤치마크·데이터셋 전략 요약(확정 전): ClashEval·ConflictBank(학습 후보), WikiContradict(평가·자연 conflict), CONFLICTS/DRAGged(스키마 참고) — 상세는 `docs/benchmark_selection.md`.
 
 <br/>
 
-## 🧪 실험 설계
-
-```mermaid
-flowchart LR
-    subgraph A["Base RAG"]
-        A1[fine-tuning 없는\n기본 RAG]
-    end
-    subgraph B["Prompting"]
-        B1[fine-tuning 없이\nprompt만 조정]
-    end
-    subgraph C["PA-RAG-style LoRA"]
-        C1[conflict 데이터 없이\nPA-RAG 방식 정렬]
-    end
-    subgraph D["Conflict-Aware RAG LoRA"]
-        D1[PA-RAG 3-stage 없이\nconflict preference만 학습]
-    end
-    subgraph E["Conflict-Aware PA-RAG LoRA ★"]
-        E1[3-stage + conflict 데이터\n본 연구의 메인 제안]
-    end
-    A & B & C & D & E --> Z[성능 비교\nConflict resolution 능력]
-    style E fill:#4ecdc4,color:#fff
-    style E1 fill:#4ecdc4,color:#fff
-```
-
-> **Full FT reference**: 자원 한계로 직접 수행하지 못하고 PA-RAG 논문의 수치를 인용 비교군으로 활용합니다.
-
-### 핵심 연구 질문
-
-1. Preference learning으로 conflict resolution을 내재화할 수 있는가?
-2. 어떤 conflict type은 학습이 되고 어떤 type은 안 되는가? (한계 매핑)
-3. Prompting 방식 대비 내재화 방식은 얼마나 효과적인가?
-
-<br/>
-
-## 📊 PA-RAG 원본 vs 본 연구
-
-| | PA-RAG (원본) | 본 연구 | 비고 |
-|---|---|---|---|
-| 정렬 기준 | Informativeness, Robustness, Citation | + Knowledge Conflict | **확장 기여** |
-| 학습 방식 | Full Fine-tuning | DPO + LoRA | 자원 제약 대응 |
-| Conflict 처리 | 미지원 | 명시적 정렬 | **핵심 기여** |
-| 비교 방식 | — | Prompting vs Preference learning | 한계 분석 구조 |
-
-<br/>
-
-## 📚 Related Work
-
-| 연구 | 내용 | 본 연구와의 관계 |
-|---|---|---|
-| PA-RAG | RAG generator를 preference optimization으로 정렬 | Base 논문 |
-| Xie et al., ICLR 2024 (Adaptive Chameleon) | LLM이 conflict 상황에서 어떻게 행동하는지 분석 | 행동 분석 기초 |
-| Longpre et al., EMNLP 2021 | Entity substitution으로 synthetic conflict 생성 | 데이터 구성 방법론 |
-| Jin et al., LREC-COLING 2024 (Tug-of-war) | RAG에서 conflict resolution 방법론 탐구 | 직접 비교 대상 |
-| Xu et al., EMNLP 2024 (Survey) | Knowledge conflict 유형 분류 및 기존 연구 정리 | 배경 지식 |
-| ClashEval, NeurIPS 2024 | 내부/외부 지식 conflict 수치화 벤치마크 | 학습 + 평가 데이터 |
-| ConflictBank, NeurIPS 2024 | Retrieved/embedded conflict 종합 벤치마크 | 학습 데이터 subset |
-
-<br/>
-
-## 📐 데이터셋 전략
-
-| 데이터셋 | 용도 | 이유 |
-|---|---|---|
-| **ClashEval** | 학습 + 평가 | Ground truth 자명, synthetic conflict, DPO 쌍 구성 가능 |
-| **ConflictBank** (retrieved 부분) | 학습 subset | 규모가 커서 학습용 subset 구성에 적합 |
-| **WikiContradict** | 평가 (자연 conflict) | 실제 위키피디아 모순 사례 기반 |
-| **CONFLICTS / DRAGged** | Resolution rule 설계 참고 | Conflict type 및 expert annotation 구조 참고 |
-| **Natural conflict case study** | 정성 분석 | Synthetic과 natural의 분포 차이 분석용 |
-
-> **학습/평가 분리 원칙**: Ground truth가 자명한 synthetic conflict만 학습에 사용하고, 정답이 모호한 자연 conflict는 한계 분석 용도로만 활용합니다.
-
-<br/>
-
-## 🛠 기술 스택
+## 🛠 기술 스택 (계획)
 
 ### AI / 학습
 
 | 역할 | 기술 |
 |------|------|
-| Preference Learning | ![DPO](https://img.shields.io/badge/DPO-Direct_Preference_Optimization-412991?style=for-the-badge&logo=openai&logoColor=white) |
-| 경량화 Fine-tuning | ![LoRA](https://img.shields.io/badge/LoRA/QLoRA-PEFT-FF6F00?style=for-the-badge&logo=huggingface&logoColor=white) |
-| 개발 환경 | ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white) ![HuggingFace](https://img.shields.io/badge/HuggingFace_TRL-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black) |
-| 테스트 | ![pytest](https://img.shields.io/badge/pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white) |
+| Preference Learning | DPO (TRL) |
+| 경량 Fine-tuning | LoRA / PEFT |
+| 런타임 | PyTorch, Hugging Face `transformers` |
 
-### RAG 파이프라인
+### RAG / 검색
 
-| 역할 | 기술 |
-|------|------|
-| 검색 | ![OpenSearch](https://img.shields.io/badge/OpenSearch-005EB8?style=for-the-badge&logo=opensearch&logoColor=white) |
-| 벡터 임베딩 | ![HuggingFace](https://img.shields.io/badge/HuggingFace_Embeddings-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black) |
+| 역할 | 기술 | 비고 |
+|------|------|------|
+| Baseline local vector store | **FAISS** or **Chroma** | 스캐폴드 단계 후보; `requirements.txt`에 FAISS만 명시 |
+| Scalable retrieval backend (후보) | **OpenSearch** | 대규모·분산 검색 후보 — **미확정**, 의존성 주석 처리 |
 
 ### 평가
 
-| 역할 | 기술 |
-|------|------|
-| 자동 평가 | ![RAGAS](https://img.shields.io/badge/RAGAS-Faithfulness-00A896?style=for-the-badge) |
-| 정성 평가 | ![LLM-as-a-judge](https://img.shields.io/badge/LLM--as--a--judge-GPT4-412991?style=for-the-badge&logo=openai&logoColor=white) |
-| 인간 평가 | ![MOS](https://img.shields.io/badge/MOS-Mean_Opinion_Score-E91E63?style=for-the-badge) |
+| 역할 | 기술 | 비고 |
+|------|------|------|
+| 자동 평가 | RAGAS 등 | 프로토콜 **TBD** |
+| 정성 평가 | LLM-as-a-judge (`prompts/judge_prompt.md`) | 루브릭 초안만 존재 |
 
-### 공통
-
-| 역할 | 기술 |
-|------|------|
-| 버전 관리 | ![Git](https://img.shields.io/badge/Git-F05033?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-121011?style=for-the-badge&logo=github&logoColor=white) |
-| 컴퓨팅 | ![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white) |
+의존성 목록: `requirements.txt` (스캐폴드에 필요한 최소 패키지; 미사용 무거운 패키지는 TODO 주석).
 
 <br/>
 
 ## ▶️ 실행 (Placeholder)
 
-| 모듈 | 실행 (placeholder) | 비고 |
+| 모듈 | 실행 | 비고 |
 |:--:|:--|:--|
-| **RAG** | `python rag/pipeline_stub.py` | 인터페이스만; 검색·생성 없음 |
-| **Fine-tuning** | `python finetuning/train_stub.py` | 인터페이스만; 학습 없음 |
-| **Eval** | `python eval/evaluate_stub.py` | 인터페이스만; 점수 없음 |
-| **테스트** | `pytest` | 스캐폴드 단계에서 스위트 미완성 |
+| **RAG** | `python rag/pipeline_stub.py` | 인터페이스만 |
+| **Fine-tuning** | `python finetuning/train_stub.py` | 인터페이스만 |
+| **Eval** | `python eval/evaluate_stub.py` | 인터페이스만 |
+| **데모** | `self_demo.md` | to be updated |
 
 <br/>
 
@@ -218,29 +158,33 @@ flowchart LR
 
 ```text
 Graduation-Project/
-├── data/          # 학습/평가 데이터셋 (ClashEval, ConflictBank 등)
-│   ├── synthetic/ # DPO 학습용 synthetic conflict 데이터
-│   └── natural/   # 한계 분석용 natural conflict case study
-├── doc/           # 연구 문서, 설계 초안, 회의·결정 기록
-├── eval/          # 평가 스크립트 (conflict resolution 정확도, RAGAS 등)
-├── finetuning/    # DPO + LoRA 학습 코드
-│   ├── dpo/       # DPO 학습 스크립트
-│   └── lora/      # LoRA 어댑터 설정
-├── rag/           # Base RAG 파이프라인
-├── results/       # 실험 산출물 (날짜별 폴더)
+├── configs/           # 실험군별 YAML (값 TBD / null)
+├── data/
+│   ├── schema/        # conflict·preference JSON Schema + fictitious example
+│   ├── synthetic/     # DPO 학습용 synthetic conflict (planned)
+│   └── natural/       # natural conflict case study (planned)
+├── docs/              # 연구 계획·벤치마크·실험 설계·결정 로그
+│   └── submission_materials/  # 구 doc/ 보존 자료
+├── eval/              # 평가 스크립트 (stub)
+├── finetuning/        # DPO + LoRA (stub; dpo/, lora/)
+├── prompts/           # RAG·conflict-aware·judge 프롬프트 초안
+├── rag/               # Base RAG 파이프라인 (stub)
+├── results/           # 실험 산출물 (아직 없음)
 ├── .env.example
-├── CNAME
-├── index.html     # GitHub Pages 프로젝트 페이지
-├── README.md
+├── self_demo.md       # 발표용 데모 placeholder
 ├── CLAUDE.md
+├── index.html         # GitHub Pages
+├── README.md
 └── requirements.txt
 ```
 
 ### 처음 보는 사람을 위한 읽는 순서
 
-1. 위 **저장소 상태**와 각 폴더 `README.md`로 스캐폴드 범위를 확인한다.
-2. `rag/pipeline_stub.py`, `finetuning/train_stub.py`, `eval/evaluate_stub.py`로 향후 코드 진입점 형태만 본다.
-3. 벤치마크와 프로토콜이 확정되면 `data/`, `eval/`, `results/`가 채워진다.
+1. 본 README **저장소 상태**와 `docs/decision_log.md`
+2. `docs/research_plan.md`, `docs/experiment_design.md`
+3. `data/schema/`, `prompts/`, `configs/`
+4. `rag/pipeline_stub.py`, `finetuning/train_stub.py`, `eval/evaluate_stub.py` (진입점 형태만)
+5. 벤치마크 확정 후 `data/`, `eval/`, `results/` 채움
 
 <br/>
 
@@ -249,10 +193,10 @@ Graduation-Project/
 ```
 main ← 최종 제출 / 논문 기준
  └── dev ← 통합 개발 (PR 타겟)
-      ├── feat/data/#이슈번호-설명        (데이터셋 구성)
-      ├── feat/dpo/#이슈번호-설명         (DPO 학습)
-      ├── feat/rag/#이슈번호-설명         (RAG 파이프라인)
-      ├── feat/eval/#이슈번호-설명        (평가 스크립트)
+      ├── feat/data/#이슈번호-설명
+      ├── feat/dpo/#이슈번호-설명
+      ├── feat/rag/#이슈번호-설명
+      ├── feat/eval/#이슈번호-설명
       └── fix/#이슈번호-설명
 ```
 
