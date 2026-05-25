@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Sequence
 
-from rag.document_loader import Document
+from src.rag.document_loader import Document
 
 
 def chunk_text(

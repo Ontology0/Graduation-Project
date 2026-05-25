@@ -6,7 +6,7 @@ retrieval:
   backend: null
   top_k: null
   embedding_model: null
-prompt_file: prompts/conflict_aware_prompt.md  # TODO: stage-specific prompts TBD
+prompt_file: configs/prompts/conflict_aware.md  # TODO: stage-specific prompts TBD
 training:
   enabled: true
   method: dpo
