@@ -1,12 +1,22 @@
-"""RAG pipeline placeholder: defines the future entrypoint shape without I/O or model calls."""
+"""Legacy stub — preserved for backward compatibility.
+
+The real pipeline is now in ``rag.pipeline.RAGPipeline``.
+This file re-exports the pipeline's query interface so existing
+references (e.g. README examples) keep working.
+"""
+
+from rag.pipeline import RAGPipeline  # noqa: F401
 
 
 def run_rag_placeholder(question: str) -> dict:
-    """Return a fixed stub response; no retrieval or generation is performed."""
+    """Lightweight demo that returns a fixed response.
+
+    For the real pipeline, use ``RAGPipeline.from_config()`` instead.
+    """
     return {
         "method": "rag",
-        "status": "not_implemented",
-        "answer": "RAG pipeline is not implemented yet.",
+        "status": "migrated",
+        "answer": "See rag.pipeline.RAGPipeline for the implemented pipeline.",
         "question": question,
     }
 
