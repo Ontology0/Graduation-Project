@@ -1,0 +1,23 @@
+# PA-RAG-style LoRA (no conflict-specific curriculum) — scaffold
+experiment_name: parrag_style_lora
+model_name: null  # TODO
+dataset: null  # TODO: PA-RAG-style preference data source
+retrieval:
+  backend: null
+  top_k: null
+  embedding_model: null
+prompt_file: configs/prompts/base_rag.md  # TODO: PA-RAG prompt variant if different
+training:
+  enabled: true
+  method: dpo
+  adapter: lora
+  lora_rank: null
+  lora_alpha: null
+  learning_rate: null
+  batch_size: null
+  epochs: null
+  preference_data: null  # TODO: path or dataset id
+evaluation:
+  enabled: null
+  metrics: []
+notes: "Planned — see src/training/train.py"

@@ -1,0 +1,15 @@
+# Conflict-aware prompting — scaffold config (values TBD)
+experiment_name: conflict_aware_prompting
+model_name: null  # TODO
+dataset: null
+retrieval:
+  backend: null  # TODO: faiss | chroma | opensearch
+  top_k: null
+  embedding_model: null
+prompt_file: configs/prompts/conflict_aware.md
+training:
+  enabled: false
+evaluation:
+  enabled: null
+  metrics: []
+notes: "Prompt-only arm; compare against LoRA variants in docs/experiment_design.md"

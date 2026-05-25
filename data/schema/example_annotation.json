@@ -1,0 +1,15 @@
+{
+  "_comment": "FICTITIOUS EXAMPLE for schema validation only — not real facts or experimental data.",
+  "id": "example-ctx-mem-001",
+  "question": "What is the official mascot color of the fictional university 'Northwood Institute' in the novel series 'Glass Harbor'?",
+  "internal_answer": "The mascot color is traditionally described as deep blue in widely circulated summaries of the novels.",
+  "external_evidence": "According to the author's revised appendix (Document NH-7): 'Northwood Institute's mascot color was changed to silver-green in the 2019 continuity revision.'",
+  "evidence_source": "fictional_corpus:NH-7",
+  "conflict_type": "context-memory",
+  "resolution_rule": "When the retrieved appendix is marked as the authoritative continuity revision, prefer external_evidence over parametric summaries that reflect pre-revision lore.",
+  "chosen_answer": "Under the 2019 continuity revision (Document NH-7), the official mascot color is silver-green.",
+  "rejected_answer": "The official mascot color is deep blue.",
+  "valid_time": "as-of 2019 continuity revision",
+  "condition": "Applies when the question targets canon after the 2019 revision and NH-7 is in context.",
+  "notes": "Synthetic example; do not use for training or evaluation reporting."
+}

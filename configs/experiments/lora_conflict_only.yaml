@@ -1,0 +1,23 @@
+# Conflict-Aware RAG LoRA (conflict preferences only) — scaffold
+experiment_name: conflict_aware_rag_lora
+model_name: null  # TODO
+dataset: null
+retrieval:
+  backend: null
+  top_k: null
+  embedding_model: null
+prompt_file: configs/prompts/base_rag.md  # TODO: align with training prompt format
+training:
+  enabled: true
+  method: dpo
+  adapter: lora
+  lora_rank: null
+  lora_alpha: null
+  learning_rate: null
+  batch_size: null
+  epochs: null
+  preference_data: null  # TODO: pairs conforming to data/schema/preference_pair.schema.json
+evaluation:
+  enabled: null
+  metrics: []
+notes: "Planned — conflict-only internalization arm"

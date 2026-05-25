@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/preference_pair.schema.json",
+  "title": "PreferencePair",
+  "description": "DPO training pair derived from conflict annotations (research scaffold).",
+  "type": "object",
+  "required": ["id", "prompt", "chosen", "rejected"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier; may match conflict annotation id."
+    },
+    "prompt": {
+      "type": "string",
+      "description": "Full prompt shown to the model (question + retrieved context + instructions)."
+    },
+    "chosen": {
+      "type": "string",
+      "description": "Preferred completion."
+    },
+    "rejected": {
+      "type": "string",
+      "description": "Dispreferred completion."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional fields linking back to annotation semantics.",
+      "properties": {
+        "conflict_type": {
+          "type": "string"
+        },
+        "resolution_rule": {
+          "type": "string"
+        },
+        "evidence_source": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
