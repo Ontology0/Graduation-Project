@@ -13,6 +13,17 @@ Show a **context–memory conflict** scenario where retrieved evidence and the m
 - **Sample document:** `data/sample_docs/example_conflict.txt` (fictional Northwood Institute mascot color revision).
 - **To be updated:** Concrete question, context block, and resolution rule once a pilot dataset slice exists.
 
+## Quick run (smoke test)
+
+```bash
+python scripts/run_pipeline.py \
+  --config configs/experiments/rag_base.yaml \
+  --docs data/sample_docs/ \
+  --question "What is knowledge conflict in RAG?"
+```
+
+No demo metrics or recorded outcomes yet — use this only to verify the pipeline wiring.
+
 ## Compared methods
 
 | Method | Config / prompt |
