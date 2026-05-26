@@ -211,15 +211,23 @@ Graduation-Project/
 
 ## 🌿 브랜치 전략
 
+상세 규칙·커밋 메시지·PR 절차는 [CONTRIBUTING.md](CONTRIBUTING.md)를 따릅니다.
+
 ```
-main ← 최종 제출 / 논문 기준
- └── dev ← 통합 개발 (PR 타겟)
-      ├── feat/data/#이슈번호-설명
-      ├── feat/dpo/#이슈번호-설명
-      ├── feat/rag/#이슈번호-설명
-      ├── feat/eval/#이슈번호-설명
-      └── fix/#이슈번호-설명
+main ← 최종 제출 / 배포용
+  └── dev ← 일상 개발 / PR 통합용
+        ├── feat/data/설명
+        ├── feat/dpo/설명
+        ├── feat/rag/설명
+        ├── feat/eval/설명
+        ├── docs/설명
+        ├── chore/설명
+        └── fix/설명
 ```
+
+**일상 작업:** `dev`에서 작업 브랜치 생성 → `dev`로 PR → 리뷰 후(1개 이상) merge
+
+**`main` 반영:** 마일스톤·제출·데모 전 등 팀 합의 시점에만 `dev` → `main` PR (작업 브랜치는 `main`으로 직접 PR하지 않음)
 
 <br/>
 
