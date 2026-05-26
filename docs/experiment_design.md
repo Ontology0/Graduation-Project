@@ -6,25 +6,25 @@
 
 | # | Arm | Purpose | Input | Training | Role in comparison | Implementation status |
 |---|-----|---------|-------|----------|-------------------|-------------------------|
-| 1 | **Base RAG** | Retrieval + generation without conflict-specific training | Question + retrieved passages | No | Lower bound; measures default parametric bias vs. context | **scaffolded** (`rag/pipeline_stub.py`, `configs/rag_base.yaml`) |
-| 2 | **Conflict-aware prompting** | Test whether instructions alone improve resolution | Question + passages + conflict-aware prompt | No | Non-trained upper bound for prompting; vs. internalized learning | **planned** (`prompts/conflict_aware_prompt.md`, `configs/prompting_conflict_aware.yaml`) |
-| 3 | **PA-RAG-style LoRA** | Replicate PA-RAG alignment axes (informativeness, robustness, citation) without conflict-specific data | PA-RAG-style preference data (TBD) | Yes (DPO + LoRA) | Isolate benefit of standard PA-RAG criteria without conflict criterion | **planned** (`configs/lora_parrag_style.yaml`, `finetuning/`) |
-| 4 | **Conflict-Aware RAG LoRA** | Train only on conflict preference pairs | Conflict annotations / DPO pairs | Yes (DPO + LoRA) | Measure conflict-only internalization | **planned** (`configs/lora_conflict_only.yaml`) |
-| 5 | **Conflict-Aware PA-RAG LoRA** | Combine PA-RAG-style stages with conflict preferences | Multi-stage data + conflict pairs (TBD) | Yes (DPO + LoRA) | **Main proposed** integrated method | **planned** (`configs/lora_conflict_parrag.yaml`) |
+| 1 | **Base RAG** | Retrieval + generation without conflict-specific training | Question + retrieved passages | No | Lower bound; measures default parametric bias vs. context | **first draft** (`src/rag/pipeline.py`, `configs/experiments/rag_base.yaml`) |
+| 2 | **Conflict-aware prompting** | Test whether instructions alone improve resolution | Question + passages + conflict-aware prompt | No | Non-trained upper bound for prompting; vs. internalized learning | **planned** (`configs/prompts/conflict_aware.md`, `configs/experiments/prompting_conflict_aware.yaml`) |
+| 3 | **PA-RAG-style LoRA** | Replicate PA-RAG alignment axes (informativeness, robustness, citation) without conflict-specific data | PA-RAG-style preference data (TBD) | Yes (DPO + LoRA) | Isolate benefit of standard PA-RAG criteria without conflict criterion | **planned** (`configs/experiments/lora_parrag_style.yaml`, `src/training/`) |
+| 4 | **Conflict-Aware RAG LoRA** | Train only on conflict preference pairs | Conflict annotations / DPO pairs | Yes (DPO + LoRA) | Measure conflict-only internalization | **planned** (`configs/experiments/lora_conflict_only.yaml`) |
+| 5 | **Conflict-Aware PA-RAG LoRA** | Combine PA-RAG-style stages with conflict preferences | Multi-stage data + conflict pairs (TBD) | Yes (DPO + LoRA) | **Main proposed** integrated method | **planned** (`configs/experiments/lora_conflict_parrag.yaml`) |
 
 ## Per-arm detail
 
 ### 1. Base RAG
 
 - **Purpose:** Establish baseline behavior when retrieval provides conflicting external evidence.
-- **Input:** User question; top-k retrieved chunks; base RAG prompt (`prompts/base_rag_prompt.md`).
+- **Input:** User question; top-k retrieved chunks; base RAG prompt (`configs/prompts/base_rag.md`).
 - **Training:** None.
 - **Expected role:** Reference for faithfulness and conflict-resolution errors.
 
 ### 2. Conflict-aware prompting
 
 - **Purpose:** Determine how much conflict handling improves without weight updates.
-- **Input:** Same retrieval as Base RAG; `prompts/conflict_aware_prompt.md`.
+- **Input:** Same retrieval as Base RAG; `configs/prompts/conflict_aware.md`.
 - **Training:** None.
 - **Expected role:** Compare against LoRA arms to separate **instruction** vs. **internalization**.
 
@@ -51,8 +51,8 @@
 
 ## Evaluation (TBD)
 
-- Quantitative metrics and judge protocol not finalized — see `benchmark_selection.md` and `eval/README.md`.
-- Qualitative error analysis template: `results/README.md` per-run `error_analysis.md`.
+- Quantitative metrics and judge protocol not finalized — see `benchmark_selection.md` and `src/evaluation/README.md`.
+- Qualitative error analysis template: per-run `error_analysis.md` under `outputs/` (see `outputs/.gitkeep`).
 
 ## Reference (not a runnable arm in-repo)
 

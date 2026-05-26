@@ -35,9 +35,9 @@ This project focuses on **context–memory conflict**:
 ## Proposed approach
 
 1. **Annotation schema** for conflict instances (`data/schema/`) with resolution rules and chosen/rejected answers.
-2. **Base RAG** pipeline (scaffold: `rag/pipeline_stub.py`).
-3. **Conflict-aware prompting** (`prompts/conflict_aware_prompt.md`).
-4. **DPO + LoRA** variants: PA-RAG-style LoRA, conflict-only LoRA, and combined conflict-aware PA-RAG LoRA (`finetuning/`, configs under `configs/`).
+2. **Base RAG** pipeline (first draft: `src/rag/pipeline.py`).
+3. **Conflict-aware prompting** (`configs/prompts/conflict_aware.md`).
+4. **DPO + LoRA** variants: PA-RAG-style LoRA, conflict-only LoRA, and combined conflict-aware PA-RAG LoRA (`src/training/`, configs under `configs/experiments/`).
 5. **Evaluation** on selected benchmarks (TBD) plus optional natural case studies (`data/natural/`).
 
 ## Expected contribution
@@ -49,6 +49,6 @@ This project focuses on **context–memory conflict**:
 ## Current limitations
 
 - No final benchmark or metric selection.
-- Stub implementations only; no reported experimental results.
+- RAG code is a first draft only; training/eval entrypoints remain scaffolds. No reported experimental results.
 - Full fine-tuning (as in original PA-RAG) is not planned as a primary arm; paper numbers may be cited for reference only.
 - Heavy retrieval backends and production indexes are not committed yet.

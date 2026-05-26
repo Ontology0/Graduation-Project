@@ -1,4 +1,4 @@
-# eval/
+# src/evaluation/
 
 ## Purpose
 
@@ -10,4 +10,8 @@ RAGAS-style scores, LLM-as-a-judge, or human evaluation are **candidates only** 
 
 ## Current status
 
-Stub code returns empty metrics and does **not** fabricate accuracy, RAGAS values, or benchmark tables. No external judge APIs are called from the placeholder.
+`evaluate.py` is a **scaffold**: it returns empty metrics and does **not** fabricate accuracy, RAGAS values, or benchmark tables. No external judge APIs are called from the placeholder.
+
+## Outputs
+
+Run artifacts belong under `outputs/` (per-experiment folders — template TBD).

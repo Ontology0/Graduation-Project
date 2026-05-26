@@ -126,7 +126,11 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Run RAG pipeline")
-    parser.add_argument("--config", default="configs/rag_base.yaml", help="Config YAML path")
+    parser.add_argument(
+        "--config",
+        default="configs/experiments/rag_base.yaml",
+        help="Config YAML path",
+    )
     parser.add_argument("--docs", required=True, help="Path to documents to index")
     parser.add_argument("--question", required=True, help="Question to ask")
     args = parser.parse_args()

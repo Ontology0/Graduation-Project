@@ -2,12 +2,9 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Sequence
 
 from src.rag.retriever import RetrievalResult
-
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 BASE_SYSTEM = (
     "You are a helpful assistant. Answer the user's question using the "

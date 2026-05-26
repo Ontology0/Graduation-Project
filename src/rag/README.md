@@ -37,7 +37,10 @@ python scripts/run_pipeline.py \
 
 ## Current status
 
-Core modules are **implemented**. Remaining work:
+`src/rag/` is a **first working draft** (load → chunk → embed → retrieve → generate). It is **not** benchmark-validated yet.
+
+Remaining work:
+
 - Dataset and benchmark selection (see `docs/benchmark_selection.md`)
 - Evaluation metrics integration (see `src/evaluation/`)
 - LoRA adapter loading for fine-tuned model variants

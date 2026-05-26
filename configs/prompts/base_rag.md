@@ -1,6 +1,6 @@
 # Base RAG Prompt (Draft)
 
-> **Status:** Not yet used in experiments — template for the Base RAG arm (`configs/rag_base.yaml`).
+> **Status:** Not yet used in experiments — template for the Base RAG arm (`configs/experiments/rag_base.yaml`).
 
 ## System
 

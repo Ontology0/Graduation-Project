@@ -1,0 +1,12 @@
+[FICTITIOUS EXAMPLE — not real facts]
+
+Source: fictional_corpus:NH-7
+Title: Northwood Institute — Continuity Revision Appendix (2019)
+
+The official mascot color of Northwood Institute in the "Glass Harbor" novel continuity was revised to silver-green in the 2019 appendix. Earlier fan summaries often describe the color as deep blue based on pre-revision lore.
+
+Question context (for RAG demos):
+When asked about the mascot color after the 2019 revision, retrieved evidence (this document) conflicts with a model's parametric answer that still says "deep blue."
+
+Resolution rule (annotation example):
+Prefer this retrieved appendix when the question targets post-2019 canon and source NH-7 is in context.
