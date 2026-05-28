@@ -6,6 +6,16 @@
 
 <br/>
 
+## 🚀 Demo / Quickstart (Repo-only)
+
+- **Demo 문서**: `docs/demo.md` (CLI smoke test + 데모 증빙)
+- **아키텍처 1페이지 요약**: `docs/architecture.md`
+- **검증 체크리스트(재현/보안/운영)**: `docs/verification_checklist.md`
+- **RQ ↔ 구현 매핑(정합성)**: `docs/rq_to_implementation_map.md`
+- **AI 투명성 리포트**: `docs/ai_transparency_report.md`
+
+<br/>
+
 ## 저장소 상태
 
 - **This repository is currently a research scaffold.**
@@ -88,7 +98,6 @@ flowchart LR
         D[Knowledge Conflict ← context–memory]
     end
     PA --> OURS
-    style D fill:#ff6b6b,color:#fff
 ```
 
 | 기준 | PA-RAG | 본 연구 |
