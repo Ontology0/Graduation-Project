@@ -6,8 +6,10 @@
 
 <br/>
 
-## 🚀 Demo / Quickstart (Repo-only)
+## 🚀 Demo / Quickstart
 
+- **데모 영상**: 🔗 링크 추가 예정 (기말 발표 전 업데이트)
+- **발표 자료(슬라이드)**: 🔗 링크 추가 예정
 - **Project Brief**: `course/elevator_speech_team03.md` (팀 소개·연구 방향 요약)
 - **Demo 문서**: `docs/demo.md` (CLI smoke test + 데모 증빙)
 - **아키텍처 1페이지 요약**: `docs/architecture.md`
