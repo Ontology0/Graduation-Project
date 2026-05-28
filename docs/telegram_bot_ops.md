@@ -28,6 +28,18 @@
 - **쿼리/문서 임베딩 모델**: `retrieval.embedding_model`
 - **생성 모델**: `llm.provider`, `llm.model`
 
+### 운영 플로우(딱 이거만)
+
+- **문서 수정/추가**: `README.md` / `docs/**` / `CLAUDE.md`
+- **봇에서 갱신**: 텔레그램에서 `/reindex`
+- **끝**: 이후 질문부터는 새 인덱스 기준으로 검색됨
+
+### 주의 2개(비용/보안)
+
+- **비용**: `/reindex` 때만 “문서 청크 임베딩 비용”이 크게 한 번 나가고, 평소엔 “질문 임베딩 + Claude 생성”만 나감.
+- **보안**: `/reindex`는 “민감 커맨드”라 allowlist가 켜져있을 때만 쓰게 두는 걸 권장.  
+  예: `TELEGRAM_REQUIRE_ALLOWLIST=1` + `TELEGRAM_ALLOWED_USER_IDS=...` (+ 선택: `TELEGRAM_ALLOWED_CHAT_IDS=...`)
+
 ### 보안 권장(키 도난/과금 방지)
 
 - **봇 전용 API 키를 따로 발급**하고 사용량 한도를 낮게 걸기(OpenAI/Anthropic 콘솔에서 hard limit 권장)
