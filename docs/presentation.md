@@ -25,7 +25,7 @@ style: |
   section.title h2 { font-size: 22px; font-weight: 500; color: #F9EEEB; }
   section.title p  { font-size: 17px; color: #F6EBDB; margin-top: 40px; line-height: 1.8; }
   section.title a  { color: #F9EEEB; }
-  h1 { font-size: 32px; font-weight: 800; color: #CF726F; border-bottom: 3px solid #CF726F; padding-bottom: 8px; margin-bottom: 20px; }
+  h1 { font-size: 32px; font-weight: 800; color: #CF726F; border-bottom: 3px solid #CF726F; padding-bottom: 8px; margin-bottom: 20px; margin-left: -60px; margin-right: -60px; padding-left: 60px; padding-right: 60px; }
   h2 { font-size: 26px; font-weight: 700; color: #AC9799; margin-bottom: 14px; }
   p { line-height: 1.7; }
   ul, ol { padding-left: 1.4em; line-height: 1.8; }
@@ -170,7 +170,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-# 4-1. 독창성 · 차별성
+# 4. 제안 솔루션 — 독창성
 
 | | 기존 RAG | Prompting 기반 | **본 연구 (제안)** |
 |---|---|---|---|
@@ -195,7 +195,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-# 5-1. MVP 구성 현황
+# 5. 기술 아키텍처 — MVP 현황
 
 | 컴포넌트 | 상태 | 비고 |
 |----------|------|------|
@@ -212,9 +212,9 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-# 6-1. 실험 비교 데모
+# 6. 라이브 데모 ① — 실험 비교
 
-![bg right:52% 95%](assets/demo_screenshot.png)
+![bg right:48%](assets/demo_screenshot.png)
 
 **HuggingFace Spaces**
 [ponyo03/conflict-aware-rag-demo](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo)
@@ -232,9 +232,9 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-# 6-2. 저장소 RAG 챗봇
+# 6. 라이브 데모 ② — RAG 챗봇
 
-![bg right:38% fit](assets/bot_screenshot.png)
+![bg right:36% fit](assets/bot_screenshot.png)
 
 **Telegram Bot**
 [@alltology_rag_bot](https://t.me/alltology_rag_bot)
@@ -247,9 +247,9 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-# 6-3. 연구 사이트 — 개요
+# 6. 라이브 데모 ③ — 연구 사이트
 
-![bg right:55% 95%](assets/web_screenshot.png)
+![bg right:50%](assets/web_screenshot.png)
 
 **alltology.zapto.org**
 [alltology.zapto.org](http://alltology.zapto.org)
@@ -261,9 +261,9 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-# 6-4. 연구 사이트 — 데모 · 팀
+# 6. 라이브 데모 ④ — 데모 · 팀
 
-![bg right:58% 95%](assets/web_screenshot2.png)
+![bg right:52%](assets/web_screenshot2.png)
 
 **직접 해보기**
 
