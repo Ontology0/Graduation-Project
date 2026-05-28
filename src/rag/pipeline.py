@@ -71,6 +71,7 @@ class RAGPipeline:
         top_k: int = _DEFAULT_TOP_K,
         chunk_size: int = _DEFAULT_CHUNK_SIZE,
         chunk_overlap: int = _DEFAULT_CHUNK_OVERLAP,
+        max_chunks_in_prompt: int | None = None,
         generation_config: GenerationConfig | None = None,
     ):
         self.retriever = retriever
@@ -80,6 +81,7 @@ class RAGPipeline:
         self.top_k = top_k
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
+        self.max_chunks_in_prompt = max_chunks_in_prompt
         self.generation_config = generation_config or GenerationConfig()
 
     @classmethod
@@ -100,6 +102,8 @@ class RAGPipeline:
         top_k = int(retrieval_cfg.get("top_k") or _DEFAULT_TOP_K)
         chunk_size = int(retrieval_cfg.get("chunk_size") or _DEFAULT_CHUNK_SIZE)
         chunk_overlap = int(retrieval_cfg.get("chunk_overlap") or _DEFAULT_CHUNK_OVERLAP)
+        max_chunks_in_prompt = retrieval_cfg.get("max_chunks_in_prompt")
+        max_chunks_in_prompt = int(max_chunks_in_prompt) if max_chunks_in_prompt else None
 
         prompt_file = cfg.get("prompt_file")
         if prompt_file:
@@ -140,6 +144,7 @@ class RAGPipeline:
             top_k=top_k,
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
+            max_chunks_in_prompt=max_chunks_in_prompt,
             generation_config=generation_config,
         )
         pipeline._retrieval_backend = str(backend)
@@ -208,6 +213,7 @@ class RAGPipeline:
             question=question,
             results=results,
             template=self.prompt_template,
+            max_chunks=self.max_chunks_in_prompt,
         )
 
         gen_output = self.generator.generate(messages, config=self.generation_config)

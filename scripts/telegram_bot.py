@@ -15,6 +15,9 @@ import argparse
 import logging
 from pathlib import Path
 import subprocess
+import os
+import time
+from collections import defaultdict, deque
 
 import sys
 
@@ -42,7 +45,71 @@ def _truncate(text: str, limit: int = 3500) -> str:
     return text[: limit - 30].rstrip() + "\n\n...(truncated)"
 
 
+def _parse_allowed_user_ids(raw: str | None) -> set[int] | None:
+    if not raw:
+        return None
+    ids: set[int] = set()
+    for part in raw.replace(" ", "").split(","):
+        if not part:
+            continue
+        try:
+            ids.add(int(part))
+        except ValueError:
+            continue
+    return ids or None
+
+
+_ALLOWED_USER_IDS = _parse_allowed_user_ids(os.getenv("TELEGRAM_ALLOWED_USER_IDS"))
+_RATE_LIMIT_PER_MIN = int(os.getenv("TELEGRAM_RATE_LIMIT_PER_MIN", "12"))
+_RATE_LIMIT_WINDOW_S = 60.0
+_user_timestamps: dict[int, deque[float]] = defaultdict(lambda: deque(maxlen=max(_RATE_LIMIT_PER_MIN * 2, 20)))
+_SEND_RUN_MD = os.getenv("TELEGRAM_SEND_RUN_MD", "").strip() in ("1", "true", "True", "yes", "YES")
+
+
+def _is_allowed(update: Update) -> bool:
+    if _ALLOWED_USER_IDS is None:
+        return True
+    user = getattr(update, "effective_user", None)
+    if not user or user.id is None:
+        return False
+    return int(user.id) in _ALLOWED_USER_IDS
+
+
+def _rate_limited(update: Update) -> bool:
+    user = getattr(update, "effective_user", None)
+    if not user or user.id is None:
+        return False
+    uid = int(user.id)
+    now = time.monotonic()
+    dq = _user_timestamps[uid]
+    dq.append(now)
+    # count events in last window
+    while dq and (now - dq[0]) > _RATE_LIMIT_WINDOW_S:
+        dq.popleft()
+    return len(dq) > _RATE_LIMIT_PER_MIN
+
+
+async def _reject(update: Update, message: str) -> None:
+    if update.message:
+        await update.message.reply_text(message)
+
+
+async def _guard(update: Update, *, sensitive: bool = False) -> bool:
+    if not _is_allowed(update):
+        await _reject(update, "접근 불가.")
+        return False
+    if sensitive and _ALLOWED_USER_IDS is not None:
+        # already checked allowed; keep for clarity
+        pass
+    if _rate_limited(update):
+        await _reject(update, "요청이 너무 많아. 잠깐만 쉬고 다시 보내줘.")
+        return False
+    return True
+
+
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update):
+        return
     await update.message.reply_text(
         "RAG 봇 준비됨.\n"
         "- 그냥 질문 보내면 답변함\n"
@@ -56,6 +123,8 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 async def cmd_about(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update):
+        return
     about = context.application.bot_data.get("about_text") or ""
     if not about:
         about = "프로젝트 소개를 불러오지 못했어."
@@ -63,6 +132,8 @@ async def cmd_about(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def cmd_run(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update):
+        return
     text = (
         "로컬 실행 요약:\n"
         "1) `.env`에 `TELEGRAM_BOT_TOKEN`, `ANTHROPIC_API_KEY` 설정\n"
@@ -81,6 +152,8 @@ def _run_git(args: list[str]) -> str:
 
 
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update, sensitive=True):
+        return
     branch = _run_git(["rev-parse", "--abbrev-ref", "HEAD"]) or "(unknown)"
     head = _run_git(["log", "-1", "--oneline"]) or "(no git log)"
 
@@ -99,6 +172,8 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 
 async def cmd_where(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update):
+        return
     if not update.message:
         return
     query = update.message.text.replace("/where", "", 1).strip()
@@ -116,8 +191,30 @@ async def cmd_where(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         lines.append(f"- `{h['path']}:{h['line']}` {h['snippet']}")
     await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.MARKDOWN)
 
+async def cmd_whoami(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not update.message:
+        return
+    user = update.effective_user
+    chat = update.effective_chat
+
+    uid = getattr(user, "id", None)
+    uname = getattr(user, "username", None)
+    cid = getattr(chat, "id", None)
+
+    text = (
+        "너 정보:\n"
+        f"- user_id: {uid}\n"
+        f"- username: @{uname}\n"
+        f"- chat_id: {cid}\n\n"
+        "화이트리스트 등록은 `.env`에 이렇게 넣으면 됨:\n"
+        f"TELEGRAM_ALLOWED_USER_IDS={uid}\n"
+    )
+    await update.message.reply_text(text)
+
 
 async def cmd_sources(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update):
+        return
     last = context.chat_data.get("last_result")
     if not last:
         await update.message.reply_text("아직 질문한 적 없음.")
@@ -134,6 +231,8 @@ async def cmd_sources(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 async def cmd_save(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update, sensitive=True):
+        return
     last = context.chat_data.get("last_result_obj")
     if not last:
         await update.message.reply_text("저장할 최근 결과가 없음. 먼저 질문해줘.")
@@ -150,6 +249,8 @@ async def cmd_save(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def cmd_reindex(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update, sensitive=True):
+        return
     pipeline: RAGPipeline = context.application.bot_data["pipeline"]
     docs_path: str = context.application.bot_data.get("docs_path", "")
 
@@ -165,6 +266,8 @@ async def cmd_reindex(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 async def on_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update):
+        return
     if not update.message or not update.message.text:
         return
 
@@ -192,13 +295,14 @@ async def on_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     answer = _truncate(result.answer)
     await update.message.reply_text(answer)
 
-    # Also send a compact markdown summary (useful for provenance)
-    md = format_result_markdown(result)
-    await update.message.reply_text(
-        _truncate(md, 3500),
-        parse_mode=ParseMode.MARKDOWN,
-        disable_web_page_preview=True,
-    )
+    # Optional debug: send run markdown (disabled by default; can be expensive/noisy)
+    if _SEND_RUN_MD:
+        md = format_result_markdown(result)
+        await update.message.reply_text(
+            _truncate(md, 3500),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
 
 
 def main() -> None:
@@ -260,6 +364,7 @@ def main() -> None:
     app.add_handler(CommandHandler("about", cmd_about))
     app.add_handler(CommandHandler("run", cmd_run))
     app.add_handler(CommandHandler("where", cmd_where))
+    app.add_handler(CommandHandler("whoami", cmd_whoami))
     app.add_handler(CommandHandler("status", cmd_status))
     app.add_handler(CommandHandler("sources", cmd_sources))
     app.add_handler(CommandHandler("save", cmd_save))

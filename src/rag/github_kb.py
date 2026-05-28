@@ -18,6 +18,7 @@ class RepoKBConfig:
     include_files: tuple[str, ...] = ("README.md", "CLAUDE.md")
     exts: tuple[str, ...] = (".md", ".py", ".yaml", ".yml", ".txt")
     max_file_bytes: int = 512 * 1024  # 512 KB per file
+    readme_overview_max_lines: int = 120
 
 
 def _is_hidden(path: Path) -> bool:
@@ -62,6 +63,24 @@ def load_repo_documents(repo_root: str | Path, cfg: RepoKBConfig | None = None) 
     cfg = cfg or RepoKBConfig()
     root = Path(repo_root).resolve()
     docs: list[Document] = []
+
+    # Add README overview snippet as a dedicated document for better retrieval
+    # on "what is this project" style questions.
+    readme = root / "README.md"
+    if readme.exists() and readme.is_file():
+        try:
+            lines = readme.read_text(encoding="utf-8").splitlines()
+            snippet = "\n".join(lines[: cfg.readme_overview_max_lines]).strip()
+            if snippet:
+                docs.append(
+                    Document(
+                        text=snippet,
+                        source="README.md#overview",
+                        metadata={"path": "README.md", "section": "overview"},
+                    )
+                )
+        except UnicodeDecodeError:
+            pass
 
     for p in iter_repo_files(root, cfg):
         try:

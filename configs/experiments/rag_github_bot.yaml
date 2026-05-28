@@ -3,20 +3,22 @@ experiment_name: github_rag_bot
 
 llm:
   provider: anthropic
-  model: claude-3-5-sonnet-latest
+  # Cheaper model for day-to-day bot usage
+  model: claude-haiku-4-5
 
 retrieval:
   backend: faiss
-  top_k: 6
+  top_k: 4
   embedding_model: sentence-transformers/all-MiniLM-L6-v2
-  chunk_size: 700
-  chunk_overlap: 150
+  chunk_size: 500
+  chunk_overlap: 100
   index_dir: outputs/index/github_kb
+  max_chunks_in_prompt: 4
 
-prompt_file: configs/prompts/base_rag.md
+prompt_file: configs/prompts/github_bot.md
 generation:
-  max_new_tokens: 400
-  temperature: 0.2
+  max_new_tokens: 220
+  temperature: 0.1
   top_p: 0.9
   do_sample: false
   repetition_penalty: 1.05
