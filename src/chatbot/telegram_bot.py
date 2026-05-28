@@ -7,6 +7,7 @@ This module contains the bot implementation. The CLI entrypoint lives in
 from __future__ import annotations
 
 import argparse
+import asyncio
 import logging
 import os
 import re
@@ -58,8 +59,18 @@ def _split_for_telegram(text: str, limit: int | None = None) -> list[str]:
 async def _reply_long(update: Update, text: str) -> None:
     if not update.message:
         return
-    for part in _split_for_telegram(text):
-        await update.message.reply_text(part)
+    parts = _split_for_telegram(text)
+    for part in parts:
+        # Telegram can rate-limit message sends; if that happens, wait and retry.
+        try:
+            await update.message.reply_text(part)
+        except Exception as e:
+            retry_after = getattr(e, "retry_after", None)
+            if isinstance(retry_after, (int, float)) and retry_after > 0:
+                await asyncio.sleep(float(retry_after))
+                await update.message.reply_text(part)
+            else:
+                raise
 
 
 def _parse_allowed_user_ids(raw: str | None) -> set[int] | None:
@@ -330,6 +341,40 @@ async def on_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         logger.exception("Query failed")
         await update.message.reply_text(f"에러: {e}")
         return
+
+    def _looks_truncated(s: str) -> bool:
+        s = (s or "").strip()
+        if len(s) < 80:
+            return False
+        # If it ends with common incomplete tokens / lacks a sentence terminator, assume truncation.
+        if s.endswith((":", "-", "(", "“", "「", "『", "…")):
+            return True
+        if s[-1] not in (".", "!", "?", ")", "]", "”", "」", "』", "…"):
+            return True
+        return False
+
+    stop_reason = None
+    if result.generation_output is not None:
+        stop_reason = (result.generation_output.metadata or {}).get("stop_reason")
+    if stop_reason == "max_tokens" or _looks_truncated(result.answer):
+        # Don't regenerate the whole answer; just continue and finish the trailing sentence(s).
+        cont_q = (
+            "방금 답변이 문장 중간에 끊긴 것 같아. 아래 답변을 **이어서** 자연스럽게 마무리해줘.\n"
+            "- 이미 말한 내용은 반복하지 마\n"
+            "- 1~3문장만 추가\n"
+            "- 마지막은 마침표로 끝내\n"
+            "- 코드 블록/긴 인용 금지(파일 경로만 언급)\n\n"
+            f"[질문]\n{question}\n\n"
+            f"[현재 답변]\n{result.answer}\n\n"
+            "[이어쓰기]\n"
+        )
+        try:
+            cont = pipeline.query(cont_q)
+            extra = (cont.answer or "").strip()
+            if extra and extra not in result.answer:
+                result.answer = (result.answer.rstrip() + "\n\n" + extra).strip()
+        except Exception:
+            pass
 
     context.chat_data["last_result"] = {
         "question": result.question,
