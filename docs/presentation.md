@@ -208,30 +208,57 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 <br/>
 
-> 연구 scaffold 단계 — 실험 결과는 추후 업데이트 예정
+> DPO 학습 · 벤치마크 평가 파이프라인 구현 진행 중
 
 ---
 
-# 6. 라이브 데모
+# 6-1. 실험 비교 데모
 
-![bg right:45% 95%](assets/demo_screenshot.png)
+![bg right:52% 95%](assets/demo_screenshot.png)
 
-**실험 비교 (HuggingFace Spaces)**
-[huggingface.co/spaces/ponyo03/conflict-aware-rag-demo](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo)
-
-- Base RAG vs Conflict-Aware 실시간 비교
-- 샘플 질문으로 바로 테스트 가능
+**HuggingFace Spaces**
+[ponyo03/conflict-aware-rag-demo](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo)
 
 <br/>
 
-**저장소 RAG 챗봇**
+- Base RAG vs Conflict-Aware **실시간 비교**
+- 샘플 질문으로 바로 테스트 가능
+- 검색 문서 수(Top-K) 조정 가능
+
+<br/>
+
+> "What color is the Northwood Institute mascot after the 2019 revision?"
+> Base → deep blue / Conflict-Aware → silver-green
+
+---
+
+# 6-2. 저장소 RAG 챗봇
+
+![bg right:52% 90%](assets/bot_screenshot.png)
+
+**Telegram Bot**
 [@alltology_rag_bot](https://t.me/alltology_rag_bot)
 
-> README · docs · CLAUDE.md 기반 벡터 검색 → 답변 생성
+<br/>
+
+- README · docs · CLAUDE.md를 청킹·임베딩
+- 벡터 검색으로 관련 문맥 삽입 → LLM 답변 생성
+- 저장소 내용 기반 Q&A 자동화
+
+---
+
+# 6-3. 연구 사이트
+
+![bg right:55% 95%](assets/web_screenshot.png)
+
+**alltology.zapto.org**
+[alltology.zapto.org](http://alltology.zapto.org)
 
 <br/>
 
-**연구 사이트:** [alltology.zapto.org](http://alltology.zapto.org)
+- 연구 배경 · 핵심 연구 질문 공개
+- 팀 소개 · GitHub 연동
+- Jekyll 기반 정적 사이트
 
 ---
 
@@ -260,7 +287,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 - **문제:** PA-RAG는 Knowledge Conflict를 명시적 정렬 축으로 다루지 않음
 - **제안:** DPO + LoRA로 conflict resolution을 **모델에 내재화** (4번째 정렬 기준)
-- **현재:** Base RAG + Conflict-Aware Prompting 구현 완료, 라이브 데모 배포
+- **현재:** Base RAG + Conflict-Aware Prompting 구현 완료, 라이브 데모 배포 — DPO 학습 · 평가 진행 중
 
 ## 기대 효과
 
@@ -295,8 +322,8 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 <br/>
 
-**Q4. 현재 실험 결과가 없는데 어떻게 검증할 건가요?**
-> 현 시점은 파이프라인·데이터 스키마·실험 설계를 완성한 단계입니다. 벤치마크(ClashEval, WikiContradict)를 이용한 정량 평가와 Northwood 같은 케이스 스터디 정성 분석을 병행할 계획입니다.
+**Q4. 평가는 어떻게 진행하나요?**
+> ClashEval · WikiContradict 벤치마크 기반 정량 평가와 Northwood 같은 케이스 스터디 정성 분석을 병행합니다. conflict resolution 정확도, 기존 정렬 기준 유지 여부(trade-off)를 핵심 지표로 측정합니다.
 
 ---
 
