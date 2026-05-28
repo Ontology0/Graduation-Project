@@ -6,25 +6,31 @@ style: |
   section {
     font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
     font-size: 22px;
+    background: #F6EBDB;
+    color: #3a2e2e;
   }
   section.title {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background: linear-gradient(135deg, #AC9799 0%, #CF726F 60%, #E99B84 100%);
     color: white;
     text-align: center;
   }
   section.title h1 { font-size: 36px; color: white; margin-bottom: 8px; }
-  section.title h2 { font-size: 20px; color: #a8d8ea; font-weight: normal; }
-  section.title p  { font-size: 16px; color: #cccccc; margin-top: 40px; }
-  h1 { font-size: 30px; color: #0f3460; border-bottom: 3px solid #0f3460; padding-bottom: 8px; }
-  h2 { font-size: 24px; color: #16213e; }
+  section.title h2 { font-size: 20px; color: #F9EEEB; font-weight: normal; }
+  section.title p  { font-size: 16px; color: #F6EBDB; margin-top: 40px; }
+  section.title a  { color: #F9EEEB; }
+  h1 { font-size: 30px; color: #CF726F; border-bottom: 3px solid #CF726F; padding-bottom: 8px; }
+  h2 { font-size: 24px; color: #AC9799; }
   table { width: 100%; border-collapse: collapse; font-size: 18px; }
-  th { background: #0f3460; color: white; padding: 8px 12px; }
-  td { padding: 7px 12px; border: 1px solid #ddd; }
-  tr:nth-child(even) { background: #f4f8ff; }
-  .highlight { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 14px; border-radius: 4px; }
-  .green { color: #2d6a4f; font-weight: bold; }
-  .red { color: #c0392b; font-weight: bold; }
-  .blue { background: #e8f4fd; border-left: 4px solid #2980b9; padding: 8px 14px; border-radius: 4px; }
+  th { background: #CF726F; color: white; padding: 8px 12px; }
+  td { padding: 7px 12px; border: 1px solid #DBD0C3; }
+  tr:nth-child(even) { background: #F9EEEB; }
+  .highlight { background: #F9EEEB; border-left: 4px solid #E99B84; padding: 8px 14px; border-radius: 4px; }
+  .green { color: #6b8f6b; font-weight: bold; }
+  .red { color: #CF726F; font-weight: bold; }
+  .blue { background: #F9EEEB; border-left: 4px solid #AC9799; padding: 8px 14px; border-radius: 4px; }
+  code { background: #DBD0C3; border-radius: 3px; padding: 1px 4px; }
+  pre { background: #DBD0C3; border-radius: 6px; }
+  blockquote { border-left: 4px solid #E99B84; color: #7a5c5c; background: #F9EEEB; padding: 6px 14px; }
 ---
 
 <!-- _class: title -->
@@ -294,8 +300,8 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 # 감사합니다
 
 <p>
-GitHub: <a href="https://github.com/Ontology0/Graduation-Project" style="color:#a8d8ea">github.com/Ontology0/Graduation-Project</a><br/>
-데모 사이트: <a href="http://alltology.zapto.org" style="color:#a8d8ea">alltology.zapto.org</a><br/>
+GitHub: <a href="https://github.com/Ontology0/Graduation-Project" style="color:#F9EEEB">github.com/Ontology0/Graduation-Project</a><br/>
+데모 사이트: <a href="http://alltology.zapto.org" style="color:#F9EEEB">alltology.zapto.org</a><br/>
 <br/>
 팀 03 · Alltology · 박세령 (2276121) · 손현경 (2329019) · 이다영 (2317022)
 </p>
