@@ -8,7 +8,8 @@
 
 ## 🚀 Demo / Quickstart
 
-- **인터랙티브 데모**: [🤗 HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) · [🌐 연구 사이트](https://ontology0.github.io/projects/conflict_aware_pa_rag/) — Base RAG vs Conflict-Aware Prompting 실시간 비교
+- **🌐 데모 사이트**: [alltology.zapto.org](http://alltology.zapto.org) — 연구 소개 · 인터랙티브 실험 · 팀 정보
+- **인터랙티브 데모**: [🤗 HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) — Base RAG vs Conflict-Aware Prompting 실시간 비교
 - **데모 영상**: 🔗 링크 추가 예정 (기말 발표 전 업데이트)
 - **발표 자료(슬라이드)**: 🔗 링크 추가 예정
 - **Project Brief**: `course/elevator_speech_team03.md` (팀 소개·연구 방향 요약)
