@@ -11,7 +11,7 @@ from src.rag.chunker import chunk_documents
 from src.rag.config import load_config, load_env
 from src.rag.document_loader import Document, load_documents
 from src.rag.embedder import Embedder
-from src.rag.generator import GenerationConfig, GenerationOutput, Generator
+from src.rag.generator import AnthropicGenerator, GenerationConfig, GenerationOutput, Generator
 from src.rag.prompt_builder import (
     PromptTemplate,
     build_prompt,
@@ -19,7 +19,7 @@ from src.rag.prompt_builder import (
     load_prompt_template,
 )
 from src.rag.retriever import Retriever
-from src.rag.vector_store import FaissVectorStore
+from src.rag.vector_store import load_vector_store, make_vector_store, save_vector_store
 
 logger = logging.getLogger(__name__)
 
@@ -89,9 +89,13 @@ class RAGPipeline:
         cfg = load_config(config_path)
 
         experiment_name = str(cfg.get("experiment_name") or "")
-        model_name = cfg.get("model_name") or _DEFAULT_MODEL
+        llm_cfg = cfg.get("llm", {}) or {}
+        provider = (llm_cfg.get("provider") or "hf").lower()
+        model_name = llm_cfg.get("model") or cfg.get("model_name") or _DEFAULT_MODEL
 
         retrieval_cfg = cfg.get("retrieval") or {}
+        backend = retrieval_cfg.get("backend") or "faiss"
+        index_dir = retrieval_cfg.get("index_dir") or None
         embedding_model = retrieval_cfg.get("embedding_model") or _DEFAULT_EMBEDDING
         top_k = int(retrieval_cfg.get("top_k") or _DEFAULT_TOP_K)
         chunk_size = int(retrieval_cfg.get("chunk_size") or _DEFAULT_CHUNK_SIZE)
@@ -112,9 +116,12 @@ class RAGPipeline:
         generation_config = GenerationConfig.from_dict(cfg.get("generation"))
 
         embedder = Embedder(model_name=embedding_model)
-        store = FaissVectorStore(dimension=embedder.dimension)
+        store = make_vector_store(backend=str(backend), dimension=embedder.dimension)
         retriever = Retriever(embedder=embedder, store=store, top_k=top_k)
-        generator = Generator(model_name=model_name)
+        if provider in ("anthropic", "claude"):
+            generator = AnthropicGenerator(model_name=str(model_name))
+        else:
+            generator = Generator(model_name=str(model_name))
 
         logger.info(
             "Pipeline config: experiment=%s model=%s top_k=%s chunk=%s/%s",
@@ -125,7 +132,7 @@ class RAGPipeline:
             chunk_overlap,
         )
 
-        return cls(
+        pipeline = cls(
             retriever=retriever,
             generator=generator,
             experiment_name=experiment_name,
@@ -135,6 +142,11 @@ class RAGPipeline:
             chunk_overlap=chunk_overlap,
             generation_config=generation_config,
         )
+        pipeline._retrieval_backend = str(backend)
+        pipeline._index_dir = str(index_dir) if index_dir else None
+        if pipeline._index_dir:
+            pipeline.try_load_index(pipeline._index_dir)
+        return pipeline
 
     def index_documents(
         self,
@@ -152,6 +164,9 @@ class RAGPipeline:
             documents = source
 
         chunks = chunk_documents(documents, size, overlap)
+        if not chunks:
+            logger.warning("No chunks produced from %d documents; nothing indexed.", len(documents))
+            return 0
         vectors = self.retriever.embedder.embed([c.text for c in chunks])
         self.retriever.store.add(vectors, chunks)
 
@@ -164,11 +179,24 @@ class RAGPipeline:
         )
         return len(chunks)
 
-    def reset_index(self) -> None:
-        """Replace the vector store with an empty index (one index per pilot case)."""
-        dim = self.retriever.store.dimension
-        self.retriever.store = FaissVectorStore(dimension=dim)
-        logger.debug("Cleared vector store for new case index")
+    def save_index(self, directory: str | Path) -> None:
+        """Save current vector store to disk."""
+        save_vector_store(self.retriever.store, directory)
+
+    def load_index(self, directory: str | Path) -> None:
+        """Load vector store from disk and replace the current store."""
+        backend = str(getattr(self, "_retrieval_backend", "faiss"))
+        self.retriever.store = load_vector_store(backend=backend, directory=directory)
+
+    def try_load_index(self, directory: str | Path) -> bool:
+        """Attempt to load index. Returns True if loaded, False otherwise."""
+        try:
+            self.load_index(directory)
+            logger.info("Loaded index from %s", directory)
+            return True
+        except Exception as e:
+            logger.info("Index not loaded (%s). Will rebuild when indexing docs.", e)
+            return False
 
     def query(self, question: str, top_k: int | None = None) -> RAGResult:
         """Run the full RAG pipeline for a single question."""
