@@ -25,9 +25,46 @@ style: |
   section.title h2 { font-size: 22px; font-weight: 500; color: #F9EEEB; }
   section.title p  { font-size: 17px; color: #F6EBDB; margin-top: 40px; line-height: 1.8; }
   section.title a  { color: #F9EEEB; }
-  section:not(.title) h1 { height: 52px; line-height: 52px; font-size: 30px; font-weight: 800; color: #CF726F; border-bottom: 3px solid #CF726F; padding: 0 60px; margin: 0 -60px 18px -60px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* h1 밑줄 위치 통일 (5페이지「연구 배경」기준: top 50px + height 52px) */
+  section:not(.title) { position: relative; }
+  section:not(.title) h1 {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    height: 52px;
+    line-height: 52px;
+    font-size: 30px;
+    font-weight: 800;
+    color: #CF726F;
+    border-bottom: 3px solid #CF726F;
+    padding: 0 60px;
+    margin: 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 2;
+  }
+  section:not(.title) > h2:first-of-type {
+    position: absolute;
+    top: 120px;
+    left: 60px;
+    right: 60px;
+    margin: 0;
+    min-height: 38px;
+    line-height: 1.35;
+    z-index: 2;
+  }
+  section:not(.title) > h2:first-of-type + * { margin-top: 112px; }
+  section:not(.title) h1 + :not(h2) { margin-top: 112px; }
+  section:not(.title) > h2:not(:first-of-type) {
+    position: static;
+    margin-top: 1.2em;
+    margin-bottom: 10px;
+  }
   h2 { font-size: 26px; font-weight: 700; color: #AC9799; margin-bottom: 14px; }
-  p { line-height: 1.7; }
+  p { line-height: 1.7; margin: 6px 0; }
   ul, ol { padding-left: 1.4em; line-height: 1.8; }
   table { width: 100%; border-collapse: collapse; font-size: 19px; }
   th { background: #CF726F; color: white; padding: 10px 14px; font-weight: 700; }
@@ -42,8 +79,81 @@ style: |
   pre code { background: none; padding: 0; }
   blockquote { border-left: 5px solid #E99B84; color: #7a5c5c; background: #F9EEEB; padding: 8px 16px; margin: 8px 0; border-radius: 0 4px 4px 0; }
   section.qa { font-size: 20px; }
-  section.qa h1 { font-size: 28px; }
+  section.qa h1 { font-size: 28px; line-height: 52px; }
   section.qa blockquote { font-size: 18px; }
+  section.research-bg p { margin: 10px 0; line-height: 1.55; }
+  section.research-bg blockquote { margin: 12px 0; padding: 10px 16px; }
+  section.research-bg table { font-size: 18px; margin: 14px 0; }
+  section.research-bg th,
+  section.research-bg td { padding: 8px 12px; }
+  section.research-bg .highlight { margin: 16px 0 0 0; padding: 12px 16px; line-height: 1.55; }
+  section.team-intro > h2:first-of-type + .team-table-wrap {
+    margin-top: 0 !important;
+  }
+  section.team-intro .team-table-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+    max-width: calc(100% - 100px);
+    z-index: 1;
+  }
+  section.team-intro .team-table-wrap table {
+    width: auto;
+    margin: 0;
+    font-size: 23px;
+  }
+  section.team-intro th,
+  section.team-intro td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 16px 22px;
+  }
+  section.arch-center { text-align: center; }
+  section.arch-center p { margin-left: auto; margin-right: auto; }
+  section.arch-center img {
+    display: block;
+    margin: 0 auto 14px;
+    max-width: 580px;
+  }
+  section.mvp-table table {
+    width: 94%;
+    max-width: 920px;
+    margin: 0 auto;
+    font-size: 20px;
+  }
+  section.mvp-table th,
+  section.mvp-table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  section.demo-bot img.bot-img,
+  section.demo-web-left img.demo-shot {
+    position: absolute;
+    right: 200px;
+    transform: translateY(-50%);
+    width: auto;
+    object-fit: contain;
+    object-position: center;
+    z-index: 0;
+  }
+  section.demo-bot img.bot-img {
+    top: calc(50% + 32px);
+    height: 504px;
+    max-width: 42%;
+  }
+  section.demo-web-left img.demo-shot {
+    top: calc(50% + 12px);
+    max-height: 88%;
+    max-width: 48%;
+  }
+  section.demo-bot .demo-text,
+  section.demo-web-left .demo-text {
+    width: 52%;
+    position: relative;
+    z-index: 1;
+  }
 ---
 
 <!-- _class: title -->
@@ -62,6 +172,8 @@ style: |
 
 # 목차
 
+## 발표 순서
+
 1. **문제 포착** — 왜 이 문제인가?
 2. **연구 배경 · 가치** — PA-RAG가 다루지 않은 것
 3. **관련 연구** — 기존 접근과 한계
@@ -69,16 +181,25 @@ style: |
 5. **기술 아키텍처 · MVP**
 6. **라이브 데모**
 7. **AI 투명성 리포트**
-8. **Q&A**
+8. **결론 및 기대 효과**
+9. **Q&A**
 
 ---
 
+<!-- _class: team-intro -->
+
 # 팀 소개
+
+## Alltology
+
+<div class="team-table-wrap">
 
 | | 박세령 (2276121) | 손현경 (2329019) | 이다영 (2317022) |
 |:---:|:---:|:---:|:---:|
 | **역할** | Conflict type 설계<br/>RAG 파이프라인 구현 | DPO 학습 설계<br/>LoRA fine-tuning | 데이터 파이프라인<br/>평가 프로토콜 |
 | **GitHub** | @ryeong03 | @bbberylll | @dev-ldy03 |
+
+</div>
 
 ---
 
@@ -101,6 +222,8 @@ RAG 시스템이 외부 문서를 제공해도, 모델은 <b>내부 지식을 �
 
 ---
 
+<!-- _class: research-bg -->
+
 # 2. 연구 배경 · 가치
 
 ## PA-RAG가 다루지 않은 것
@@ -111,15 +234,11 @@ PA-RAG (NAACL 2025)는 RAG generator를 세 기준으로 정렬한다:
 
 그러나 **Knowledge Conflict — 검색 문서와 내부 지식이 충돌하는 상황** 은 명시적 정렬 축에 없다.
 
-<br/>
-
 | 충돌 상황 | 이상적 행동 | PA-RAG의 한계 |
 |-----------|------------|--------------|
 | 외부 문서가 최신·권위 정보 | 외부 우선 | 정렬 기준 없음 → 불일치 |
 | 외부 문서가 부정확 | 내부 지식 또는 abstention | 외부 맹신 가능 |
 | 둘 다 불확실 | 불확실성 표현 | 확신 있는 오답 |
-
-<br/>
 
 <div class="highlight">
 <b>연구 질문:</b> PA-RAG 프레임워크에 <b>Knowledge Conflict 해소</b>를 4번째 정렬 기준으로 추가하면,<br/>
@@ -187,13 +306,19 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
+<!-- _class: arch-center -->
+
 # 5. 기술 아키텍처
+
+## 시스템 구조
 
 ![w:580 center](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/rag_diagram.png)
 
 **구현:** `src/rag/` (10개 모듈) · FAISS 벡터스토어 · sentence-transformers 임베딩
 
 ---
+
+<!-- _class: mvp-table -->
 
 # 5. 기술 아키텍처 — MVP 현황
 
@@ -232,9 +357,11 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
+<!-- _class: demo-bot -->
+
 # 6. 라이브 데모 ② — RAG 챗봇
 
-![bg right:40% fit](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/bot_screenshot.png)
+<div class="demo-text">
 
 **Telegram Bot**
 [@alltology_rag_bot](https://t.me/alltology_rag_bot)
@@ -245,11 +372,17 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 - 벡터 검색으로 관련 문맥 삽입 → LLM 답변 생성
 - 저장소 내용 기반 Q&A 자동화
 
+</div>
+
+<img class="bot-img" src="assets/bot_screenshot.png" />
+
 ---
+
+<!-- _class: demo-web-left -->
 
 # 6. 라이브 데모 ③ — 연구 사이트
 
-![bg right:50% fit](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/web_screenshot.png)
+<div class="demo-text">
 
 **alltology.zapto.org**
 [alltology.zapto.org](http://alltology.zapto.org)
@@ -259,17 +392,27 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 - 연구 배경 · 핵심 연구 질문 공개
 - 실험 설계 · 관련 연구 정리
 
+</div>
+
+<img class="demo-shot" src="assets/web_screenshot.png" />
+
 ---
+
+<!-- _class: demo-web-left -->
 
 # 6. 라이브 데모 ④ — 데모 · 팀
 
-![bg right:50% fit](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/web_screenshot2.png)
+<div class="demo-text">
 
 **직접 해보기**
 
 - 🚀 웹 데모 · 텔레그램 봇 바로가기
 - 팀원 소개 (박세령 · 손현경 · 이다영)
 - GitHub 저장소 연동
+
+</div>
+
+<img class="demo-shot" src="assets/web_screenshot2.png" />
 
 ---
 
