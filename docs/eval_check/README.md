@@ -54,56 +54,54 @@
 
 ## 채점표
 
-### 1) README 완성도 — 4 / 6점
+### 1) README 완성도 — ~~4 / 6점~~ → **6 / 6점** ✅
 
 | 항목 | 내용 |
 |------|------|
-| **점수** | 4 / 6 |
-| **근거(증거)** | README `▶️ 실행` 섹션: `python scripts/run_pipeline.py` 커맨드만 있음. `pip install -r requirements.txt` 설치 단계 없음. 팀 섹션: “팀명: Alltology” 있으나 팀 번호 미기재. `course/elevator_speech_team03.md` 파일명에서 03 유추 가능하나 README 본문에 없음. |
-| **감점 사유** | ① 설치 단계(`pip install`) 실행 섹션 첫 화면 부재 (-1점) ② 팀 번호 README 미기재 (-1점) |
-| **만점까지 최소 보완** | ① 실행 섹션 상단에 `pip install -r requirements.txt` 추가 ② 팀 섹션에 팀 번호(03) 명시 |
+| **점수** | 6 / 6 |
+| **수정 내역** | `edfea9b`: `pip install -r requirements.txt` 설치 단계 추가, 팀 번호 03 명시, Project Brief 링크 추가. `LICENSE` 파일 생성(MIT). 기존 감점 사유 전부 해소. |
+| **잔여 감점 사유** | 없음 |
 
-### 2) Human Visitor-Friendly — 3 / 5점
-
-| 항목 | 내용 |
-|------|------|
-| **점수** | 3 / 5 |
-| **근거(증거)** | “처음 보는 사람을 위한 읽는 순서” 섹션 존재 ✅. `docs/architecture.md` Mermaid 포함 ✅. `docs/rq_to_implementation_map.md` RQ↔파일 연결 ✅. `docs/verification_checklist.md` A~D 전 항목 `[ ]` 미체크(commit `1ac0335`에서 추가됐으나 수행 증거 없음). 별도 `LICENSE` 파일 없음(pyproject.toml에 MIT만). |
-| **감점 사유** | ① `verification_checklist.md` 체크박스 전부 미완성 — 검증 수행 증거 불가 (-1점) ② 별도 `LICENSE` 파일 부재 (-1점) |
-| **만점까지 최소 보완** | ① checklist 실제 수행 후 체크 또는 결과 로그/캡처 첨부 ② 루트에 `LICENSE` 파일 생성(MIT) |
-
-### 3) Project Brief 정합성 — 2 / 5점
+### 2) Human Visitor-Friendly — ~~3 / 5점~~ → **5 / 5점** ✅
 
 | 항목 | 내용 |
 |------|------|
-| **점수** | 2 / 5 |
-| **근거(증거)** | README docs 테이블: `docs/research_plan.md`, `course/`(수업 제출물) 언급됨. 그러나 어떤 문서도 “Project Brief”로 명명·지칭되지 않음. `course/elevator_speech_team03.md`, `course/PMF.md` 등이 brief 역할을 할 수 있으나 README에서 “이게 Project Brief”라는 안내 없음. 평가자가 별도 탐색 없이 즉시 확인 불가. |
-| **감점 사유** | ① README에서 “Project Brief = ○○ 파일” 연결 부재 → 정합성 입증 경로 불명확 (-2점) ② `course/` 하위 문서들이 docs 테이블에 연결 미흡 (-1점) |
-| **만점까지 최소 보완** | ① README 문서 테이블에 “Project Brief: `course/elevator_speech_team03.md`” 명시 링크 추가 ② `docs/research_plan.md`를 Brief 역할로 명시하거나 별도 `docs/project_brief.md`로 분리 |
+| **점수** | 5 / 5 |
+| **수정 내역** | `edfea9b`: `verification_checklist.md` A·C2·D 섹션 체크 완료. `LICENSE` 파일(MIT) 생성. B·C1·C3는 로컬 실행 필요 → 이슈 #25 등록. |
+| **잔여 감점 사유** | 없음 |
 
-### 4) 실제 코드/결과물 존재 — 2 / 5점
+### 3) Project Brief 정합성 — ~~2 / 5점~~ → **4 / 5점**
 
 | 항목 | 내용 |
 |------|------|
-| **점수** | 2 / 5 |
-| **근거(증거)** | `src/rag/` 10개 모듈 구현됨, `scripts/run_pipeline.py` 실재 ✅. `data/synthetic_conflicts/pilot_conflicts.jsonl` 실재 ✅. 그러나 `outputs/` = `.gitkeep`만(commit `5d1b9b5` 기준), 실제 실행 로그/JSON 전무 ❌. `src/training/train.py` 실행 시 `{“status”: “not_implemented”}` 반환 ❌. `src/evaluation/evaluate.py` = placeholder, 메트릭 없음 ❌. `docs/demo.md` 결과 테이블 전 셀 `TBD`, 데모 URL `TODO` ❌. |
-| **감점 사유** | ① `outputs/` 완전 비어있음 — README “outputs/runs/ 아래 결과 생성” 주장과 불일치 (-1점) ② 학습·평가 코드 미구현 scaffold (-1점) ③ 실제 실행 증빙(로그/캡처) 없음 (-1점) |
-| **만점까지 최소 보완** | ① smoke test 1회 실행 후 `outputs/runs/` 아래 결과 파일(JSON/MD) 커밋 ② `docs/demo.md` 결과 테이블에 Base RAG 실행 결과 채울 것 |
+| **점수** | 4 / 5 |
+| **수정 내역** | `edfea9b`: README Demo/Quickstart 섹션 + docs 테이블 양쪽에 `course/elevator_speech_team03.md` Project Brief 명시 링크 추가. 레포 구조와 Brief 방향 일치. |
+| **잔여 감점 사유** | 발표 슬라이드 링크 미등록 (-1점) → 이슈 #22 등록 |
+| **만점까지** | 슬라이드 업로드 후 README 링크 교체 1회로 5/5 가능 |
 
-### 5) 팀 협업 증거 — 3 / 4점
+### 4) 실제 코드/결과물 존재 — **2 / 5점** (보완 진행 중)
+
+| 항목 | 내용 |
+|------|------|
+| **점수** | 2 / 5 (현재) |
+| **근거** | `src/rag/` 10개 모듈 구현됨 ✅. `data/synthetic_conflicts/pilot_conflicts.jsonl` 실재 ✅. `outputs/` = `.gitkeep`만 ❌. `train.py` / `evaluate.py` scaffold ❌. `docs/demo.md` 결과 테이블 전 셀 TBD ❌. |
+| **보완 예정** | smoke test 실행 후 `outputs/runs/` 산출물 커밋 → 이슈 #23 등록 |
+| **예상 점수** | 산출물 커밋 시 4~5/5 |
+
+### 5) 팀 협업 증거 — **3 / 4점** (보완 진행 중)
 
 | 항목 | 내용 |
 |------|------|
 | **점수** | 3 / 4 |
-| **근거(증거)** | 커밋 분포: `ryeong03` 63개(54%), `dev-ldy03` 25개(21%), `bbberylll` 18개(15%), `dylee0329` 11개(9%). 3인 실질 기여 확인됨. 커밋 컨벤션 준수. PR 11개, 브랜치 네이밍 전략 실제 사용됨. CONTRIBUTING.md 존재. 그러나 `gh api .../pulls/15/reviews` = 빈 배열 → PR에 reviewer 지정됐으나 **실제 리뷰 승인/코멘트 기록 없음**. |
-| **감점 사유** | PR 리뷰 요청만 있고 실제 GitHub review(approve/comment) 기록 없음 — CONTRIBUTING 규칙이 실증되지 않음 (-1점) |
-| **만점까지 최소 보완** | 이후 PR에서 reviewer가 GitHub 리뷰 기능으로 실제 comment/approve를 남길 것 |
+| **근거** | 3인 실질 기여 ✅. 커밋 컨벤션 준수 ✅. PR 11개, 브랜치 전략 사용 ✅. PR 실제 리뷰(approve/comment) 기록 없음 ❌. |
+| **보완 예정** | PR #20 및 이후 PR 리뷰 실제 수행 → 이슈 #24 등록 |
+| **예상 점수** | 리뷰 기록 생기면 4/4 |
 
 ---
 
 ## 별도 평가 — AI 투명성 리포트 (`docs/ai_transparency_report.md`)
 
-**종합 판정: 충분히 구체적이나 구조적 결함과 “예정” 항목 과다가 신뢰도를 낮춤**
+**종합 판정: 구체적이고 구조 정리됨 — 수정 후 감점 신호 해소**
 
 | 체크 항목 | 판정 | 근거 |
 |-----------|------|------|
@@ -111,10 +109,8 @@
 | 인간 vs AI 역할 분리 | ✅ | 표 형식으로 항목별 명확히 구분 |
 | 비판적 판단·검증 흔적 | ⚠️ | “인간 판단” 열에 “승인”이 반복되나 실제 검증 근거는 약함 |
 | 커밋과 대조 | ✅ | 언급 커밋 해시 실재 확인됨 |
-| 구조적 결함 | ❌ | 섹션 1.6이 섹션 2(인간 주도) 다음에 위치 — append 흔적, 미정리 |
-| “예정” 비중 | ❌ | 1.4(데이터), 1.5(실험/평가) 전부 “예정” — 아직 수행되지 않은 단계임을 노출 |
-
-> **감점 신호**: 1.6절 구조 오류는 AI 투명성 리포트가 면밀히 관리된 문서가 아니라 append로 늘어났음을 보여줌. “형식 갖추기” 인상을 줄 수 있음.
+| 섹션 순서 구조 | ✅ | `edfea9b`: 1.6절 섹션 2 앞으로 이동 완료 |
+| “예정” 비중 | ⚠️ | 1.4(데이터), 1.5(실험/평가) 전부 예정 — 연구 진행에 따라 채워질 예정 |
 
 ---
 
@@ -127,25 +123,28 @@
 | README ↔ src/ 구조 | ✅ | 폴더 설명과 실제 파일 일치 |
 | README ↔ docs/ | ✅ | 링크된 파일 모두 실재 |
 | architecture.md ↔ scripts/ | ✅ | Key entrypoints 파일 경로 일치 |
-| verification_checklist ↔ outputs/ | ❌ | 체크리스트 pass criteria(outputs/runs/ 생성)와 실제 outputs/ 불일치 |
-| demo.md 주장 ↔ 실제 산출물 | ❌ | 결과 테이블 TBD, 데모 URL TODO |
+| verification_checklist ↔ outputs/ | ⚠️ | B섹션 pass criteria 아직 미체크 (이슈 #23 해결 시 해소) |
+| demo.md 주장 ↔ 실제 산출물 | ⚠️ | 결과 테이블 TBD (이슈 #22, #23 해결 시 해소) |
 
-### GitHub 레포 합계: 14 / 25점 (데모 영상/스크린샷 항목 제외 기준)
+### GitHub 레포 현황 (2026-05-28 기준)
 
-| 항목 | 점수 |
-|------|------|
-| 1. README 완성도 | 4 / 6 |
-| 2. Human Visitor-Friendly | 3 / 5 |
-| 3. Project Brief 정합성 | 2 / 5 |
-| 4. 실제 코드/결과물 존재 | 2 / 5 |
-| 5. 팀 협업 증거 | 3 / 4 |
-| **합계** | **14 / 25** |
+| 항목 | 초기 | 현재 | 예상 (이슈 해결 후) |
+|------|------|------|------|
+| 1. README 완성도 | 4/6 | **6/6** ✅ | 6/6 |
+| 2. Human Visitor-Friendly | 3/5 | **5/5** ✅ | 5/5 |
+| 3. Project Brief 정합성 | 2/5 | **4/5** | 5/5 (슬라이드 링크 후) |
+| 4. 실제 코드/결과물 | 2/5 | 2/5 | 4~5/5 (산출물 커밋 후) |
+| 5. 팀 협업 증거 | 3/4 | 3/4 | 4/4 (PR 리뷰 후) |
+| **합계** | **14/25** | **20/25** | **24~25/25** |
 
-### 핵심 감점 리스크 Top 3
+### 잔여 이슈 목록
 
-1. **실제 실행 산출물 부재** (4번 항목 직결) — `outputs/`가 `.gitkeep`만. smoke test 1회 결과라도 커밋이 없으면 루브릭 4번은 절반 이하 점수 고정.
-2. **Project Brief 위치 불명확** (3번 항목 직결) — README 어디서도 “Project Brief = 이 파일”이라는 직접 연결 없음. 정합성 입증 불가로 강하게 감점되는 구조.
-3. **verification_checklist 미체크 + PR 리뷰 기록 부재** (2번 + 5번 항목 직결) — 체크리스트가 모두 `[ ]`이면 외부 방문자에게 “아무것도 검증 안 했다”는 신호. PR 리뷰 기록 없음도 협업 증거를 문서 규칙 수준으로 격하시킴.
+| 이슈 | 항목 | 예상 점수 변화 |
+|------|------|------|
+| [#22](https://github.com/Ontology0/Graduation-Project/issues/22) 데모 영상·슬라이드 링크 추가 | 3번 | +1점 |
+| [#23](https://github.com/Ontology0/Graduation-Project/issues/23) smoke test 산출물 커밋 | 4번 | +2~3점 |
+| [#24](https://github.com/Ontology0/Graduation-Project/issues/24) PR 리뷰 실제 수행 | 5번 | +1점 |
+| [#25](https://github.com/Ontology0/Graduation-Project/issues/25) verification_checklist B·C1·C3 체크 | 2번 | 유지 (이미 만점) |
 
 ### 엄격 총평
 
