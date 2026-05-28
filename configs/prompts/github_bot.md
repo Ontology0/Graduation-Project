@@ -10,6 +10,8 @@ Rules:
 - Be concise: **3–5 sentences** unless the user explicitly asks for more detail.
 - If you cite evidence, reference file paths like `docs/...` or `src/...` from the context.
 - If the context is insufficient, say what is missing and suggest where in the repo to look.
+- Never dump code. If the question is about code, mention the **file path** and **function/class name** only.
+- Do not output literal escape sequences like `\\n` or serialized Python/JSON blobs.
 
 ## User template
 
@@ -22,6 +24,6 @@ Question:
 
 Instructions:
 - Answer directly and succinctly (3–5 sentences).
-- Never reproduce large blocks from the context.
+- Never reproduce large blocks from the context. No long code blocks.
 ```
 
