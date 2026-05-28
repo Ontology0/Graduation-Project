@@ -118,28 +118,89 @@ def _parse_allowed_user_ids(raw: str | None) -> set[int] | None:
     return ids or None
 
 
-_ALLOWED_USER_IDS = _parse_allowed_user_ids(os.getenv("TELEGRAM_ALLOWED_USER_IDS"))
-_RATE_LIMIT_PER_MIN = int(os.getenv("TELEGRAM_RATE_LIMIT_PER_MIN", "12"))
+def _parse_allowed_chat_ids(raw: str | None) -> set[int] | None:
+    if not raw:
+        return None
+    ids: set[int] = set()
+    for part in raw.replace(" ", "").split(","):
+        if not part:
+            continue
+        try:
+            ids.add(int(part))
+        except ValueError:
+            continue
+    return ids or None
+
+
+def _bool_env(name: str, default: bool = False) -> bool:
+    v = os.getenv(name)
+    if v is None:
+        return default
+    return v.strip() in ("1", "true", "True", "yes", "YES", "on", "ON")
+
+
+def _allowed_user_ids() -> set[int] | None:
+    return _parse_allowed_user_ids(os.getenv("TELEGRAM_ALLOWED_USER_IDS"))
+
+
+def _allowed_chat_ids() -> set[int] | None:
+    return _parse_allowed_chat_ids(os.getenv("TELEGRAM_ALLOWED_CHAT_IDS"))
+
+
+def _require_allowlist() -> bool:
+    # Safe default: if not set, allow behavior remains as before.
+    # When set, bot is locked down unless allowlist is provided.
+    return _bool_env("TELEGRAM_REQUIRE_ALLOWLIST", default=False)
+
+
+def _allow_groups() -> bool:
+    return _bool_env("TELEGRAM_ALLOW_GROUPS", default=False)
+
+
+def _rate_limit_per_min() -> int:
+    try:
+        return int(os.getenv("TELEGRAM_RATE_LIMIT_PER_MIN", "12"))
+    except Exception:
+        return 12
+
+
 _RATE_LIMIT_WINDOW_S = 60.0
-_user_timestamps: dict[int, deque[float]] = defaultdict(
-    lambda: deque(maxlen=max(_RATE_LIMIT_PER_MIN * 2, 20))
-)
-_SEND_RUN_MD = os.getenv("TELEGRAM_SEND_RUN_MD", "").strip() in (
-    "1",
-    "true",
-    "True",
-    "yes",
-    "YES",
-)
+_user_timestamps: dict[int, deque[float]] = defaultdict(lambda: deque(maxlen=200))
+
+
+def _send_run_md() -> bool:
+    return _bool_env("TELEGRAM_SEND_RUN_MD", default=False)
 
 
 def _is_allowed(update: Update) -> bool:
-    if _ALLOWED_USER_IDS is None:
-        return True
+    user_allow = _allowed_user_ids()
+    chat_allow = _allowed_chat_ids()
+
+    # If allowlist is required, missing allowlist means deny by default.
+    if _require_allowlist() and user_allow is None and chat_allow is None:
+        return False
+
+    # If groups are not allowed, only allow private chats.
+    chat = getattr(update, "effective_chat", None)
+    chat_type = getattr(chat, "type", None)
+    if not _allow_groups() and chat_type not in (None, "private"):
+        return False
+
+    # Enforce user allowlist if configured.
     user = getattr(update, "effective_user", None)
     if not user or user.id is None:
         return False
-    return int(user.id) in _ALLOWED_USER_IDS
+    if user_allow is not None and int(user.id) not in user_allow:
+        return False
+
+    # Enforce chat allowlist if configured.
+    if chat_allow is not None:
+        if not chat or getattr(chat, "id", None) is None:
+            return False
+        if int(chat.id) not in chat_allow:
+            return False
+
+    return True
 
 
 def _rate_limited(update: Update) -> bool:
@@ -152,7 +213,7 @@ def _rate_limited(update: Update) -> bool:
     dq.append(now)
     while dq and (now - dq[0]) > _RATE_LIMIT_WINDOW_S:
         dq.popleft()
-    return len(dq) > _RATE_LIMIT_PER_MIN
+    return len(dq) > _rate_limit_per_min()
 
 
 async def _reject(update: Update, message: str) -> None:
@@ -162,9 +223,10 @@ async def _reject(update: Update, message: str) -> None:
 
 async def _guard(update: Update, *, sensitive: bool = False) -> bool:
     if not _is_allowed(update):
-        await _reject(update, "접근 불가.")
+        await _reject(update, "접근 불가. (화이트리스트/채팅 제한)")
         return False
-    if sensitive and _ALLOWED_USER_IDS is not None:
+    if sensitive:
+        # Already enforced by allowlists above; keep the flag for readability.
         pass
     if _rate_limited(update):
         await _reject(update, "요청이 너무 많아. 잠깐만 쉬고 다시 보내줘.")
@@ -452,7 +514,7 @@ async def on_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
     await _reply_long(update, result.answer)
 
-    if _SEND_RUN_MD:
+    if _send_run_md():
         md = format_result_markdown(result)
         await update.message.reply_text(
             md[:3500],
