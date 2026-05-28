@@ -80,6 +80,10 @@ class Generator:
         )
         if self.device != "auto":
             self.model.to(self.device)
+        if self.device in ("cpu", "mps"):
+            # Some models may still end up as fp16/bf16 due to internal defaults.
+            # Force fp32 for portability on CPU/MPS.
+            self.model.to(dtype=torch.float32)
 
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token

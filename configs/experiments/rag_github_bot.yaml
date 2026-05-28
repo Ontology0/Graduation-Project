@@ -1,0 +1,23 @@
+# Telegram "project sharing" bot config (GitHub-as-KB RAG)
+experiment_name: github_rag_bot
+
+llm:
+  provider: anthropic
+  model: claude-3-5-sonnet-latest
+
+retrieval:
+  backend: faiss
+  top_k: 6
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  chunk_size: 700
+  chunk_overlap: 150
+  index_dir: outputs/index/github_kb
+
+prompt_file: configs/prompts/base_rag.md
+generation:
+  max_new_tokens: 400
+  temperature: 0.2
+  top_p: 0.9
+  do_sample: false
+  repetition_penalty: 1.05
+
