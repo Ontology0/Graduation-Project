@@ -4,13 +4,17 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
+from typing import Any
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+from src.rag.config import get_api_key
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_MODEL = "microsoft/phi-2"
+DEFAULT_ANTHROPIC_MODEL = "claude-3-5-sonnet-latest"
 
 
 @dataclass
@@ -41,13 +45,28 @@ class Generator:
         torch_dtype: str = "auto",
     ):
         self.model_name = model_name
-        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        if device:
+            self.device = device
+        else:
+            if torch.cuda.is_available():
+                self.device = "cuda"
+            elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+                self.device = "mps"
+            else:
+                self.device = "cpu"
+
+        # Avoid float16 on CPU/MPS (common LayerNorm half-kernel issues).
+        resolved_dtype: str | torch.dtype = torch_dtype
+        if torch_dtype == "auto" and self.device in ("cpu", "mps"):
+            resolved_dtype = torch.float32
+        elif isinstance(torch_dtype, str) and torch_dtype != "auto":
+            resolved_dtype = getattr(torch, torch_dtype, torch_dtype)
 
         logger.info("Loading generator model: %s on %s", model_name, self.device)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype=torch_dtype,
+            torch_dtype=resolved_dtype,
             device_map=self.device if self.device == "auto" else None,
             trust_remote_code=True,
         )
@@ -107,4 +126,75 @@ class Generator:
             model_name=self.model_name,
             prompt_tokens=prompt_length,
             generated_tokens=len(new_tokens),
+        )
+
+
+class AnthropicGenerator:
+    """Generate text using Anthropic Messages API."""
+
+    def __init__(self, model_name: str = DEFAULT_ANTHROPIC_MODEL):
+        self.model_name = model_name
+
+        try:
+            from anthropic import Anthropic  # type: ignore
+        except Exception as e:  # pragma: no cover
+            raise ImportError(
+                "anthropic package is required for AnthropicGenerator. "
+                "Install it (e.g. `pip install anthropic`) and retry."
+            ) from e
+
+        api_key = get_api_key("ANTHROPIC_API_KEY")
+        self._client = Anthropic(api_key=api_key)
+
+    def _to_anthropic_messages(self, messages: list[dict[str, str]]) -> tuple[str, list[dict[str, Any]]]:
+        system_parts: list[str] = []
+        out: list[dict[str, Any]] = []
+        for msg in messages:
+            role = msg["role"]
+            content = msg["content"]
+            if role == "system":
+                system_parts.append(content)
+                continue
+            if role not in ("user", "assistant"):
+                continue
+            out.append({"role": role, "content": content})
+
+        system = "\n\n".join([p.strip() for p in system_parts if p.strip()])
+        if not out:
+            out = [{"role": "user", "content": ""}]
+        return system, out
+
+    def generate(
+        self,
+        messages: list[dict[str, str]],
+        config: GenerationConfig | None = None,
+    ) -> GenerationOutput:
+        config = config or GenerationConfig()
+        system, anthropic_messages = self._to_anthropic_messages(messages)
+
+        resp = self._client.messages.create(
+            model=self.model_name,
+            max_tokens=config.max_new_tokens,
+            temperature=config.temperature,
+            top_p=config.top_p,
+            system=system or None,
+            messages=anthropic_messages,
+        )
+
+        text_parts: list[str] = []
+        for block in getattr(resp, "content", []) or []:
+            if getattr(block, "type", None) == "text":
+                text_parts.append(getattr(block, "text", ""))
+        text = "".join(text_parts).strip()
+
+        usage = getattr(resp, "usage", None)
+        prompt_tokens = int(getattr(usage, "input_tokens", 0) or 0)
+        generated_tokens = int(getattr(usage, "output_tokens", 0) or 0)
+
+        return GenerationOutput(
+            text=text,
+            model_name=self.model_name,
+            prompt_tokens=prompt_tokens,
+            generated_tokens=generated_tokens,
+            metadata={"provider": "anthropic", "stop_reason": getattr(resp, "stop_reason", None)},
         )

@@ -1,6 +1,10 @@
 # Base RAG configuration
 experiment_name: base_rag
 model_name: microsoft/phi-2
+# Optional:
+# llm:
+#   provider: anthropic
+#   model: claude-3-5-sonnet-latest
 dataset: null  # TODO: benchmark / split (pending benchmark selection)
 retrieval:
   backend: faiss
