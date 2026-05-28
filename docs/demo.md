@@ -1,17 +1,7 @@
-# Self Demo (Placeholder)
+# Demo / Quickstart
 
-> **Status:** to be updated — no recorded demo yet.
-
-## Demo goal
-
-Show a **context–memory conflict** scenario where retrieved evidence and the model’s default answer disagree, and compare how each method resolves the conflict (or abstains).
-
-## Demo scenario
-
-- **Setting:** Single user question with one retrieved passage that contradicts the answer the base model would give without conflict instructions.
-- **Example type:** Fictional or clearly labeled synthetic domain (no real-world entity claims requiring verification).
-- **Sample document:** `data/sample_docs/example_conflict.txt` (fictional Northwood Institute mascot color revision).
-- **To be updated:** Concrete question, context block, and resolution rule once a pilot dataset slice exists.
+> 목적: 평가자/외부 방문자가 “이 레포에 **실제로 돌아가는 코드**가 있다”는 걸 빠르게 확인할 수 있게, **smoke test**와 **증빙(예시 로그/결과 형태)**를 한 곳에 모읍니다.  
+> Status: 연구 레포 **scaffold** 단계이며, 최종 벤치마크/정량 결과는 아직 없습니다.
 
 ## Quick run (smoke test)
 
@@ -22,7 +12,36 @@ python scripts/run_pipeline.py \
   --question "What is knowledge conflict in RAG?"
 ```
 
-No demo metrics or recorded outcomes yet — use this only to verify the pipeline wiring.
+### 성공 기준(무엇을 보면 “성공”인가?)
+
+- 콘솔에 `Experiment:` / `Question:` / `Answer:` / `Sources:`가 출력된다
+- 실행 후 `outputs/runs/` 아래에 결과 파일이 생성된다(JSON/MD)
+
+## Expected outputs (example paths)
+
+> 아래는 “형태/경로 예시”이며, 내용은 실행 환경/모델/설정에 따라 달라질 수 있습니다.
+
+- `outputs/runs/<run_name>.json`
+- `outputs/runs/<run_name>.md`
+
+## Evidence (captured example)
+
+> 아직 영상/스크린샷을 레포에 포함하지 않는 대신, **재현 가능한 관찰 포인트**를 고정합니다.  
+> 캡처를 추가할 경우, 개인키/토큰/챗ID 등 민감정보가 노출되지 않게 주의합니다.
+
+- CLI 실행 시 출력되는 “Saved run” 경로
+  - 예: `Saved run: JSON: outputs/runs/...  MD: outputs/runs/...`
+
+## Demo goal (final presentation)
+
+Show a **context–memory conflict** scenario where retrieved evidence and the model’s default answer disagree, and compare how each method resolves the conflict (or abstains).
+
+## Demo scenario (planned)
+
+- **Setting:** Single user question with one retrieved passage that contradicts the answer the base model would give without conflict instructions.
+- **Example type:** Fictional or clearly labeled synthetic domain (no real-world entity claims requiring verification).
+- **Sample document:** `data/sample_docs/example_conflict.txt` (fictional Northwood Institute mascot color revision).
+- **To be updated:** Concrete question, context block, and resolution rule once a pilot dataset slice exists.
 
 ## Compared methods
 
@@ -34,7 +53,7 @@ No demo metrics or recorded outcomes yet — use this only to verify the pipelin
 | Conflict-Aware RAG LoRA | `configs/experiments/lora_conflict_only.yaml` (when trained) |
 | Conflict-Aware PA-RAG LoRA | `configs/experiments/lora_conflict_parrag.yaml` (when trained) |
 
-## Demo result table (template)
+## Demo result table (template; fill after runs)
 
 | Method | Follows evidence? | States conflict? | Resolution correct? | Notes |
 |--------|-------------------|------------------|---------------------|-------|
