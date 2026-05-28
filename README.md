@@ -8,6 +8,7 @@
 
 ## 🚀 Demo / Quickstart (Repo-only)
 
+- **Project Brief**: `course/elevator_speech_team03.md` (팀 소개·연구 방향 요약)
 - **Demo 문서**: `docs/demo.md` (CLI smoke test + 데모 증빙)
 - **아키텍처 1페이지 요약**: `docs/architecture.md`
 - **검증 체크리스트(재현/보안/운영)**: `docs/verification_checklist.md`
@@ -113,7 +114,8 @@ flowchart LR
 
 | 문서 | 내용 |
 |------|------|
-| `docs/research_plan.md` | 문제 정의, RQ, 기여, 한계 |
+| `course/elevator_speech_team03.md` | **Project Brief** — 팀 소개·연구 방향·문제 정의 요약 |
+| `docs/research_plan.md` | 문제 정의, RQ, 기여, 한계 (상세) |
 | `docs/related_work.md` | 관련 논문 citation placeholder |
 | `docs/benchmark_selection.md` | ClashEval, ConflictBank 등 후보 (**final decision pending**) |
 | `docs/experiment_design.md` | 비교군 상세 |
@@ -155,6 +157,9 @@ flowchart LR
 ## ▶️ 실행
 
 ```bash
+# 의존성 설치
+pip install -r requirements.txt
+
 # RAG 파이프라인 실행
 python scripts/run_pipeline.py \
     --config configs/experiments/rag_base.yaml \
@@ -278,7 +283,7 @@ main ← 최종 제출 / 배포용
 
 ## 👥 팀
 
-**팀명:** Alltology · **트랙:** 연구 · **지도교수:** 황의원 교수님
+**팀명:** Alltology · **팀 번호:** 03 · **트랙:** 연구 · **지도교수:** 황의원 교수님
 
 | <img src="https://github.com/ryeong03.png" width="120" /> | <img src="https://github.com/bbberylll.png" width="120" /> | <img src="https://github.com/dev-ldy03.png" width="120" /> |
 |:--:|:--:|:--:|

@@ -81,6 +81,42 @@
 | **활용 내용** | Baseline vs Hybrid 대조군 설정 자문. Faithfulness Score 등 주관적 지표 평가. LLM-as-a-judge 방식 도입 |
 | **인간 검증** | RAGAS 지표와 병행 교차 검증 (RTX 3090 x 4 환경 고려) |
 
+### 1.6 Telegram 프로젝트 공유용 RAG 봇 개발/운영 개선
+
+| 항목 | 내용 |
+|------|------|
+| **사용 도구** | Cursor (GPT-5 계열) |
+| **활용 내용** | Telegram 봇 코드 정리(폴더 구조), 텍스트 출력 UX 개선(텔레그램 포맷), 응답 끊김 완화, 운영 보안(allowlist/그룹 차단/레이트리밋) 강화, 운영 문서화 및 커맨드 UX 추가 |
+| **인간 판단** | 봇을 저장소 공유/온보딩 용도로 유지할지, 공개 범위(allowlist 강제/민감 커맨드 기본 잠금), 모델/임베딩 비용-품질 트레이드오프 선택, README vs docs 문서 위치 결정, "서버리스 운영 시 수동 `/reindex`" 운영 방침 확정 |
+
+**재현 가능한 검증 절차(별도 문서):** `docs/verification_checklist.md`
+
+**세부 변경 내역:**
+
+| 변경 사항 | AI 수행 | 인간 판단 |
+|-----------|---------|-----------|
+| Telegram 봇 코드 위치 명확화 | `src/chatbot/telegram_bot.py`로 로직 이동, `scripts/telegram_bot.py`를 얇은 엔트리포인트로 정리 | "챗봇은 챗봇 폴더로" 구조 요구 승인 |
+| README 갱신 | `README.md`에 `src/chatbot/` 반영, `configs/` 역할 설명 추가, "Telegram 프로젝트 공유용 RAG 봇" 섹션 추가(봇 이름/초대 링크 제외) | README에 포함할 범위/표현 톤 결정 |
+| 봇 기능 설명 커맨드 | `/what`(alias `/intro`) 커맨드 추가로 "이 봇이 RAG로 동작하는 구조"를 고정 문구로 안내 | 사용자가 봇을 테스트/공유할 때 반복 질문을 줄이기 위한 UX 요구 승인 |
+| 텔레그램 포맷 대응 | `**bold**`, `` `code` ``를 Telegram HTML(`<b>`, `<code>`)로 변환하여 전송 (`ParseMode.HTML`) | "텔레그램에서는 **가 아님" UX 요구 승인 |
+| 응답 끊김 완화 | 문장 미완성으로 끝나면 "짧게 재생성" 대신 "이어쓰기(continue)"로 1~3문장만 보강 | "재생성 구림" 피드백 반영 |
+| 전송 안정화 | 다중 메시지 전송 중 rate-limit 발생 시 대기 후 재전송(재시도) | 운영 안정성 우선 |
+| 접근 제어 강화 | allowlist/그룹 차단/채팅 제한 옵션 추가 + **민감 커맨드(`/reindex`, `/save`, `/status`)는 allowlist 없으면 기본 거부**로 잠금 | 키 도난/과금 리스크를 "설정 실수"까지 포함해 방지하도록 정책 확정 |
+| 운영 문서화 | `docs/telegram_bot_ops.md`에 서버리스 운영 플로우(문서 변경 → `/reindex`) 및 비용/보안 주의사항을 명시, `docs/decision_log.md`에 기록 | README에는 개요만 유지하고 운영 디테일은 docs로 분리한다는 방침 확정 |
+
+**검증/점검(인간 수행):**
+- Telegram 봇 실행 및 주요 커맨드 플로우(`/start`, `/what`, `/reindex`) 동작 확인
+- 보안 정책 확인: allowlist 미설정 시 민감 커맨드가 거부되는지, 그룹 차단/채팅 제한 옵션이 기대대로 작동하는지 점검
+- 비용 구조 점검: `retrieval.index_dir` 기반 인덱스 재사용 여부 확인 및 "문서 재인덱싱 비용 vs 질문당 비용" 구분을 문서화
+
+**관련 파일:**
+- `src/chatbot/telegram_bot.py`
+- `scripts/telegram_bot.py`
+- `README.md`
+- `docs/telegram_bot_ops.md`
+- `docs/decision_log.md`
+- `configs/experiments/rag_github_bot.yaml`
+
 ---
 
 ## 2. 인간 주도 핵심 연구 영역
@@ -115,46 +151,6 @@
 | **GPT-4o** | 실험 설계 자문, LLM-as-a-judge (예정) | 실험 및 평가 |
 | **Gemini 1.5 Pro** | 평가 교차 검증 (예정) | 실험 및 평가 |
 
----
-
-<div align="center">
+<div align=”center”>
 <sub>최종 업데이트: 2026-05-28</sub>
 </div>
-
----
-
-## 1.6 Telegram 프로젝트 공유용 RAG 봇 개발/운영 개선
-
-| 항목 | 내용 |
-|------|------|
-| **사용 도구** | Cursor (GPT-5 계열) |
-| **활용 내용** | Telegram 봇 코드 정리(폴더 구조), 텍스트 출력 UX 개선(텔레그램 포맷), 응답 끊김 완화, 운영 보안(allowlist/그룹 차단/레이트리밋) 강화, 운영 문서화 및 커맨드 UX 추가 |
-| **인간 판단** | 봇을 저장소 공유/온보딩 용도로 유지할지, 공개 범위(allowlist 강제/민감 커맨드 기본 잠금), 모델/임베딩 비용-품질 트레이드오프 선택, README vs docs 문서 위치 결정, “서버리스 운영 시 수동 `/reindex`” 운영 방침 확정 |
-
-**재현 가능한 검증 절차(별도 문서):** `docs/verification_checklist.md`
-
-**세부 변경 내역:**
-
-| 변경 사항 | AI 수행 | 인간 판단 |
-|-----------|---------|-----------|
-| Telegram 봇 코드 위치 명확화 | `src/chatbot/telegram_bot.py`로 로직 이동, `scripts/telegram_bot.py`를 얇은 엔트리포인트로 정리 | “챗봇은 챗봇 폴더로” 구조 요구 승인 |
-| README 갱신 | `README.md`에 `src/chatbot/` 반영, `configs/` 역할 설명 추가, “Telegram 프로젝트 공유용 RAG 봇” 섹션 추가(봇 이름/초대 링크 제외) | README에 포함할 범위/표현 톤 결정 |
-| 봇 기능 설명 커맨드 | `/what`(alias `/intro`) 커맨드 추가로 “이 봇이 RAG로 동작하는 구조”를 고정 문구로 안내 | 사용자가 봇을 테스트/공유할 때 반복 질문을 줄이기 위한 UX 요구 승인 |
-| 텔레그램 포맷 대응 | `**bold**`, `` `code` ``를 Telegram HTML(`<b>`, `<code>`)로 변환하여 전송 (`ParseMode.HTML`) | “텔레그램에서는 **가 아님” UX 요구 승인 |
-| 응답 끊김 완화 | 문장 미완성으로 끝나면 “짧게 재생성” 대신 “이어쓰기(continue)”로 1~3문장만 보강 | “재생성 구림” 피드백 반영 |
-| 전송 안정화 | 다중 메시지 전송 중 rate-limit 발생 시 대기 후 재전송(재시도) | 운영 안정성 우선 |
-| 접근 제어 강화 | allowlist/그룹 차단/채팅 제한 옵션 추가 + **민감 커맨드(`/reindex`, `/save`, `/status`)는 allowlist 없으면 기본 거부**로 잠금 | 키 도난/과금 리스크를 “설정 실수”까지 포함해 방지하도록 정책 확정 |
-| 운영 문서화 | `docs/telegram_bot_ops.md`에 서버리스 운영 플로우(문서 변경 → `/reindex`) 및 비용/보안 주의사항을 명시, `docs/decision_log.md`에 기록 | README에는 개요만 유지하고 운영 디테일은 docs로 분리한다는 방침 확정 |
-
-**검증/점검(인간 수행):**
-- Telegram 봇 실행 및 주요 커맨드 플로우(`/start`, `/what`, `/reindex`) 동작 확인
-- 보안 정책 확인: allowlist 미설정 시 민감 커맨드가 거부되는지, 그룹 차단/채팅 제한 옵션이 기대대로 작동하는지 점검
-- 비용 구조 점검: `retrieval.index_dir` 기반 인덱스 재사용 여부 확인 및 “문서 재인덱싱 비용 vs 질문당 비용” 구분을 문서화
-
-**관련 파일:**
-- `src/chatbot/telegram_bot.py`
-- `scripts/telegram_bot.py`
-- `README.md`
-- `docs/telegram_bot_ops.md`
-- `docs/decision_log.md`
-- `configs/experiments/rag_github_bot.yaml`
