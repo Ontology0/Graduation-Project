@@ -9,8 +9,9 @@ style: |
     font-weight: 500;
     background: #F6EBDB;
     color: #3a2e2e;
-    padding: 50px 60px;
+    padding: 130px 60px 50px 60px;
     box-sizing: border-box;
+    position: relative;
   }
   section.title {
     background: linear-gradient(135deg, #AC9799 0%, #CF726F 60%, #E99B84 100%);
@@ -25,7 +26,7 @@ style: |
   section.title h2 { font-size: 22px; font-weight: 500; color: #F9EEEB; }
   section.title p  { font-size: 17px; color: #F6EBDB; margin-top: 40px; line-height: 1.8; }
   section.title a  { color: #F9EEEB; }
-  h1 { font-size: 32px; font-weight: 800; color: #CF726F; border-bottom: 3px solid #CF726F; padding-bottom: 8px; margin-bottom: 20px; margin-left: -60px; margin-right: -60px; padding-left: 60px; padding-right: 60px; }
+  section:not(.title) h1 { position: absolute; top: 44px; left: 0; right: 0; padding: 0 60px 12px 60px; font-size: 32px; font-weight: 800; color: #CF726F; border-bottom: 3px solid #CF726F; margin: 0; }
   h2 { font-size: 26px; font-weight: 700; color: #AC9799; margin-bottom: 14px; }
   p { line-height: 1.7; }
   ul, ol { padding-left: 1.4em; line-height: 1.8; }
@@ -189,7 +190,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 # 5. 기술 아키텍처
 
-![w:580 center](assets/rag_diagram.png)
+![w:580 center](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/rag_diagram.png)
 
 **구현:** `src/rag/` (10개 모듈) · FAISS 벡터스토어 · sentence-transformers 임베딩
 
@@ -214,7 +215,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 # 6. 라이브 데모 ① — 실험 비교
 
-![bg right:48%](assets/demo_screenshot.png)
+![bg right:48%](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/demo_screenshot.png)
 
 **HuggingFace Spaces**
 [ponyo03/conflict-aware-rag-demo](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo)
@@ -234,7 +235,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 # 6. 라이브 데모 ② — RAG 챗봇
 
-![bg right:36% fit](assets/bot_screenshot.png)
+![bg right:36% fit](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/bot_screenshot.png)
 
 **Telegram Bot**
 [@alltology_rag_bot](https://t.me/alltology_rag_bot)
@@ -249,7 +250,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 # 6. 라이브 데모 ③ — 연구 사이트
 
-![bg right:50%](assets/web_screenshot.png)
+![bg right:50%](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/web_screenshot.png)
 
 **alltology.zapto.org**
 [alltology.zapto.org](http://alltology.zapto.org)
@@ -263,7 +264,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 # 6. 라이브 데모 ④ — 데모 · 팀
 
-![bg right:52%](assets/web_screenshot2.png)
+![bg right:52%](https://raw.githubusercontent.com/Ontology0/Graduation-Project/refactoring/docs/assets/web_screenshot2.png)
 
 **직접 해보기**
 
@@ -292,7 +293,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-# 결론 및 기대 효과
+# 8. 결론 및 기대 효과
 
 ## 요약
 
@@ -312,7 +313,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 <!-- _class: qa -->
 
-# 8. Q&A — 예상 질문 (1/2)
+# 9. Q&A — 예상 질문 (1/2)
 
 **Q1. Prompting으로도 충분하지 않나요? 왜 굳이 학습인가요?**
 > Prompting은 매 추론마다 명시적 지시가 필요하고, 프롬프트 설계에 따라 일관성이 달라집니다. DPO로 내재화하면 별도 지시 없이도 일관된 판단이 가능하다는 것을 실증하는 것이 본 연구의 핵심입니다.
@@ -326,7 +327,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 <!-- _class: qa -->
 
-# 8. Q&A — 예상 질문 (2/2)
+# 9. Q&A — 예상 질문 (2/2)
 
 **Q3. 학습 후 다른 정렬 기준(informativeness 등)이 나빠지지 않나요?**
 > PA-RAG의 기존 세 기준에 conflict 기준을 추가하는 구조라, 기존 정렬과 충돌하는지가 핵심 연구 질문(RQ4)입니다. 이 트레이드오프를 실험으로 측정하는 것이 본 연구의 중요한 기여 중 하나입니다.
