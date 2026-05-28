@@ -170,7 +170,9 @@ python -m src.evaluation.evaluate
 
 ## 🤖 Telegram 프로젝트 공유용 RAG 봇
 
-이 저장소에는 “프로젝트 공유/설명용” 텔레그램 RAG 봇이 포함되어 있습니다. 저장소의 `README.md`, `docs/` 등을 지식베이스로 인덱싱해서, **프로젝트 소개·실행 방법·문서 위치·코드 위치(경로/라인)** 같은 질문에 답하는 용도입니다. (코드를 통째로 복사해서 던지는 형태는 지양)
+이 텔레그램 봇은 GitHub 저장소의 `README.md`, `docs/`, `CLAUDE.md`를 지식베이스로 사용하고, 문서를 청킹·임베딩한 뒤 벡터 검색으로 관련 문맥을 찾고, 해당 문맥을 프롬프트에 삽입하여 Claude가 답변을 생성하는 **RAG 기반 챗봇**입니다.
+
+저장소의 문서 기반으로 **프로젝트 소개·실행 방법·문서 위치·코드 위치(경로/라인)** 같은 질문에 답하는 용도입니다. (코드를 통째로 복사해서 던지는 형태는 지양)
 
 - **구현 위치**: `src/chatbot/telegram_bot.py` (로직), `scripts/telegram_bot.py` (실행 엔트리포인트)
 - **설정 위치**: `configs/experiments/rag_github_bot.yaml`, `configs/prompts/github_bot.md`

@@ -33,6 +33,12 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 
 _MAX_MESSAGE_CHARS = int(os.getenv("TELEGRAM_MAX_MESSAGE_CHARS", "3800"))
 
+_BOT_WHAT_TEXT = (
+    "이 텔레그램 봇은 GitHub 저장소의 `README.md`, `docs/`, `CLAUDE.md`를 지식베이스로 사용하고, "
+    "문서를 청킹·임베딩한 뒤 벡터 검색으로 관련 문맥을 찾고, 해당 문맥을 프롬프트에 삽입하여 Claude가 "
+    "답변을 생성하는 **RAG 기반 챗봇**입니다."
+)
+
 
 def _split_for_telegram(text: str, limit: int | None = None) -> list[str]:
     limit = int(limit or _MAX_MESSAGE_CHARS)
@@ -241,6 +247,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         _format_for_telegram_html(
             "RAG 봇 준비됨.\n"
             "- 그냥 질문 보내면 답변함\n"
+            "- /what: 이 봇이 하는 일(RAG 구조)\n"
             "- /about: 프로젝트 소개\n"
             "- /run: 실행 방법\n"
             "- /where <키워드>: 저장소에서 키워드 위치 찾기\n"
@@ -252,6 +259,12 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         parse_mode=ParseMode.HTML,
         disable_web_page_preview=True,
     )
+
+
+async def cmd_what(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not await _guard(update):
+        return
+    await _reply_long(update, _BOT_WHAT_TEXT)
 
 
 async def cmd_about(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -572,6 +585,8 @@ def build_app(*, config: str, docs: str, verbose: bool = False) -> Application:
         app.bot_data["about_text"] = ""
 
     app.add_handler(CommandHandler("start", cmd_start))
+    app.add_handler(CommandHandler("what", cmd_what))
+    app.add_handler(CommandHandler("intro", cmd_what))
     app.add_handler(CommandHandler("about", cmd_about))
     app.add_handler(CommandHandler("run", cmd_run))
     app.add_handler(CommandHandler("where", cmd_where))
