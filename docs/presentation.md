@@ -234,7 +234,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 # 6-2. 저장소 RAG 챗봇
 
-![bg right:52% 90%](assets/bot_screenshot.png)
+![bg right:38% fit](assets/bot_screenshot.png)
 
 **Telegram Bot**
 [@alltology_rag_bot](https://t.me/alltology_rag_bot)
@@ -247,7 +247,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-# 6-3. 연구 사이트
+# 6-3. 연구 사이트 — 개요
 
 ![bg right:55% 95%](assets/web_screenshot.png)
 
@@ -257,8 +257,19 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 <br/>
 
 - 연구 배경 · 핵심 연구 질문 공개
-- 팀 소개 · GitHub 연동
-- Jekyll 기반 정적 사이트
+- 실험 설계 · 관련 연구 정리
+
+---
+
+# 6-4. 연구 사이트 — 데모 · 팀
+
+![bg right:58% 95%](assets/web_screenshot2.png)
+
+**직접 해보기**
+
+- 🚀 웹 데모 · 텔레그램 봇 바로가기
+- 팀원 소개 (박세령 · 손현경 · 이다영)
+- GitHub 저장소 연동
 
 ---
 
