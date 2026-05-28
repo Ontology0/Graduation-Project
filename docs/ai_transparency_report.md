@@ -118,5 +118,35 @@
 ---
 
 <div align="center">
-<sub>최종 업데이트: 2026-05-26</sub>
+<sub>최종 업데이트: 2026-05-28</sub>
 </div>
+
+---
+
+## 1.6 Telegram 프로젝트 공유용 RAG 봇 개발/운영 개선
+
+| 항목 | 내용 |
+|------|------|
+| **사용 도구** | Cursor (GPT-5 계열) |
+| **활용 내용** | Telegram 봇 코드 정리(폴더 구조), 텍스트 출력 UX 개선(텔레그램 포맷), 응답 끊김 완화, 운영 보안(allowlist/그룹 차단/레이트리밋) 강화, 운영 문서화 |
+| **인간 판단** | 봇을 저장소 공유/온보딩 용도로 유지할지, 공개 범위(allowlist 강제 여부), 모델/임베딩 비용-품질 트레이드오프 선택, README vs docs 문서 위치 결정 |
+
+**세부 변경 내역:**
+
+| 변경 사항 | AI 수행 | 인간 판단 |
+|-----------|---------|-----------|
+| Telegram 봇 코드 위치 명확화 | `src/chatbot/telegram_bot.py`로 로직 이동, `scripts/telegram_bot.py`를 얇은 엔트리포인트로 정리 | “챗봇은 챗봇 폴더로” 구조 요구 승인 |
+| README 갱신 | `README.md`에 `src/chatbot/` 반영, `configs/` 역할 설명 추가, “Telegram 프로젝트 공유용 RAG 봇” 섹션 추가(봇 이름/초대 링크 제외) | README에 포함할 범위/표현 톤 결정 |
+| 텔레그램 포맷 대응 | `**bold**`, `` `code` ``를 Telegram HTML(`<b>`, `<code>`)로 변환하여 전송 (`ParseMode.HTML`) | “텔레그램에서는 **가 아님” UX 요구 승인 |
+| 응답 끊김 완화 | 문장 미완성으로 끝나면 “짧게 재생성” 대신 “이어쓰기(continue)”로 1~3문장만 보강 | “재생성 구림” 피드백 반영 |
+| 전송 안정화 | 다중 메시지 전송 중 rate-limit 발생 시 대기 후 재전송(재시도) | 운영 안정성 우선 |
+| 접근 제어 강화 | `TELEGRAM_REQUIRE_ALLOWLIST`, `TELEGRAM_ALLOWED_USER_IDS`, `TELEGRAM_ALLOWED_CHAT_IDS`, `TELEGRAM_ALLOW_GROUPS` 추가로 기본 차단/그룹 차단/채팅 제한 지원 | 키 도난/과금 리스크 대응 방향 승인 |
+| 운영 문서화 | `docs/telegram_bot_ops.md` 추가(인덱스 재사용, 질문당 비용, 서버 탑재 시 개선점, 보안 권장) 및 `docs/decision_log.md`에 기록 | “README 말고 docs에 개선점” 결정 |
+
+**관련 파일:**
+- `src/chatbot/telegram_bot.py`
+- `scripts/telegram_bot.py`
+- `README.md`
+- `docs/telegram_bot_ops.md`
+- `docs/decision_log.md`
+- `configs/experiments/rag_github_bot.yaml`

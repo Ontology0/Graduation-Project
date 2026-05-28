@@ -152,6 +152,13 @@ python scripts/run_pipeline.py \
     --docs data/sample_docs/ \
     --question "What is knowledge conflict in RAG?"
 
+# Telegram 프로젝트 공유용 RAG 봇 (로컬 실행)
+# - 봇 이름/초대 링크는 README에 적지 않음 (스팸/비용 위험)
+# - 설정/프롬프트/인덱싱 범위는 YAML로 관리
+python scripts/telegram_bot.py \
+    --config configs/experiments/rag_github_bot.yaml \
+    --verbose
+
 # Fine-tuning (scaffold)
 python -m src.training.train
 
@@ -160,6 +167,29 @@ python -m src.evaluation.evaluate
 ```
 
 <br/>
+
+## 🤖 Telegram 프로젝트 공유용 RAG 봇
+
+이 저장소에는 “프로젝트 공유/설명용” 텔레그램 RAG 봇이 포함되어 있습니다. 저장소의 `README.md`, `docs/` 등을 지식베이스로 인덱싱해서, **프로젝트 소개·실행 방법·문서 위치·코드 위치(경로/라인)** 같은 질문에 답하는 용도입니다. (코드를 통째로 복사해서 던지는 형태는 지양)
+
+- **구현 위치**: `src/chatbot/telegram_bot.py` (로직), `scripts/telegram_bot.py` (실행 엔트리포인트)
+- **설정 위치**: `configs/experiments/rag_github_bot.yaml`, `configs/prompts/github_bot.md`
+- **필수 환경변수(예시)**: `.env.example` 참고
+
+### 주요 커맨드
+
+- **`/about`**: 프로젝트 소개(README 기반)
+- **`/run`**: 로컬 실행 방법 요약
+- **`/where <키워드>`**: 저장소에서 키워드 위치 찾기(경로/라인)
+- **`/sources`**: 최근 답변의 출처(상위 k) 보기
+- **`/save`**: 최근 답변을 `outputs/`에 저장 + 파일 전송(민감)
+- **`/reindex`**: 문서 재인덱싱(민감)
+
+### 운영/보안 옵션(권장)
+
+- **화이트리스트**: `TELEGRAM_ALLOWED_USER_IDS=...` 로 허용 사용자만 접근
+- **레이트리밋**: `TELEGRAM_RATE_LIMIT_PER_MIN=...`
+- **메시지 길이 분할**: `TELEGRAM_MAX_MESSAGE_CHARS=...` (텔레그램 길이 제한 대응)
 
 ## 📁 저장소 구조
 
