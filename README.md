@@ -164,8 +164,13 @@ flowchart LR
 ```bash
 # 의존성 설치
 pip install -r requirements.txt
+# 또는 한 번에: make install
 
-# RAG 파이프라인 실행
+# RAG 파이프라인 실행 (원커맨드)
+make demo                # Base RAG smoke test
+make demo-conflict       # Base RAG vs Conflict-Aware 비교
+
+# 직접 실행
 python scripts/run_pipeline.py \
     --config configs/experiments/rag_base.yaml \
     --docs data/sample_docs/ \
@@ -196,6 +201,7 @@ python -m src.evaluation.evaluate
 - **구현 위치**: `src/chatbot/telegram_bot.py` (로직), `scripts/telegram_bot.py` (실행 엔트리포인트)
 - **설정 위치**: `configs/experiments/rag_github_bot.yaml`, `configs/prompts/github_bot.md`
 - **필수 환경변수(예시)**: `.env.example` 참고
+- **운영/보안/비용**: `docs/telegram_bot_ops.md` 참고
 
 ### 주요 커맨드
 
