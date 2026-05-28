@@ -9,7 +9,8 @@ llm:
 retrieval:
   backend: faiss
   top_k: 4
-  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  # OpenAI embeddings (API)
+  embedding_model: openai/text-embedding-3-small
   chunk_size: 500
   chunk_overlap: 100
   index_dir: outputs/index/github_kb
@@ -17,9 +18,8 @@ retrieval:
 
 prompt_file: configs/prompts/github_bot.md
 generation:
-  max_new_tokens: 220
-  temperature: 0.1
-  top_p: 0.9
+  max_new_tokens: 140
+  temperature: 0.0
   do_sample: false
   repetition_penalty: 1.05
 
