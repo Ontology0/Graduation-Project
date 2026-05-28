@@ -36,5 +36,5 @@ Instructions:
 
 ## Notes
 
-- Pair with `configs/prompting_conflict_aware.yaml`.
+- Pair with `configs/experiments/prompting_conflict_aware.yaml`.
 - Does not replace DPO training; compares **instruction-only** conflict handling vs. internalized LoRA models.
