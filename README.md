@@ -176,19 +176,23 @@ Graduation-Project/
 │   │   ├── prompt_builder.py     #   프롬프트 빌더
 │   │   ├── generator.py          #   LLM 생성
 │   │   └── pipeline.py           #   전체 파이프라인 오케스트레이터
+│   ├── chatbot/                  # 챗봇(서비스) 로직
+│   │   └── telegram_bot.py        #   텔레그램 RAG 봇 구현
 │   ├── training/                 # DPO + LoRA 학습 (scaffold)
 │   │   └── train.py
 │   └── evaluation/               # 평가 파이프라인 (scaffold)
 │       └── evaluate.py
 ├── configs/
-│   ├── experiments/              # 실험군별 YAML 설정
-│   └── prompts/                  # RAG·conflict-aware·judge 프롬프트
+│   ├── experiments/              # 실행/실험 설정(YAML): 모델, 임베딩, 청킹, 인덱스 경로 등
+│   └── prompts/                  # 프롬프트 템플릿(Markdown): RAG/봇/judge 등
 ├── data/
 │   ├── schema/                   # conflict·preference JSON Schema
 │   ├── sample_docs/              # 로컬 smoke용 가상 conflict 문서
 │   ├── synthetic/                # DPO 학습용 synthetic conflict (planned)
 │   └── natural/                  # natural conflict case study (planned)
 ├── scripts/                      # CLI 실행 스크립트
+│   ├── run_pipeline.py            # RAG 파이프라인 실행(저장/인덱스 포함)
+│   └── telegram_bot.py            # 텔레그램 봇 실행 엔트리포인트(얇은 래퍼)
 ├── tests/                        # 테스트 스위트
 ├── docs/                         # 연구 문서 (계획·벤치마크·실험 설계)
 ├── course/                       # 수업 제출물
