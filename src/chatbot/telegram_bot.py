@@ -232,8 +232,11 @@ async def _guard(update: Update, *, sensitive: bool = False) -> bool:
         await _reject(update, "접근 불가. (화이트리스트/채팅 제한)")
         return False
     if sensitive:
-        # Already enforced by allowlists above; keep the flag for readability.
-        pass
+        # Sensitive commands should never be open by default.
+        # If no allowlist is configured, deny even if general access is open.
+        if _allowed_user_ids() is None and _allowed_chat_ids() is None:
+            await _reject(update, "접근 불가. (민감 커맨드는 화이트리스트 설정 필요)")
+            return False
     if _rate_limited(update):
         await _reject(update, "요청이 너무 많아. 잠깐만 쉬고 다시 보내줘.")
         return False
