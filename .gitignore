@@ -15,6 +15,12 @@ data/external/
 checkpoints/
 outputs/*
 !outputs/.gitkeep
+
+# Ephemeral stdout captures at repo root (keep experiments/pilot results)
+e2e_out.txt
+prompts_out.txt
+/e2e_result.txt
+
 wandb/
 runs/
 logs/
