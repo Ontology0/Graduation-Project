@@ -18,6 +18,7 @@ import subprocess
 import os
 import time
 from collections import defaultdict, deque
+import re
 
 import sys
 
@@ -31,7 +32,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandl
 
 from src.rag.config import get_api_key, load_env
 from src.rag.generator import AnthropicGenerator
-from src.rag.github_kb import grep_repo, load_repo_documents
+from src.rag.github_kb import RepoKBConfig, grep_repo, load_repo_documents
 from src.rag.pipeline import RAGPipeline
 from src.rag.reporting import format_result_markdown, save_result
 
@@ -43,6 +44,41 @@ def _truncate(text: str, limit: int = 3500) -> str:
     if len(text) <= limit:
         return text
     return text[: limit - 30].rstrip() + "\n\n...(truncated)"
+
+
+_MAX_MESSAGE_CHARS = int(os.getenv("TELEGRAM_MAX_MESSAGE_CHARS", "3800"))
+
+
+def _split_for_telegram(text: str, limit: int | None = None) -> list[str]:
+    """Split long text into Telegram-friendly chunks."""
+    limit = int(limit or _MAX_MESSAGE_CHARS)
+    s = (text or "").strip()
+    if not s:
+        return [""]
+    if len(s) <= limit:
+        return [s]
+
+    parts: list[str] = []
+    i = 0
+    while i < len(s):
+        j = min(i + limit, len(s))
+        chunk = s[i:j]
+        # Try to split on a newline for nicer formatting.
+        if j < len(s):
+            nl = chunk.rfind("\n")
+            if nl >= max(200, int(limit * 0.6)):
+                j = i + nl + 1
+                chunk = s[i:j]
+        parts.append(chunk.rstrip())
+        i = j
+    return [p for p in parts if p]
+
+
+async def _reply_long(update: Update, text: str) -> None:
+    if not update.message:
+        return
+    for part in _split_for_telegram(text):
+        await update.message.reply_text(part)
 
 
 def _parse_allowed_user_ids(raw: str | None) -> set[int] | None:
@@ -128,7 +164,7 @@ async def cmd_about(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     about = context.application.bot_data.get("about_text") or ""
     if not about:
         about = "프로젝트 소개를 불러오지 못했어."
-    await update.message.reply_text(_truncate(about, 3500))
+    await _reply_long(update, about)
 
 
 async def cmd_run(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -149,6 +185,47 @@ def _run_git(args: list[str]) -> str:
         return out.strip()
     except Exception:
         return ""
+
+
+def _read_repo_one_liner() -> str:
+    """Cheap, deterministic repo summary from README header lines."""
+    readme = _REPO_ROOT / "README.md"
+    try:
+        lines = readme.read_text(encoding="utf-8").splitlines()
+    except Exception:
+        return ""
+
+    # pick the first non-empty heading-ish line
+    for line in lines[:40]:
+        s = line.strip()
+        if not s:
+            continue
+        # skip HTML breaks
+        if s.lower().startswith("<br"):
+            continue
+        # strip leading markdown heading markers
+        s = re.sub(r"^#{1,6}\s+", "", s).strip()
+        if len(s) >= 10:
+            return s
+    return ""
+
+
+def _bot_intro_text() -> str:
+    one = _read_repo_one_liner()
+    if one:
+        return (
+            f"나는 Alltology 프로젝트 공유용 RAG 챗봇이야.\n"
+            f"- 한 줄 요약: {one}\n\n"
+            "쓸만한 커맨드:\n"
+            "- /about: README 기반 소개\n"
+            "- /run: 실행 방법\n"
+            "- /where <키워드>: 코드/문서에서 위치 찾기\n"
+            "- /status: (화이트리스트) 브랜치/커밋/최근 결과\n"
+        )
+    return (
+        "나는 Alltology 프로젝트 공유용 RAG 챗봇이야.\n"
+        "쓸만한 커맨드: /about /run /where /status"
+    )
 
 
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -253,10 +330,11 @@ async def cmd_reindex(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         return
     pipeline: RAGPipeline = context.application.bot_data["pipeline"]
     docs_path: str = context.application.bot_data.get("docs_path", "")
+    repo_kb_cfg: RepoKBConfig = context.application.bot_data.get("repo_kb_cfg")  # type: ignore[assignment]
 
     await update.message.reply_text("인덱싱 시작...")
     if docs_path == "__repo__":
-        docs = load_repo_documents(_REPO_ROOT)
+        docs = load_repo_documents(_REPO_ROOT, cfg=repo_kb_cfg)
         n = pipeline.index_documents(docs)
     else:
         n = pipeline.index_documents(docs_path)
@@ -292,8 +370,7 @@ async def on_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     }
     context.chat_data["last_result_obj"] = result
 
-    answer = _truncate(result.answer)
-    await update.message.reply_text(answer)
+    await _reply_long(update, result.answer)
 
     # Optional debug: send run markdown (disabled by default; can be expensive/noisy)
     if _SEND_RUN_MD:
@@ -326,6 +403,11 @@ def main() -> None:
 
     pipeline = RAGPipeline.from_config(args.config)
     docs_path = str(Path(args.docs))
+    repo_kb_cfg = RepoKBConfig(
+        include_dirs=("docs",),
+        include_files=("README.md", "CLAUDE.md"),
+        exts=(".md", ".txt", ".yaml", ".yml"),
+    )
 
     # Build/load index at boot
     if not getattr(pipeline, "retriever", None):
@@ -339,14 +421,14 @@ def main() -> None:
     if not getattr(pipeline, "_index_dir", None):
         logger.info("No retrieval.index_dir configured; indexing on startup.")
         if docs_path == "__repo__":
-            docs = load_repo_documents(_REPO_ROOT)
+            docs = load_repo_documents(_REPO_ROOT, cfg=repo_kb_cfg)
             pipeline.index_documents(docs)
         else:
             pipeline.index_documents(docs_path)
     else:
         if not pipeline.try_load_index(pipeline._index_dir):  # type: ignore[attr-defined]
             if docs_path == "__repo__":
-                docs = load_repo_documents(_REPO_ROOT)
+                docs = load_repo_documents(_REPO_ROOT, cfg=repo_kb_cfg)
                 pipeline.index_documents(docs)
             else:
                 pipeline.index_documents(docs_path)
@@ -355,6 +437,7 @@ def main() -> None:
     app = Application.builder().token(token).build()
     app.bot_data["pipeline"] = pipeline
     app.bot_data["docs_path"] = docs_path
+    app.bot_data["repo_kb_cfg"] = repo_kb_cfg
     try:
         app.bot_data["about_text"] = (_REPO_ROOT / "README.md").read_text(encoding="utf-8")
     except Exception:
