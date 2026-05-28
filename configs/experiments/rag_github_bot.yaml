@@ -18,7 +18,8 @@ retrieval:
 
 prompt_file: configs/prompts/github_bot.md
 generation:
-  max_new_tokens: 140
+  # Keep answers concise but avoid mid-sentence cutoffs.
+  max_new_tokens: 220
   temperature: 0.0
   do_sample: false
   repetition_penalty: 1.05
