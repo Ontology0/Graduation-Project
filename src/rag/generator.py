@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from typing import Any
 
 import torch
@@ -24,6 +24,14 @@ class GenerationConfig:
     top_p: float = 0.9
     do_sample: bool = True
     repetition_penalty: float = 1.1
+
+    @classmethod
+    def from_dict(cls, data: dict | None) -> GenerationConfig:
+        """Build from an optional YAML ``generation:`` section."""
+        if not data:
+            return cls()
+        allowed = {f.name for f in fields(cls)}
+        return cls(**{k: v for k, v in data.items() if k in allowed})
 
 
 @dataclass

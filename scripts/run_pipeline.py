@@ -49,6 +49,7 @@ def main() -> None:
         pipeline.save_index(pipeline._index_dir)  # type: ignore[attr-defined]
     result = pipeline.query(args.question, top_k=args.top_k)
 
+    print(f"\nExperiment: {result.config_name}")
     print(f"\nQuestion: {result.question}")
     print(f"\nAnswer: {result.answer}")
     print(f"\nSources:")
