@@ -189,26 +189,7 @@ PA-RAG (기존)         →   Conflict-Aware PA-RAG (제안)
 
 # 5. 기술 아키텍처
 
-```
-질문 입력
-   │
-   ▼
-┌─────────────────────────────────────────────┐
-│              RAG Pipeline                   │
-│  Document → Chunk → Embed → VectorStore     │
-│                                ↓            │
-│              질문 Embedding → Retrieve       │
-│                                ↓            │
-│         [retrieved context + question]      │
-│                                ↓            │
-│    PromptBuilder (Base / Conflict-Aware)    │
-│                                ↓            │
-│              Generator (LLM)               │
-└─────────────────────────────────────────────┘
-   │
-   ▼
-답변 + 출처
-```
+![w:580 center](assets/rag_diagram.png)
 
 **구현:** `src/rag/` (10개 모듈) · FAISS 벡터스토어 · sentence-transformers 임베딩
 
