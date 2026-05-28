@@ -14,6 +14,7 @@ import re
 import subprocess
 import time
 from collections import defaultdict, deque
+from html import escape as _html_escape
 from pathlib import Path
 
 from telegram import Update
@@ -56,6 +57,28 @@ def _split_for_telegram(text: str, limit: int | None = None) -> list[str]:
     return [p for p in parts if p]
 
 
+def _format_for_telegram_html(text: str) -> str:
+    """Convert a small markdown-ish subset to Telegram HTML safely.
+
+    Supported:
+    - **bold** -> <b>bold</b>
+    - `code` -> <code>code</code>
+    """
+
+    s = (text or "").strip()
+    if not s:
+        return s
+
+    # Escape HTML first, then inject our own safe tags.
+    s = _html_escape(s, quote=False)
+
+    # code: `...`
+    s = re.sub(r"`([^`\n]+)`", r"<code>\1</code>", s)
+    # bold: **...**
+    s = re.sub(r"\*\*([^*\n][^*\n]*?)\*\*", r"<b>\1</b>", s)
+    return s
+
+
 async def _reply_long(update: Update, text: str) -> None:
     if not update.message:
         return
@@ -63,12 +86,20 @@ async def _reply_long(update: Update, text: str) -> None:
     for part in parts:
         # Telegram can rate-limit message sends; if that happens, wait and retry.
         try:
-            await update.message.reply_text(part)
+            await update.message.reply_text(
+                _format_for_telegram_html(part),
+                parse_mode=ParseMode.HTML,
+                disable_web_page_preview=True,
+            )
         except Exception as e:
             retry_after = getattr(e, "retry_after", None)
             if isinstance(retry_after, (int, float)) and retry_after > 0:
                 await asyncio.sleep(float(retry_after))
-                await update.message.reply_text(part)
+                await update.message.reply_text(
+                    _format_for_telegram_html(part),
+                    parse_mode=ParseMode.HTML,
+                    disable_web_page_preview=True,
+                )
             else:
                 raise
 
@@ -145,15 +176,19 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not await _guard(update):
         return
     await update.message.reply_text(
-        "RAG 봇 준비됨.\n"
-        "- 그냥 질문 보내면 답변함\n"
-        "- /about: 프로젝트 소개\n"
-        "- /run: 실행 방법\n"
-        "- /where <키워드>: 저장소에서 키워드 위치 찾기\n"
-        "- /status: 브랜치/커밋/최근 결과\n"
-        "- /sources: 최근 답변의 출처 보기\n"
-        "- /save: 최근 답변을 outputs/에 저장 + 파일로 전송\n"
-        "- /reindex: 문서 다시 인덱싱\n"
+        _format_for_telegram_html(
+            "RAG 봇 준비됨.\n"
+            "- 그냥 질문 보내면 답변함\n"
+            "- /about: 프로젝트 소개\n"
+            "- /run: 실행 방법\n"
+            "- /where <키워드>: 저장소에서 키워드 위치 찾기\n"
+            "- /status: 브랜치/커밋/최근 결과\n"
+            "- /sources: 최근 답변의 출처 보기\n"
+            "- /save: 최근 답변을 outputs/에 저장 + 파일로 전송\n"
+            "- /reindex: 문서 다시 인덱싱\n"
+        ),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
     )
 
 
@@ -175,7 +210,11 @@ async def cmd_run(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "2) `pip install -r requirements.txt`\n"
         "3) `python scripts/telegram_bot.py --verbose`\n"
     )
-    await update.message.reply_text(text)
+    await update.message.reply_text(
+        _format_for_telegram_html(text),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
+    )
 
 
 def _run_git(args: list[str]) -> str:
@@ -225,7 +264,11 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         f"최근 커밋: {head}\n"
         f"최근 run: {latest_run}\n"
     )
-    await update.message.reply_text(msg)
+    await update.message.reply_text(
+        _format_for_telegram_html(msg),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
+    )
 
 
 async def cmd_where(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -246,7 +289,11 @@ async def cmd_where(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     lines = ["검색 결과(상위 일부):"]
     for h in hits:
         lines.append(f"- `{h['path']}:{h['line']}` {h['snippet']}")
-    await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.MARKDOWN)
+    await update.message.reply_text(
+        _format_for_telegram_html("\n".join(lines)),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
+    )
 
 
 async def cmd_whoami(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -267,7 +314,11 @@ async def cmd_whoami(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         "화이트리스트 등록은 `.env`에 이렇게 넣으면 됨:\n"
         f"TELEGRAM_ALLOWED_USER_IDS={uid}\n"
     )
-    await update.message.reply_text(text)
+    await update.message.reply_text(
+        _format_for_telegram_html(text),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
+    )
 
 
 async def cmd_sources(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -285,7 +336,11 @@ async def cmd_sources(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     lines = ["최근 답변 출처:"]
     for s in sources:
         lines.append(f"- [{s.get('source')}] (score: {s.get('score')})")
-    await update.message.reply_text("\n".join(lines))
+    await update.message.reply_text(
+        _format_for_telegram_html("\n".join(lines)),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
+    )
 
 
 async def cmd_save(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -297,7 +352,11 @@ async def cmd_save(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
 
     json_path, md_path = save_result(last)
-    await update.message.reply_text(f"저장 완료:\n- {json_path}\n- {md_path}")
+    await update.message.reply_text(
+        _format_for_telegram_html(f"저장 완료:\n- `{json_path}`\n- `{md_path}`"),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
+    )
 
     try:
         await update.message.reply_document(document=md_path.open("rb"), filename=md_path.name)
@@ -313,7 +372,11 @@ async def cmd_reindex(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     docs_path: str = context.application.bot_data.get("docs_path", "")
     repo_kb_cfg: RepoKBConfig = context.application.bot_data.get("repo_kb_cfg")  # type: ignore[assignment]
 
-    await update.message.reply_text("인덱싱 시작...")
+    await update.message.reply_text(
+        _format_for_telegram_html("인덱싱 시작..."),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
+    )
     if docs_path == "__repo__":
         docs = load_repo_documents(_REPO_ROOT, cfg=repo_kb_cfg)
         n = pipeline.index_documents(docs)
@@ -321,7 +384,11 @@ async def cmd_reindex(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         n = pipeline.index_documents(docs_path)
     if getattr(pipeline, "_index_dir", None):
         pipeline.save_index(pipeline._index_dir)  # type: ignore[attr-defined]
-    await update.message.reply_text(f"인덱싱 완료. chunks={n}")
+    await update.message.reply_text(
+        _format_for_telegram_html(f"인덱싱 완료. chunks={n}"),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
+    )
 
 
 async def on_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
