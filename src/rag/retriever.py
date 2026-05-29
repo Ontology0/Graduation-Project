@@ -9,7 +9,7 @@ from typing import Sequence
 from src.rag.chunker import chunk_documents
 from src.rag.document_loader import Document
 from src.rag.embedder import Embedder
-from src.rag.vector_store import FaissVectorStore
+from src.rag.vector_store import VectorStore, make_vector_store
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class Retriever:
     def __init__(
         self,
         embedder: Embedder,
-        store: FaissVectorStore,
+        store: VectorStore,
         top_k: int = 5,
     ):
         self.embedder = embedder
@@ -49,6 +49,7 @@ class Retriever:
         cls,
         documents: Sequence[Document],
         embedder: Embedder,
+        backend: str = "faiss",
         chunk_size: int = 512,
         chunk_overlap: int = 128,
         top_k: int = 5,
@@ -60,7 +61,7 @@ class Retriever:
         texts = [c.text for c in chunks]
         vectors = embedder.embed(texts)
 
-        store = FaissVectorStore(dimension=embedder.dimension)
+        store = make_vector_store(backend=backend, dimension=embedder.dimension)
         store.add(vectors, chunks)
         return cls(embedder=embedder, store=store, top_k=top_k)
 

@@ -12,10 +12,22 @@ from dotenv import load_dotenv
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
+def project_root() -> Path:
+    """Repository root (parent of ``src/``)."""
+    return _PROJECT_ROOT
+
+
+def resolve_path(path: str | Path) -> Path:
+    """Resolve a path relative to the project root when not absolute."""
+    p = Path(path)
+    return p if p.is_absolute() else _PROJECT_ROOT / p
+
+
 def load_env(dotenv_path: str | Path | None = None) -> None:
     """Load .env file from project root (or a custom path)."""
     path = Path(dotenv_path) if dotenv_path else _PROJECT_ROOT / ".env"
-    load_dotenv(path, override=False)
+    # Prefer local `.env` values for developer workflows.
+    load_dotenv(path, override=True)
 
 
 def load_config(config_path: str | Path) -> dict[str, Any]:

@@ -6,6 +6,22 @@
 
 <br/>
 
+## 🚀 Demo / Quickstart
+
+- **🌐 데모 사이트**: [alltology.zapto.org](http://alltology.zapto.org) — 연구 소개 · 인터랙티브 실험 · 팀 정보
+- **인터랙티브 데모**: [🤗 HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) — Base RAG vs Conflict-Aware Prompting 실시간 비교
+- **✈️ 텔레그램 RAG 봇**: [@alltology_rag_bot](https://t.me/alltology_rag_bot) — 저장소 문서 기반 RAG 챗봇 (README · docs 벡터 검색)
+- **데모 영상**: 🔗 링크 추가 예정 (기말 발표 전 업데이트)
+- **발표 자료(슬라이드)**: [Google Slides — 스타드 기말 발표](https://docs.google.com/presentation/d/13gA0R-px6ULNgSGnhYy8xetasxF8k3Ow3RMkMNM2yu8/edit?usp=sharing) · 로컬 PDF: [docs/presentation.pdf](docs/presentation.pdf) · Marp 원본: [docs/presentation.md](docs/presentation.md)
+- **Project Brief**: `course/elevator_speech_team03.md` (팀 소개·연구 방향 요약)
+- **Demo 문서**: `docs/demo.md` (CLI smoke test + 데모 증빙)
+- **아키텍처 1페이지 요약**: `docs/architecture.md`
+- **검증 체크리스트(재현/보안/운영)**: `docs/verification_checklist.md`
+- **RQ ↔ 구현 매핑(정합성)**: `docs/rq_to_implementation_map.md`
+- **AI 투명성 리포트**: `docs/ai_transparency_report.md`
+
+<br/>
+
 ## 저장소 상태
 
 - **This repository is currently a research scaffold.**
@@ -88,7 +104,6 @@ flowchart LR
         D[Knowledge Conflict ← context–memory]
     end
     PA --> OURS
-    style D fill:#ff6b6b,color:#fff
 ```
 
 | 기준 | PA-RAG | 본 연구 |
@@ -104,7 +119,8 @@ flowchart LR
 
 | 문서 | 내용 |
 |------|------|
-| `docs/research_plan.md` | 문제 정의, RQ, 기여, 한계 |
+| `course/elevator_speech_team03.md` | **Project Brief** — 팀 소개·연구 방향·문제 정의 요약 |
+| `docs/research_plan.md` | 문제 정의, RQ, 기여, 한계 (상세) |
 | `docs/related_work.md` | 관련 논문 citation placeholder |
 | `docs/benchmark_selection.md` | ClashEval, ConflictBank 등 후보 (**final decision pending**) |
 | `docs/experiment_design.md` | 비교군 상세 |
@@ -146,11 +162,26 @@ flowchart LR
 ## ▶️ 실행
 
 ```bash
-# RAG 파이프라인 실행
+# 의존성 설치
+pip install -r requirements.txt
+# 또는 한 번에: make install
+
+# RAG 파이프라인 실행 (원커맨드)
+make demo                # Base RAG smoke test
+make demo-conflict       # Base RAG vs Conflict-Aware 비교
+
+# 직접 실행
 python scripts/run_pipeline.py \
     --config configs/experiments/rag_base.yaml \
     --docs data/sample_docs/ \
     --question "What is knowledge conflict in RAG?"
+
+# Telegram 프로젝트 공유용 RAG 봇 (로컬 실행)
+# - 봇 이름/초대 링크는 README에 적지 않음 (스팸/비용 위험)
+# - 설정/프롬프트/인덱싱 범위는 YAML로 관리
+python scripts/telegram_bot.py \
+    --config configs/experiments/rag_github_bot.yaml \
+    --verbose
 
 # Fine-tuning (scaffold)
 python -m src.training.train
@@ -160,6 +191,32 @@ python -m src.evaluation.evaluate
 ```
 
 <br/>
+
+## 🤖 Telegram 프로젝트 공유용 RAG 봇
+
+이 텔레그램 봇은 GitHub 저장소의 `README.md`, `docs/`, `CLAUDE.md`를 지식베이스로 사용하고, 문서를 청킹·임베딩한 뒤 벡터 검색으로 관련 문맥을 찾고, 해당 문맥을 프롬프트에 삽입하여 Claude가 답변을 생성하는 **RAG 기반 챗봇**입니다.
+
+저장소의 문서 기반으로 **프로젝트 소개·실행 방법·문서 위치·코드 위치(경로/라인)** 같은 질문에 답하는 용도입니다. (코드를 통째로 복사해서 던지는 형태는 지양)
+
+- **구현 위치**: `src/chatbot/telegram_bot.py` (로직), `scripts/telegram_bot.py` (실행 엔트리포인트)
+- **설정 위치**: `configs/experiments/rag_github_bot.yaml`, `configs/prompts/github_bot.md`
+- **필수 환경변수(예시)**: `.env.example` 참고
+- **운영/보안/비용**: `docs/telegram_bot_ops.md` 참고
+
+### 주요 커맨드
+
+- **`/about`**: 프로젝트 소개(README 기반)
+- **`/run`**: 로컬 실행 방법 요약
+- **`/where <키워드>`**: 저장소에서 키워드 위치 찾기(경로/라인)
+- **`/sources`**: 최근 답변의 출처(상위 k) 보기
+- **`/save`**: 최근 답변을 `outputs/`에 저장 + 파일 전송(민감)
+- **`/reindex`**: 문서 재인덱싱(민감)
+
+### 운영/보안 옵션(권장)
+
+- **화이트리스트**: `TELEGRAM_ALLOWED_USER_IDS=...` 로 허용 사용자만 접근
+- **레이트리밋**: `TELEGRAM_RATE_LIMIT_PER_MIN=...`
+- **메시지 길이 분할**: `TELEGRAM_MAX_MESSAGE_CHARS=...` (텔레그램 길이 제한 대응)
 
 ## 📁 저장소 구조
 
@@ -176,19 +233,23 @@ Graduation-Project/
 │   │   ├── prompt_builder.py     #   프롬프트 빌더
 │   │   ├── generator.py          #   LLM 생성
 │   │   └── pipeline.py           #   전체 파이프라인 오케스트레이터
+│   ├── chatbot/                  # 챗봇(서비스) 로직
+│   │   └── telegram_bot.py        #   텔레그램 RAG 봇 구현
 │   ├── training/                 # DPO + LoRA 학습 (scaffold)
 │   │   └── train.py
 │   └── evaluation/               # 평가 파이프라인 (scaffold)
 │       └── evaluate.py
 ├── configs/
-│   ├── experiments/              # 실험군별 YAML 설정
-│   └── prompts/                  # RAG·conflict-aware·judge 프롬프트
+│   ├── experiments/              # 실행/실험 설정(YAML): 모델, 임베딩, 청킹, 인덱스 경로 등
+│   └── prompts/                  # 프롬프트 템플릿(Markdown): RAG/봇/judge 등
 ├── data/
 │   ├── schema/                   # conflict·preference JSON Schema
 │   ├── sample_docs/              # 로컬 smoke용 가상 conflict 문서
 │   ├── synthetic/                # DPO 학습용 synthetic conflict (planned)
 │   └── natural/                  # natural conflict case study (planned)
 ├── scripts/                      # CLI 실행 스크립트
+│   ├── run_pipeline.py            # RAG 파이프라인 실행(저장/인덱스 포함)
+│   └── telegram_bot.py            # 텔레그램 봇 실행 엔트리포인트(얇은 래퍼)
 ├── tests/                        # 테스트 스위트
 ├── docs/                         # 연구 문서 (계획·벤치마크·실험 설계)
 ├── course/                       # 수업 제출물
@@ -211,21 +272,29 @@ Graduation-Project/
 
 ## 🌿 브랜치 전략
 
+상세 규칙·커밋 메시지·PR 절차는 [CONTRIBUTING.md](CONTRIBUTING.md)를 따릅니다.
+
 ```
-main ← 최종 제출 / 논문 기준
- └── dev ← 통합 개발 (PR 타겟)
-      ├── feat/data/#이슈번호-설명
-      ├── feat/dpo/#이슈번호-설명
-      ├── feat/rag/#이슈번호-설명
-      ├── feat/eval/#이슈번호-설명
-      └── fix/#이슈번호-설명
+main ← 최종 제출 / 배포용
+  └── dev ← 일상 개발 / PR 통합용
+        ├── feat/data/설명
+        ├── feat/dpo/설명
+        ├── feat/rag/설명
+        ├── feat/eval/설명
+        ├── docs/설명
+        ├── chore/설명
+        └── fix/설명
 ```
+
+**일상 작업:** `dev`에서 작업 브랜치 생성 → `dev`로 PR → 리뷰 후(1개 이상) merge
+
+**`main` 반영:** 마일스톤·제출·데모 전 등 팀 합의 시점에만 `dev` → `main` PR (작업 브랜치는 `main`으로 직접 PR하지 않음)
 
 <br/>
 
 ## 👥 팀
 
-**팀명:** Alltology · **트랙:** 연구 · **지도교수:** 황의원 교수님
+**팀명:** Alltology · **팀 번호:** 03 · **트랙:** 연구 · **지도교수:** 황의원 교수님
 
 | <img src="https://github.com/ryeong03.png" width="120" /> | <img src="https://github.com/bbberylll.png" width="120" /> | <img src="https://github.com/dev-ldy03.png" width="120" /> |
 |:--:|:--:|:--:|

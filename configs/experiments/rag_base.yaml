@@ -1,6 +1,10 @@
 # Base RAG configuration
 experiment_name: base_rag
 model_name: microsoft/phi-2
+# Optional:
+# llm:
+#   provider: anthropic
+#   model: claude-3-5-sonnet-latest
 dataset: null  # TODO: benchmark / split (pending benchmark selection)
 retrieval:
   backend: faiss
@@ -9,6 +13,12 @@ retrieval:
   chunk_size: 512
   chunk_overlap: 128
 prompt_file: configs/prompts/base_rag.md
+generation:
+  max_new_tokens: 256
+  temperature: 0.2
+  top_p: 0.9
+  do_sample: false
+  repetition_penalty: 1.05
 training:
   enabled: false
 evaluation:

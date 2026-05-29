@@ -28,12 +28,15 @@ def chunk_text(
 
     chunks: list[str] = []
     start = 0
+    min_chunk_chars = max(120, chunk_size // 3)
     while start < len(text):
         end = start + chunk_size
 
         if end < len(text):
             boundary = text.rfind(". ", start, end)
-            if boundary != -1 and boundary > start:
+            # Only snap to a boundary when it doesn't create tiny chunks,
+            # otherwise overlap logic can degrade into 1-char sliding windows.
+            if boundary != -1 and (boundary - start) >= min_chunk_chars:
                 end = boundary + 2  # include the period and space
 
         chunk = text[start:end].strip()
@@ -42,7 +45,7 @@ def chunk_text(
 
         next_start = end - chunk_overlap
         if next_start <= start:
-            next_start = start + 1
+            next_start = min(start + min_chunk_chars, len(text))
         start = next_start
 
     return chunks
