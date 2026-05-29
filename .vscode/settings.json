@@ -1,0 +1,9 @@
+{
+  "markdown.marp.enableHtml": true,
+  "markdown.marp.themes": [],
+  "markdown.marp.exportType": "pdf",
+  "markdown.marp.outlineExtension": true,
+  "[markdown]": {
+    "editor.defaultFormatter": "marp-team.marp-vscode"
+  }
+}

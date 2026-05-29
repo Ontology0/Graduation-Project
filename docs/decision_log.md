@@ -30,4 +30,5 @@
 |------|----------|-------|
 | 2026-05 (scaffold) | Course materials under `course/` | Former `doc/` / submission paths consolidated |
 | 2026-05 (paths) | `results/` → `outputs/`, prompts under `configs/prompts/` | Align docs and configs with `src/` layout |
+| 2026-05 (ops) | Telegram bot ops doc in `docs/telegram_bot_ops.md` | Keep README research-focused; document cost/security knobs separately |
 | TBD | Benchmark lock | Record here when finalized |

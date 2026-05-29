@@ -1,0 +1,26 @@
+# Telegram "project sharing" bot config (GitHub-as-KB RAG)
+experiment_name: github_rag_bot
+
+llm:
+  provider: anthropic
+  # Cheaper model for day-to-day bot usage
+  model: claude-haiku-4-5
+
+retrieval:
+  backend: faiss
+  top_k: 4
+  # OpenAI embeddings (API)
+  embedding_model: openai/text-embedding-3-small
+  chunk_size: 500
+  chunk_overlap: 100
+  index_dir: outputs/index/github_kb
+  max_chunks_in_prompt: 4
+
+prompt_file: configs/prompts/github_bot.md
+generation:
+  # Keep answers concise but avoid mid-sentence cutoffs.
+  max_new_tokens: 220
+  temperature: 0.0
+  do_sample: false
+  repetition_penalty: 1.05
+

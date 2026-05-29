@@ -14,7 +14,7 @@ from src.rag.config import get_api_key
 logger = logging.getLogger(__name__)
 
 DEFAULT_MODEL = "microsoft/phi-2"
-DEFAULT_ANTHROPIC_MODEL = "claude-3-5-sonnet-latest"
+DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-6"
 
 
 @dataclass
@@ -80,6 +80,10 @@ class Generator:
         )
         if self.device != "auto":
             self.model.to(self.device)
+        if self.device in ("cpu", "mps"):
+            # Some models may still end up as fp16/bf16 due to internal defaults.
+            # Force fp32 for portability on CPU/MPS.
+            self.model.to(dtype=torch.float32)
 
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
@@ -180,14 +184,29 @@ class AnthropicGenerator:
         config = config or GenerationConfig()
         system, anthropic_messages = self._to_anthropic_messages(messages)
 
-        resp = self._client.messages.create(
-            model=self.model_name,
-            max_tokens=config.max_new_tokens,
-            temperature=config.temperature,
-            top_p=config.top_p,
-            system=system or None,
-            messages=anthropic_messages,
-        )
+        try:
+            create_kwargs: dict[str, Any] = {
+                "model": self.model_name,
+                "max_tokens": config.max_new_tokens,
+                "system": system or None,
+                "messages": anthropic_messages,
+            }
+            # Some Anthropic models disallow specifying both temperature and top_p.
+            # Prefer temperature when both are present.
+            if config.temperature is not None:
+                create_kwargs["temperature"] = config.temperature
+            if config.top_p is not None and config.temperature is None:
+                create_kwargs["top_p"] = config.top_p
+
+            resp = self._client.messages.create(**create_kwargs)
+        except Exception as e:  # pragma: no cover
+            msg = str(e)
+            if "not_found_error" in msg or "model:" in msg:
+                raise RuntimeError(
+                    f"Anthropic model not found: {self.model_name}. "
+                    "Update `llm.model` in your config (recommended: `claude-sonnet-4-6`)."
+                ) from e
+            raise
 
         text_parts: list[str] = []
         for block in getattr(resp, "content", []) or []:
