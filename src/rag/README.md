@@ -38,18 +38,20 @@ query ─→ retriever (embed + search) ─→ prompt_builder ─→ generator �
 
 ### 시퀀스 다이어그램
 
+약어: `CLI` = run_pipeline / bot · `Pipe` = RAGPipeline · `Load` = document_loader + chunker · `Emb` = embedder · `VS` = vector_store · `Ret` = retriever · `PB` = prompt_builder · `Gen` = generator · `Rep` = reporting
+
 **1) 구성 + 인덱싱** (`from_config` → `index_documents`)
 
 ```mermaid
 sequenceDiagram
-    participant Caller as Caller<br/>(run_pipeline / bot)
-    participant Pipe as RAGPipeline
-    participant Cfg as config
-    participant Loader as document_loader<br/>+ chunker
-    participant Emb as embedder
-    participant VS as vector_store
+    participant CLI
+    participant Pipe
+    participant Cfg
+    participant Load
+    participant Emb
+    participant VS
 
-    Caller->>Pipe: from_config(yaml)
+    CLI->>Pipe: from_config(yaml)
     Pipe->>Cfg: load_env() + load_config()
     Cfg-->>Pipe: retrieval, llm, prompt_file
     Pipe->>Pipe: Embedder + Retriever + Generator + PromptTemplate 조립
@@ -59,15 +61,15 @@ sequenceDiagram
         VS-->>Pipe: 성공 시 재사용 / 실패 시 이후 재구축
     end
 
-    Caller->>Pipe: index_documents(source)
+    CLI->>Pipe: index_documents(source)
     alt source가 경로(str | Path)
-        Pipe->>Loader: load_documents(source)
-        Loader-->>Pipe: Document[]
+        Pipe->>Load: load_documents(source)
+        Load-->>Pipe: Document[]
     else source가 list[Document]
         Note over Pipe: loader 생략 (repo KB, pilot batch)
     end
-    Pipe->>Loader: chunk_documents(docs, size, overlap)
-    Loader-->>Pipe: chunks
+    Pipe->>Load: chunk_documents(docs, size, overlap)
+    Load-->>Pipe: chunks
     Pipe->>Emb: embed(chunk texts)
     Emb-->>Pipe: vectors
     Pipe->>VS: add(vectors, chunks)
@@ -75,21 +77,21 @@ sequenceDiagram
     opt save_index(index_dir)
         Pipe->>VS: save_index(index_dir)
     end
-    Pipe-->>Caller: indexed chunk 수
+    Pipe-->>CLI: indexed chunk 수
 ```
 
 **2) 질의** (`query` → `RAGResult`)
 
 ```mermaid
 sequenceDiagram
-    participant Caller as Caller<br/>(run_pipeline / bot)
-    participant Pipe as RAGPipeline
-    participant Ret as retriever
-    participant PB as prompt_builder
-    participant Gen as generator
-    participant Rep as reporting
+    participant CLI
+    participant Pipe
+    participant Ret
+    participant PB
+    participant Gen
+    participant Rep
 
-    Caller->>Pipe: query(question)
+    CLI->>Pipe: query(question)
     Pipe->>Ret: retrieve(question, top_k)
     Ret->>Ret: embed query + vector_store.search
     Ret-->>Pipe: RetrievalResult[]
@@ -101,11 +103,11 @@ sequenceDiagram
     Pipe->>Gen: generate(messages, generation_config)
     Gen-->>Pipe: GenerationOutput
 
-    Pipe-->>Caller: RAGResult<br/>(answer, sources, tokens)
+    Pipe-->>CLI: RAGResult<br/>(answer, sources, tokens)
 
     opt save_result (CLI / /save)
-        Caller->>Rep: save_result(RAGResult)
-        Rep-->>Caller: outputs/runs/*.json, *.md
+        CLI->>Rep: save_result(RAGResult)
+        Rep-->>CLI: outputs/runs/*.json, *.md
     end
 ```
 
