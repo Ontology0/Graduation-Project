@@ -384,13 +384,13 @@ async def cmd_whoami(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     uname = getattr(user, "username", None)
     cid = getattr(chat, "id", None)
 
+    uname_str = f"@{uname}" if uname else "(없음)"
     text = (
-        "너 정보:\n"
-        f"- user_id: {uid}\n"
-        f"- username: @{uname}\n"
-        f"- chat_id: {cid}\n\n"
-        "화이트리스트 등록은 `.env`에 이렇게 넣으면 됨:\n"
-        f"TELEGRAM_ALLOWED_USER_IDS={uid}\n"
+        "당신의 정보는 다음과 같습니다.\n"
+        "관리자에게 아래 내용을 보내주시면 접근 권한을 등록해드립니다.\n\n"
+        f"- **User ID**: `{uid}`\n"
+        f"- **Username**: {uname_str}\n"
+        f"- **Chat ID**: `{cid}`\n"
     )
     await update.message.reply_text(
         _format_for_telegram_html(text),
