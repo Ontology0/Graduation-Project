@@ -13,12 +13,13 @@
 - **✈️ 텔레그램 RAG 봇**: [@alltology_rag_bot](https://t.me/alltology_rag_bot) — 저장소 문서 기반 RAG 챗봇 (README · docs 벡터 검색)
 - **데모 영상**: 🎬 [youtu.be/qc0GkgJoBBk](https://youtu.be/qc0GkgJoBBk)
 - **발표 자료(슬라이드)**: [Google Slides — 스타드 기말 발표](https://docs.google.com/presentation/d/13gA0R-px6ULNgSGnhYy8xetasxF8k3Ow3RMkMNM2yu8/edit?usp=sharing) · 로컬 PDF: [docs/presentation.pdf](docs/presentation.pdf) · Marp 원본: [docs/presentation.md](docs/presentation.md)
-- **Project Brief**: `course/elevator_speech_team03.md` (팀 소개·연구 방향 요약)
-- **Demo 문서**: `docs/demo.md` (CLI smoke test + 데모 증빙)
-- **아키텍처 1페이지 요약**: `docs/architecture.md`
-- **검증 체크리스트(재현/보안/운영)**: `docs/verification_checklist.md`
-- **RQ ↔ 구현 매핑(정합성)**: `docs/rq_to_implementation_map.md`
-- **AI 투명성 리포트**: `docs/ai_transparency_report.md`
+- **Project Brief**: [course/elevator_speech_team03.md](course/elevator_speech_team03.md) — 팀 소개·연구 방향 요약
+- **Demo 문서**: [docs/demo.md](docs/demo.md) — CLI smoke test + 데모 증빙
+- **아키텍처 1페이지 요약**: [docs/architecture.md](docs/architecture.md)
+- **검증 체크리스트(재현/보안/운영)**: [docs/verification_checklist.md](docs/verification_checklist.md)
+- **RQ ↔ 구현 매핑(정합성)**: [docs/rq_to_implementation_map.md](docs/rq_to_implementation_map.md)
+- **AI 투명성 리포트**: [docs/ai_transparency_report.md](docs/ai_transparency_report.md)
+- **텔레그램 봇 운영/보안**: [docs/telegram_bot_ops.md](docs/telegram_bot_ops.md)
 
 <br/>
 
@@ -223,37 +224,37 @@ python -m src.evaluation.evaluate
 ```text
 Graduation-Project/
 ├── src/                          # 소스 코드
-│   ├── rag/                      # RAG 파이프라인 (1차 구현 초안)
+│   ├── rag/                      # RAG 파이프라인
 │   │   ├── config.py             #   설정 로더
-│   │   ├── document_loader.py    #   문서 로딩 (txt/json/jsonl)
+│   │   ├── document_loader.py    #   문서 로딩
 │   │   ├── chunker.py            #   텍스트 청킹
-│   │   ├── embedder.py           #   임베딩 생성 (sentence-transformers)
+│   │   ├── embedder.py           #   임베딩 생성
 │   │   ├── vector_store.py       #   FAISS 벡터 스토어
 │   │   ├── retriever.py          #   검색 모듈
 │   │   ├── prompt_builder.py     #   프롬프트 빌더
 │   │   ├── generator.py          #   LLM 생성
 │   │   └── pipeline.py           #   전체 파이프라인 오케스트레이터
-│   ├── chatbot/                  # 챗봇(서비스) 로직
-│   │   └── telegram_bot.py        #   텔레그램 RAG 봇 구현
-│   ├── training/                 # DPO + LoRA 학습 (scaffold)
+│   ├── chatbot/                  # 챗봇 로직
+│   │   └── telegram_bot.py       #   텔레그램 RAG 봇
+│   ├── training/                 # DPO + LoRA 학습
 │   │   └── train.py
-│   └── evaluation/               # 평가 파이프라인 (scaffold)
+│   └── evaluation/               # 평가 파이프라인
 │       └── evaluate.py
 ├── configs/
-│   ├── experiments/              # 실행/실험 설정(YAML): 모델, 임베딩, 청킹, 인덱스 경로 등
-│   └── prompts/                  # 프롬프트 템플릿(Markdown): RAG/봇/judge 등
+│   ├── experiments/              # 실험 설정 YAML
+│   └── prompts/                  # 프롬프트 템플릿
 ├── data/
 │   ├── schema/                   # conflict·preference JSON Schema
-│   ├── sample_docs/              # 로컬 smoke용 가상 conflict 문서
-│   ├── synthetic/                # DPO 학습용 synthetic conflict (planned)
-│   └── natural/                  # natural conflict case study (planned)
-├── scripts/                      # CLI 실행 스크립트
-│   ├── run_pipeline.py            # RAG 파이프라인 실행(저장/인덱스 포함)
-│   └── telegram_bot.py            # 텔레그램 봇 실행 엔트리포인트(얇은 래퍼)
-├── tests/                        # 테스트 스위트
-├── docs/                         # 연구 문서 (계획·벤치마크·실험 설계)
+│   ├── sample_docs/              # smoke test용 샘플 문서
+│   ├── synthetic/                # DPO 학습용 synthetic conflict
+│   └── natural/                  # natural conflict case study
+├── scripts/
+│   ├── run_pipeline.py           # RAG 파이프라인 실행
+│   └── telegram_bot.py           # 텔레그램 봇 엔트리포인트
+├── tests/
+├── docs/                         # 연구·운영 문서
 ├── course/                       # 수업 제출물
-├── outputs/                      # 실험 산출물 (tracked: .gitkeep only)
+├── outputs/                      # 실험 산출물
 ├── .env.example
 ├── pyproject.toml
 ├── requirements.txt

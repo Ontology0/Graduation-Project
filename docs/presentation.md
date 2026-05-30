@@ -130,6 +130,13 @@ style: |
   section.toc .toc-cols > div { flex: 1; }
   section.toc .toc-cols ol, section.toc .toc-cols ul { padding-left: 1.2em; }
   section.toc .toc-cols li { margin-bottom: 10px; line-height: 1.6; }
+  section.advisor { font-size: 17px; }
+  section.advisor h1 { font-size: 28px; line-height: 52px; }
+  section.advisor h2 { font-size: 21px; }
+  section.advisor table { font-size: 16px; margin-bottom: 8px; }
+  section.advisor ul { font-size: 16px; line-height: 1.55; margin: 4px 0; }
+  section.advisor .highlight { font-size: 16px; line-height: 1.55; padding: 8px 14px; }
+  section.advisor .sign { text-align: right; margin-top: 10px; font-size: 16px; line-height: 1.6; }
 ---
 
 <!-- _class: title -->
@@ -171,6 +178,9 @@ style: |
 10. **한계와 향후 개선 방향**
 11. **팀원별 역할 및 기여**
 12. **GitHub / 배포 URL / 참고자료**
+13. **AI 투명성 리포트**
+14. **Q&A 세션**
+15. **지도교수 의견서**
 
 </div>
 </div>
@@ -301,7 +311,7 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 
 # 6. 시스템 구조도
 
-![w:580 center](https://raw.githubusercontent.com/Ontology0/Graduation-Project/dev/docs/assets/rag_diagram.png)
+![w:580 center](assets/rag_diagram.png)
 
 **구현:** `src/rag/` (10개 모듈) · FAISS 벡터스토어 · sentence-transformers 임베딩
 
@@ -471,9 +481,27 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 
 ---
 
+# 13. AI 투명성 리포트
+
+## AI 활용 내역 (주요)
+
+| 단계 | 사용 도구 | AI 수행 | **인간 판단** |
+|------|-----------|---------|--------------|
+| 선행 연구 분석 | Claude, NotebookLM | 논문 요약, 방법론 정리 | 원문 대조 검증, 범위 결정 |
+| 레포 구조 설계 | Cursor (Claude) | 리팩토링, 파일 이동, import 수정 | 구조 방향 승인, 네이밍 결정 |
+| RAG 파이프라인 구현 | Cursor (Claude) | 모듈 코드 생성 | 모듈 분할 방식, 모델 선택 |
+| Telegram RAG 봇 | Cursor (GPT-5) | UX·보안·운영 문서화 | 공개 범위, allowlist 정책 확정 |
+| 실험 설계 | GPT-4o (예정) | 데이터 스키마 초안 | 충돌 유형 정의, 평가 기준 결정 |
+
+<br/>
+
+> 상세: [docs/ai_transparency_report.md](docs/ai_transparency_report.md)
+
+---
+
 <!-- _class: qa -->
 
-# Q&A — 예상 질문 ①
+# 14. Q&A 세션 ①
 
 **Q1. Prompting으로도 충분하지 않나요? 왜 굳이 학습인가요?**
 > Prompting은 매 추론마다 명시적 지시가 필요하고, 프롬프트 설계에 따라 일관성이 달라집니다. DPO로 내재화하면 별도 지시 없이도 일관된 판단이 가능하다는 것을 실증하는 것이 핵심입니다.
@@ -487,7 +515,7 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 
 <!-- _class: qa -->
 
-# Q&A — 예상 질문 ②
+# 14. Q&A 세션 ②
 
 **Q3. 학습 후 informativeness 등 기존 기준이 나빠지지 않나요?**
 > 이 트레이드오프가 핵심 RQ4입니다. PA-RAG 기존 세 기준 + conflict 기준을 함께 실험하면서 trade-off를 측정하는 것이 중요한 기여입니다.
@@ -499,7 +527,33 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 
 ---
 
-&nbsp;
+<!-- _class: advisor -->
+
+# 15. 지도교수 의견서
+
+## 지도교수 의견 (요약)
+
+| | |
+|:---|:---|
+| **프로젝트** | Conflict-Aware PA-RAG — PA-RAG가 다루지 않은 knowledge conflict를 preference learning으로 정렬 |
+| **지도교수** | 황의원 · **팀 03** Alltology |
+
+**연구 방향 · 진행**
+- PA-RAG 미해결 지점(knowledge conflict)을 정확히 짚어 문제 설정이 **타당**
+- 매주 토요일 정기 회의·여름방학 면담 일정 등 **권고 일정을 충실히 이행**
+- 지도 방향: ① 단순 성능 비교 → **한계·유형 분석** framing ② **범위 명시적 제한**(LoRA, conflict type 3~4개) ③ **공개 벤치마크 우선**·자연 conflict는 case study
+
+**현재 성과 · 향후 과제**
+- Base RAG · conflict-aware prompting **동일 코드베이스 구현 완료**, phi-2 파일럿으로 **초기 신호 확인**
+- 연구 페이지·데모 **직접 구축·공개** — 구현·협업 역량 **높이 평가**
+- 벤치마크(ClashEval · ConflictBank · WikiContradict)·연산 자원 **확보** — 핵심 과제는 **방법론 정합성**(resolution rule, synthetic→natural 전이, trade-off)
+- 여름방학 면담으로 단계 점검 · general → 도메인 확장 · **ACL/EMNLP/NAACL** 등 장기 목표
+
+<div class="highlight">
+<b>종합:</b> 기반 논문의 명확한 확장점, 정직한 범위 설정, 충실한 사전 구현을 갖추어 <b>졸업프로젝트로서 적절</b>하다고 판단함.
+</div>
+
+<p class="sign">지도교수 &nbsp; 황의원</p>
 
 ---
 
