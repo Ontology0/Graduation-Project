@@ -122,6 +122,14 @@ style: |
     z-index: 0;
   }
   section.demo-web-left .demo-text { width: 52%; position: relative; z-index: 1; }
+  section.toc .toc-cols {
+    display: flex;
+    gap: 48px;
+    margin-top: 112px;
+  }
+  section.toc .toc-cols > div { flex: 1; }
+  section.toc .toc-cols ol, section.toc .toc-cols ul { padding-left: 1.2em; }
+  section.toc .toc-cols li { margin-bottom: 10px; line-height: 1.6; }
 ---
 
 <!-- _class: title -->
@@ -138,22 +146,34 @@ style: |
 
 ---
 
+<!-- _class: toc -->
+
 # 목차
 
 ## 발표 순서
 
+<div class="toc-cols">
+<div>
+
 1. **프로젝트 제목과 팀 소개**
-2. **문제 정의** — Knowledge Conflict란?
+2. **문제 정의**
 3. **타깃 사용자와 사용 시나리오**
 4. **기존 방식의 한계**
-5. **솔루션 개요** — Conflict-Aware PA-RAG
+5. **솔루션 개요**
 6. **시스템 구조도**
+
+</div>
+<div>
+
 7. **핵심 기술 및 구현 내용**
 8. **Live Demo 시나리오**
 9. **구현 결과 및 현재 완성도**
 10. **한계와 향후 개선 방향**
 11. **팀원별 역할 및 기여**
 12. **GitHub / 배포 URL / 참고자료**
+
+</div>
+</div>
 
 ---
 
@@ -476,6 +496,10 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 
 **Q4. 평가는 어떻게 진행하나요?**
 > ClashEval · WikiContradict 벤치마크 기반 정량 평가와 케이스 스터디 정성 분석을 병행합니다. Conflict resolution 정확도, 기존 정렬 기준 유지 여부(trade-off)를 핵심 지표로 측정합니다.
+
+---
+
+&nbsp;
 
 ---
 
