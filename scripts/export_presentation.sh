@@ -8,8 +8,8 @@ cd "$ROOT"
 
 COMMON=(docs/presentation.md --no-stdin --allow-local-files)
 
-npx --yes @marp-team/marp-cli "${COMMON[@]}" --pdf -o docs/presentation.pdf
+npx --yes @marp-team/marp-cli "${COMMON[@]}" --pdf -o docs/presentation/presentation.pdf
 npx --yes @marp-team/marp-cli "${COMMON[@]}" --pptx -o docs/presentation/presentation.pptx
 
-echo "Wrote docs/presentation.pdf"
+echo "Wrote docs/presentation/presentation.pdf"
 echo "Wrote docs/presentation/presentation.pptx"

@@ -12,7 +12,7 @@
 - **인터랙티브 데모**: [🤗 HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) — Base RAG vs Conflict-Aware Prompting 실시간 비교
 - **✈️ 텔레그램 RAG 봇**: [@alltology_rag_bot](https://t.me/alltology_rag_bot) — 저장소 문서 기반 RAG 챗봇 (README · docs 벡터 검색)
 - **데모 영상**: 🎬 [youtu.be/qc0GkgJoBBk](https://youtu.be/qc0GkgJoBBk)
-- **발표 자료(슬라이드)**: [Google Slides — 스타드 기말 발표](https://docs.google.com/presentation/d/13gA0R-px6ULNgSGnhYy8xetasxF8k3Ow3RMkMNM2yu8/edit?usp=sharing) · 로컬 PDF: [docs/presentation.pdf](docs/presentation.pdf) · Marp 원본: [docs/presentation.md](docs/presentation.md)
+- **발표 자료(슬라이드)**: [Google Slides — 03팀 스타트 기말 발표](https://docs.google.com/presentation/d/1mxabIcWOkVXfYbtppBo_TeJ6ah2Be-5RHgmoqRcUIaw/edit?usp=sharing) · 로컬 PDF: [docs/presentation/presentation.pdf](docs/presentation/presentation.pdf) · Marp 원본: [docs/presentation.md](docs/presentation.md)
 - **Project Brief**: [course/elevator_speech_team03.md](course/elevator_speech_team03.md) — 팀 소개·연구 방향 요약
 - **Demo 문서**: [docs/demo.md](docs/demo.md) — CLI smoke test + 데모 증빙
 - **아키텍처 1페이지 요약**: [docs/architecture.md](docs/architecture.md)
