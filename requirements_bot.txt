@@ -1,0 +1,15 @@
+# Minimal dependencies for the Telegram RAG bot only.
+# Use this instead of requirements.txt on Railway (or any deployment
+# that does not need training / evaluation packages).
+#
+# Embeddings: OpenAI API (openai/text-embedding-3-small) — no torch needed.
+# Generation: Anthropic Claude API.
+# Vector store: FAISS CPU.
+
+anthropic>=0.40.0
+openai>=1.0.0
+python-telegram-bot>=21.0
+faiss-cpu>=1.8.0
+python-dotenv>=1.0.0
+PyYAML>=6.0
+numpy>=1.26.0
