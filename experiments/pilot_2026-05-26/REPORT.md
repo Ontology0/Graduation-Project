@@ -1,6 +1,6 @@
 # Local Pilot Validation Report
 
-**일자**: 2025-05-26
+**일자**: 2026-05-26
 **작성자**: (이름)
 **연구 주제**: RAG-aware Alignment Tuning — Conflict-aware Prompting Pilot
 
