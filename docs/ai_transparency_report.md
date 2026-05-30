@@ -19,9 +19,9 @@
 
 | 항목 | 내용 |
 |------|------|
-| **사용 도구** | Cursor (Claude Opus 4.6) |
-| **활용 내용** | 기존 scaffold 구조를 ML 연구 레포지토리 관례에 맞게 전면 리팩토링. 아래 세부 내역 참조 |
-| **인간 판단** | 리팩토링 방향 (src/ 레이아웃, 수업 제출물 분리, 폴더 네이밍) 확인 및 승인. GitHub Pages 유지 여부, 수업 자료 처리 방식 결정 |
+| **사용 도구** | Cursor (Claude Opus 4.6, Agent / Composer) |
+| **활용 내용** | 기존 scaffold 구조를 ML 연구 레포지토리 관례에 맞게 전면 리팩토링. Git 협업 규칙(`CONTRIBUTING.md`)·README 브랜치 전략 문서화. 아래 세부 내역 참조 |
+| **인간 판단** | 리팩토링 방향 (src/ 레이아웃, 수업 제출물 분리, 폴더 네이밍) 확인 및 승인. `dev` 브랜치 도입·`dev→main` 반영 시점 팀 합의. GitHub Pages 유지 여부, 수업 자료 처리 방식 결정. PR merge 전 변경 범위 확인 (#8, #10, #20, #28–#31) |
 
 **세부 변경 내역:**
 
@@ -38,16 +38,19 @@
 | `.DS_Store` git 추적 해제 | `git rm --cached` 실행 | - |
 | `pipeline_stub.py` 삭제 | 실제 pipeline.py로 대체 후 삭제 | - |
 | README.md, CLAUDE.md 경로 전체 업데이트 | 파일 참조 경로 일괄 수정 | 최종 내용 확인 |
+| `CONTRIBUTING.md` 추가·갱신 | branch/commit 컨벤션, `main→dev→작업 브랜치` 트리, `dev→main` 반영 시점·체크리스트 초안 | `dev`를 일상 PR 통합용, `main`을 제출·배포 스냅샷으로 둘지 합의 |
+| README 브랜치 전략 | `CONTRIBUTING.md`와 동일 구조로 수정, 상세 규칙은 CONTRIBUTING 링크 | README는 요약만 유지 |
+| 발표자료 경로 정리 | `docs/presentation.pdf` / `.pptx` → `docs/presentation/` 이동 | 경로 변경 승인 (README PDF 링크 follow-up 별도 확인) |
 
-**관련 커밋:** `4296c12` ~ `0de275c` (13개 커밋)
+**관련 커밋:** `4296c12` ~ `0de275c` (13개 커밋), `323978a`, `862132d`, `0e28442`, `4db235a`(발표자료 이동 포함)
 
 ### 1.3 RAG 파이프라인 구현
 
 | 항목 | 내용 |
 |------|------|
-| **사용 도구** | Cursor (Claude Opus 4.6) |
-| **활용 내용** | RAG 파이프라인의 모듈별 코드 생성. 아래 세부 내역 참조 |
-| **인간 판단** | 구현 범위 및 모듈 분할 방식 결정. 모델 선택 (phi-2, all-MiniLM-L6-v2), FAISS 백엔드 채택 |
+| **사용 도구** | Cursor (Claude Opus 4.6, Agent / Composer) |
+| **활용 내용** | RAG 파이프라인의 모듈별 코드 생성 및 `src/rag/README.md` 모듈 문서 갱신. 아래 세부 내역 참조 |
+| **인간 판단** | 구현 범위 및 모듈 분할 방식 결정. 모델 선택 (phi-2, all-MiniLM-L6-v2), FAISS 백엔드 채택. README scaffold 표현·Mermaid participant 약어 최종 확인 |
 
 **세부 구현 내역:**
 
@@ -62,8 +65,9 @@
 | `prompt_builder.py` | base/conflict-aware 프롬프트 빌더, chat template 형식 | 프롬프트 내용 검토 |
 | `generator.py` | HuggingFace AutoModelForCausalLM 래퍼 | 모델 선택 |
 | `pipeline.py` | 전체 파이프라인 오케스트레이션 + CLI | 파이프라인 구조 승인 |
+| `src/rag/README.md` | 13개 모듈·백엔드(HF/OpenAI/Anthropic, FAISS/NumPy)·진입점·설정 키 반영, 한국어 설명, `RAGPipeline` 3단계 오케스트레이션, Mermaid 시퀀스 다이어그램 | quick start·scaffold 표현 확인 |
 
-**관련 커밋:** `f9cff2f` ~ `6ce882a` (12개 커밋)
+**관련 커밋:** `f9cff2f` ~ `6ce882a` (12개 커밋), `f013fba` ~ `baddb1b` (`src/rag/README.md`)
 
 ### 1.4 데이터 구성 (예정)
 
@@ -85,8 +89,8 @@
 
 | 항목 | 내용 |
 |------|------|
-| **사용 도구** | Cursor (GPT-5 계열) |
-| **활용 내용** | Telegram 봇 코드 정리(폴더 구조), 텍스트 출력 UX 개선(텔레그램 포맷), 응답 끊김 완화, 운영 보안(allowlist/그룹 차단/레이트리밋) 강화, 운영 문서화 및 커맨드 UX 추가 |
+| **사용 도구** | Cursor (GPT-5 계열, Agent / Composer) |
+| **활용 내용** | Telegram 봇 코드 정리(폴더 구조), 텍스트 출력 UX 개선(텔레그램 포맷), 응답 끊김 완화, 운영 보안(allowlist/그룹 차단/레이트리밋) 강화, 운영·재현 검증 문서화 및 커맨드 UX 추가 |
 | **인간 판단** | 봇을 저장소 공유/온보딩 용도로 유지할지, 공개 범위(allowlist 강제/민감 커맨드 기본 잠금), 모델/임베딩 비용-품질 트레이드오프 선택, README vs docs 문서 위치 결정, "서버리스 운영 시 수동 `/reindex`" 운영 방침 확정 |
 
 **재현 가능한 검증 절차(별도 문서):** `docs/verification_checklist.md`
@@ -103,11 +107,13 @@
 | 전송 안정화 | 다중 메시지 전송 중 rate-limit 발생 시 대기 후 재전송(재시도) | 운영 안정성 우선 |
 | 접근 제어 강화 | allowlist/그룹 차단/채팅 제한 옵션 추가 + **민감 커맨드(`/reindex`, `/save`, `/status`)는 allowlist 없으면 기본 거부**로 잠금 | 키 도난/과금 리스크를 "설정 실수"까지 포함해 방지하도록 정책 확정 |
 | 운영 문서화 | `docs/telegram_bot_ops.md`에 서버리스 운영 플로우(문서 변경 → `/reindex`) 및 비용/보안 주의사항을 명시, `docs/decision_log.md`에 기록 | README에는 개요만 유지하고 운영 디테일은 docs로 분리한다는 방침 확정 |
+| 재현·운영 검증 (`docs/verification_checklist.md`) | 검증 기록 템플릿, `pytest`/RAG CLI/Telegram 점검 항목, 문서↔코드 정합성·제출 전 체크리스트 초안 | `_guard(sensitive=True)`와 실제 코드 대조. 측정되지 않은 결과 미주장 |
 
 **검증/점검(인간 수행):**
 - Telegram 봇 실행 및 주요 커맨드 플로우(`/start`, `/what`, `/reindex`) 동작 확인
 - 보안 정책 확인: allowlist 미설정 시 민감 커맨드가 거부되는지, 그룹 차단/채팅 제한 옵션이 기대대로 작동하는지 점검
 - 비용 구조 점검: `retrieval.index_dir` 기반 인덱스 재사용 여부 확인 및 "문서 재인덱싱 비용 vs 질문당 비용" 구분을 문서화
+- `docs/verification_checklist.md` A·E 섹션 entrypoint 존재 여부 로컬 확인
 
 **관련 파일:**
 - `src/chatbot/telegram_bot.py`
@@ -115,6 +121,7 @@
 - `README.md`
 - `docs/telegram_bot_ops.md`
 - `docs/decision_log.md`
+- `docs/verification_checklist.md`
 - `configs/experiments/rag_github_bot.yaml`
 
 ---
@@ -144,13 +151,14 @@
 
 | 도구 | 용도 | 활용 단계 |
 |------|------|-----------|
-| **Cursor (Claude Opus 4.6)** | 코드 생성, 리팩토링, 커밋 관리 | 구현, 구조 설계 |
+| **Cursor (Claude Opus 4.6, Agent / Composer)** | 코드 생성, 리팩토링, Git·협업 문서, `src/rag/README` 갱신 | 구현, 구조 설계, 문서 정비 |
 | **Claude 3.5 Sonnet** | 논문 분석, 방법론 정리 | 선행 연구 |
 | **NotebookLM** | 논문 기반 폐쇄형 질의응답 | 선행 연구 |
 | **ChatGPT-3.5** | preference 데이터 생성 (예정) | 데이터 구성 |
 | **GPT-4o** | 실험 설계 자문, LLM-as-a-judge (예정) | 실험 및 평가 |
 | **Gemini 1.5 Pro** | 평가 교차 검증 (예정) | 실험 및 평가 |
+| **Cursor (GPT-5 계열, Agent / Composer)** | Telegram 봇 UX·보안, `verification_checklist` 정비 | 운영·재현 검증 (§1.6) |
 
 <div align=”center”>
-<sub>최종 업데이트: 2026-05-28</sub>
+<sub>최종 업데이트: 2026-05-30</sub>
 </div>
