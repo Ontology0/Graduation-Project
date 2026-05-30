@@ -1,14 +1,78 @@
 # Verification Checklist (Repro / Ops)
 
-> 목적: “AI 투명성”을 형식적으로 적는 대신, **사람이 실제로 검증한 항목**을 재현 가능한 형태로 남깁니다.  
-> 주의: 스크린샷/로그 공유 시 토큰, 사용자ID, 채팅ID, 파일 경로(개인정보) 등 민감정보를 마스킹합니다.
+> **목적:** “AI 투명성”을 형식적으로 적는 대신, **사람이 실제로 검증한 항목**을 재현 가능한 형태로 남깁니다.  
+> **사용법:** 섹션별로 실행 → Pass criteria 체크 → 아래 **검증 기록**에 날짜·환경·관찰(로그 한 줄·스크린샷 경로)을 적습니다.  
+> **주의:** 스크린샷·로그 공유 시 토큰, 사용자 ID, 채팅 ID, 개인 경로 등 민감정보를 마스킹합니다.
 
-## A. Repo quick checks (3 minutes)
+## 검증 기록 (템플릿)
 
-- [x] `README.md` 상단에서 `docs/demo.md`, `docs/architecture.md`, `docs/rq_to_implementation_map.md`, `docs/ai_transparency_report.md` 링크를 바로 찾을 수 있다
-- [x] `docs/demo.md`의 smoke test 명령이 현재 코드와 일치한다 (`scripts/run_pipeline.py`)
+| 항목 | 검증일 | 검증자 | 환경 (OS / Python) | 결과 | Evidence (로그·경로·PR) |
+|------|--------|--------|---------------------|------|-------------------------|
+| 예: B. RAG CLI | YYYY-MM-DD | 이름 | macOS / 3.11 | Pass | `Saved run: JSON: outputs/runs/...` |
+| | | | | | |
 
-## B. RAG CLI smoke test (local)
+## 사전 준비
+
+| 필요 항목 | A 정적 | B pytest | C RAG CLI | D Telegram |
+|-----------|:------:|:--------:|:---------:|:----------:|
+| 레포 clone | ✓ | ✓ | ✓ | ✓ |
+| `pip install -r requirements.txt` | | ✓ | ✓ | ✓ |
+| `.env` (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`) | | | ✓ | ✓ |
+| `TELEGRAM_BOT_TOKEN` | | | | ✓ |
+| 네트워크 (임베딩·LLM API) | | | ✓ | ✓ |
+
+관련 문서: [demo.md](demo.md) · [architecture.md](architecture.md) · [telegram_bot_ops.md](telegram_bot_ops.md) · [rq_to_implementation_map.md](rq_to_implementation_map.md)
+
+---
+
+## A. Repo quick checks (~3분, API 불필요)
+
+README·docs 진입점과 smoke 명령이 **현재 코드와 같은지** 빠르게 확인합니다.
+
+- [ ] `README.md` 상단에서 아래 문서 링크를 바로 찾을 수 있다
+  - [ ] `docs/demo.md`
+  - [ ] `docs/architecture.md`
+  - [ ] `docs/rq_to_implementation_map.md`
+  - [ ] `docs/ai_transparency_report.md`
+  - [ ] `docs/verification_checklist.md` (본 문서)
+- [ ] `docs/demo.md`의 smoke test 명령이 `scripts/run_pipeline.py` 인자와 일치한다
+- [ ] `configs/experiments/rag_base.yaml`, `configs/experiments/rag_github_bot.yaml` 파일이 존재한다
+- [ ] `data/sample_docs/`에 smoke용 샘플 문서가 있다
+
+**빠른 확인 (선택):**
+
+```bash
+test -f scripts/run_pipeline.py && test -f configs/experiments/rag_base.yaml && echo "entrypoints OK"
+```
+
+---
+
+## B. Unit tests (~1분, API 불필요)
+
+로컬에서 API 키 없이 돌아가는 회귀 테스트입니다.
+
+### Command
+
+```bash
+pip install -e ".[dev]"
+pytest -q
+```
+
+### Pass criteria
+
+- [ ] `tests/test_prompt_builder.py`, `tests/test_schema_files.py`, `tests/test_run_batch.py`가 모두 통과한다
+- [ ] 실패 시: 실패 테스트 이름과 traceback 첫 줄을 검증 기록에 남긴다
+
+---
+
+## C. RAG CLI smoke test (local, API 필요)
+
+[docs/demo.md](demo.md)와 동일한 최소 재현 경로입니다.
+
+### Preflight
+
+- [ ] `.env` 또는 환경 변수에 `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`가 설정되어 있다
+- [ ] `outputs/runs/` 디렉터리가 없으면 자동 생성되는지 확인 (또는 `mkdir -p outputs/runs`)
 
 ### Command
 
@@ -21,33 +85,92 @@ python scripts/run_pipeline.py \
 
 ### Pass criteria
 
+- [ ] 종료 코드가 0이다 (에러 traceback 없음)
 - [ ] 콘솔에 `Experiment:` / `Question:` / `Answer:` / `Sources:`가 출력된다
-- [ ] `outputs/runs/` 아래 결과 파일이 생성된다(JSON/MD)
+- [ ] `Saved run:` 아래 JSON·MD 경로가 출력된다
+- [ ] 출력된 경로에 실제 파일이 생성된다 (`outputs/runs/<stem>.json`, `.md`)
+- [ ] JSON에 `question`, `answer`, `retrieved_sources` (또는 동등 필드)가 포함된다
 
-## C. Telegram bot safety / ops checks
+**실패 시 점검:** API 키·요금 한도 · `requirements.txt` 설치 · `--verbose`로 임베딩/LLM 단계 로그 확인
 
-> Telegram bot은 “프로젝트 공유용” 유틸이며, 운영 안전장치가 핵심입니다. 관련 설명: `docs/telegram_bot_ops.md`
+---
 
-### C1) Allowlist 미설정 시 민감 커맨드 기본 차단
+## D. Telegram bot safety / ops (API + 봇 토큰 필요)
 
-- [ ] `TELEGRAM_REQUIRE_ALLOWLIST=1` 이 켜져있고 `TELEGRAM_ALLOWED_USER_IDS`가 비어있거나 본인이 포함되지 않은 상태에서, 다음 민감 커맨드가 거부된다
-  - [ ] `/reindex`
-  - [ ] `/save`
-  - [ ] `/status` (존재하는 경우)
+Telegram 봇은 프로젝트 공유용 유틸입니다. **운영 안전장치**가 핵심입니다. 상세: [telegram_bot_ops.md](telegram_bot_ops.md)
 
-### C2) 인덱스 재사용 (비용/시간)
+**진입점:** `scripts/telegram_bot.py` → `src/chatbot/telegram_bot.py`  
+**설정:** `configs/experiments/rag_github_bot.yaml` (`retrieval.index_dir: outputs/index/github_kb`)
 
-- [x] `configs/experiments/rag_github_bot.yaml`에서 `retrieval.index_dir`가 설정되어 있다
-- [ ] 봇을 재시작해도 인덱스를 재사용하며, 매번 문서 전체를 재임베딩하지 않는다
-  - 확인 방법(예시): 첫 실행에서 인덱스 생성 로그가 나오고, 재시작 후에는 “load existing index” 경로로 동작하는지 로그로 확인
+### D0) 설정 파일 (정적)
 
-### C3) Telegram HTML 포맷 렌더링
+- [ ] `configs/experiments/rag_github_bot.yaml`에 `retrieval.index_dir`가 설정되어 있다
+- [ ] `.env.example`에 `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ALLOWED_USER_IDS` 등이 문서화되어 있다
 
-- [ ] 봇 응답에서 `**bold**`, `` `code` `` 형태가 Telegram에서 기대대로 렌더링된다(HTML parse mode)
-  - 확인 방법: 짧은 테스트 질문 1개를 보내고, 굵게/코드 스타일이 적용되는지 눈으로 확인
+### D1) 민감 커맨드 — allowlist 없으면 기본 거부
 
-## D. “정합성” 체크 (문서 ↔ 코드)
+코드상 `/reindex`, `/save`, `/status`는 **`TELEGRAM_ALLOWED_USER_IDS`와 `TELEGRAM_ALLOWED_CHAT_IDS`가 모두 비어 있으면** 거부됩니다 (`sensitive=True` 가드).  
+`TELEGRAM_REQUIRE_ALLOWLIST`와 **별개**로 동작합니다.
 
-- [x] `docs/architecture.md`의 “Key entrypoints”가 실제 파일 경로와 일치한다
-- [x] `docs/rq_to_implementation_map.md`의 링크들이 끊기지 않는다(파일 존재/경로 일치)
-- [x] `docs/decision_log.md`의 Confirmed/Deferred가 README의 “저장소 상태” 설명과 충돌하지 않는다
+**테스트 조건:** allowlist 미설정(또는 본인 ID 미포함) 상태에서 봇에 아래 커맨드 전송
+
+- [ ] `/reindex` → `접근 불가. (민감 커맨드는 화이트리스트 설정 필요)` 또는 동등한 거부 메시지
+- [ ] `/save` → 동일하게 거부
+- [ ] `/status` → 동일하게 거부
+- [ ] (대조) 일반 텍스트 질문은 거부되지 않거나, `TELEGRAM_REQUIRE_ALLOWLIST=1`이면 전체 접근 거부 — **운영 정책에 맞는지** 확인
+
+### D2) 전체 잠금 — `TELEGRAM_REQUIRE_ALLOWLIST=1`
+
+운영·스테이징에서 권장하는 강화 옵션입니다.
+
+- [ ] `TELEGRAM_REQUIRE_ALLOWLIST=1`이고 allowlist가 비어 있으면, **일반 질문 포함** 모든 접근이 `접근 불가. (화이트리스트/채팅 제한)`으로 거부된다
+- [ ] allowlist에 본인 ID를 넣으면 `/start` 및 일반 질문이 다시 동작한다
+
+### D3) 인덱스 재사용 (비용·시간)
+
+- [ ] **첫 기동** (인덱스 폴더 없음): 임베딩·인덱싱 로그가 나오고 `outputs/index/github_kb/` 아래 파일이 생성된다
+- [ ] **재기동** (인덱스 폴더 유지): 로그에 `Loaded index from outputs/index/github_kb` (또는 설정 경로)가 보이고, 전체 문서 재임베딩 없이 질문에 답한다
+- [ ] `/reindex` 실행 후에만 문서 청크 임베딩 비용이 다시 발생한다 (평소는 질문 임베딩 + LLM 생성만)
+
+### D4) Telegram HTML 포맷
+
+- [ ] 봇 응답에서 `**굵게**`, `` `코드` `` 마크다운이 Telegram HTML로 기대대로 렌더링된다
+- [ ] 파일 경로·커밋 해시 등이 `<`, `>` 등 특수문자 포함 시 깨지지 않는다
+
+### D5) 레이트리밋 (선택)
+
+- [ ] `TELEGRAM_RATE_LIMIT_PER_MIN`을 낮게 두고 연속 요청 시 `요청이 너무 많아` 메시지가 나온다
+
+---
+
+## E. 문서 ↔ 코드 정합성 (~5분, API 불필요)
+
+문서가 **과장·유령 경로** 없이 현재 레포 상태를 반영하는지 확인합니다.
+
+- [ ] `docs/architecture.md`의 Key entrypoints가 실제 파일과 일치한다
+  - `scripts/run_pipeline.py`, `src/rag/pipeline.py`, `scripts/telegram_bot.py`, `src/chatbot/telegram_bot.py`
+- [ ] `docs/rq_to_implementation_map.md`의 링크·경로가 끊기지 않는다
+- [ ] `docs/decision_log.md`의 Confirmed/Deferred가 README **저장소 상태**와 충돌하지 않는다
+- [ ] README의 데모 링크(HuggingFace Spaces, 텔레그램 봇 등)가 의도한 대상을 가리킨다 (404·만료 여부)
+- [ ] `docs/demo.md`의 “측정되지 않은 결과”·scaffold 표현이 README·`ai_transparency_report.md`와 모순되지 않는다
+
+**빠른 링크 점검 (선택):**
+
+```bash
+# architecture에 적힌 entrypoint 존재 확인
+for f in scripts/run_pipeline.py src/rag/pipeline.py scripts/telegram_bot.py src/chatbot/telegram_bot.py; do
+  test -f "$f" && echo "OK $f" || echo "MISSING $f"
+done
+```
+
+---
+
+## F. 제출·데모 전 최종 확인 (체크리스트)
+
+기말 발표·외부 공유 직전에 한 번 더 훑습니다.
+
+- [ ] C 섹션 smoke test를 **깨끗한 venv**에서 재현했다
+- [ ] D 섹션 민감 커맨드 거부를 **운영 `.env` 설정** 기준으로 확인했다
+- [ ] 검증 기록 표에 Pass/Fail과 evidence를 남겼다
+- [ ] 공유용 스크린샷·로그에서 API 키·토큰·개인 ID를 마스킹했다
+- [ ] 아직 없는 벤치마크 점수·RAGAS 수치를 README·슬라이드에 **주장하지 않았다** (scaffold 단계)
