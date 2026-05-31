@@ -17,12 +17,34 @@ python scripts/run_pipeline.py \
 - 콘솔에 `Experiment:` / `Question:` / `Answer:` / `Sources:`가 출력된다
 - 실행 후 `outputs/runs/` 아래에 결과 파일이 생성된다(JSON/MD)
 
-## Expected outputs (example paths)
+## Expected outputs (captured 2026-05-31)
 
-> 아래는 “형태/경로 예시”이며, 내용은 실행 환경/모델/설정에 따라 달라질 수 있습니다.
+실제 실행 결과 (phi-2, CPU):
 
-- `outputs/runs/<run_name>.json`
-- `outputs/runs/<run_name>.md`
+```
+Experiment: base_rag
+
+Question: What is knowledge conflict in RAG?
+
+Answer: Knowledge conflict in RAG refers to situations where there is a
+discrepancy between two pieces of information or sources that are related
+to each other. ... (이하 생략)
+
+Sources:
+  - [knowledge_conflict.md#chunk0] (score: 0.6396)
+  - [README.md#chunk0] (score: 0.2724)
+  - [example_conflict.txt#chunk1] (score: 0.2633)
+  - [example_conflict.txt#chunk2] (score: 0.1863)
+  - [example_conflict.txt#chunk0] (score: 0.1748)
+
+Saved run:
+  - JSON: outputs/runs/20260531T104426Z.json
+  - MD:   outputs/runs/20260531T104426Z.md
+```
+
+생성된 결과 파일:
+- `outputs/runs/20260531T104426Z.json`
+- `outputs/runs/20260531T104426Z.md`
 
 ## Evidence (captured example)
 
