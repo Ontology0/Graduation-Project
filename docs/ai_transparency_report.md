@@ -1,7 +1,22 @@
 # AI 투명성 리포트
 
 > 본 문서는 프로젝트 개발 과정에서 AI 도구를 활용한 내역을 투명하게 기록합니다.
-> 각 작업에 대해 AI가 수행한 범위, 인간이 검증·판단한 범위를 명시합니다.
+
+---
+
+## 0. 본 문서의 작성 기준
+
+본 보고서는 아래 5가지 기준을 토대로 작성되었습니다.
+
+| 기준 | 핵심 질문 |
+|------|-----------|
+| **사용 투명성** | AI를 어디에 썼는지 솔직하게 기록했는가? |
+| **활용 적절성** | AI가 필요한 곳에 적절하게 쓰였는가? |
+| **이해도** | AI가 만든 결과를 팀이 설명할 수 있는가? |
+| **검증성** | AI 결과를 실행·비교·테스트·근거 확인으로 검증했는가? |
+| **책임성** | 오류, 한계, 보안, 개인정보 위험을 인식했는가? |
+
+**원칙:** 팀이 연구 방향과 판단 기준을 먼저 설정하고, AI는 구현 보조와 반복 작업 자동화에 활용하였습니다. 연구 문제 정의, 실험 설계 방향, 결과 해석, 모델 선택, 평가 기준은 팀이 직접 결정하였습니다.
 
 ---
 
@@ -12,177 +27,147 @@
 | 항목 | 내용 |
 |------|------|
 | **사용 도구** | Claude 3.5 Sonnet, NotebookLM |
-| **활용 내용** | PA-RAG, DPA-RAG, ClashEval 등 관련 논문 분석 및 핵심 방법론 정리 (DPO, LoRA, RAFT 등). 벤치마크 구조 정리 및 질의 |
-| **인간 검증** | NotebookLM 폐쇄형 설정으로 외부 데이터 혼입 방지. 원문 논문과 수식·수치 대조 확인 |
+| **활용 내용** | PA-RAG, DPA-RAG, ClashEval 등 관련 논문의 방법론·수식·수치 정리 보조. 벤치마크 후보 구조 정리 |
+| **팀의 판단** | **PA-RAG의 3가지 정렬 기준(informativeness·robustness·citation quality)에 knowledge conflict 처리가 누락되어 있음을 팀이 직접 식별** → 이것이 본 연구의 출발점. NotebookLM 폐쇄형 설정으로 외부 데이터 혼입 차단. 원문 논문 수식·수치를 직접 대조하여 AI 요약의 정확성 검증 |
 
 ### 1.2 프로젝트 구조 설계 및 리팩토링
 
 | 항목 | 내용 |
 |------|------|
-| **사용 도구** | Cursor (Claude Opus 4.6) |
-| **활용 내용** | 기존 scaffold 구조를 ML 연구 레포지토리 관례에 맞게 전면 리팩토링. 아래 세부 내역 참조 |
-| **인간 판단** | 리팩토링 방향 (src/ 레이아웃, 수업 제출물 분리, 폴더 네이밍) 확인 및 승인. GitHub Pages 유지 여부, 수업 자료 처리 방식 결정 |
+| **사용 도구** | Claude Code (claude-sonnet-4-6) |
+| **활용 내용** | 팀이 설계한 ML 연구 레포 구조대로 파일 이동, import 경로 수정, 커밋 생성 |
+| **팀의 판단** | **`src/rag/`, `src/training/`, `src/evaluation/` 분리와 `configs/experiments/` 구조는 팀이 ML 연구 레포 관례를 검토하여 먼저 요구한 방향**. 수업 제출물(`course/`)을 연구 코드와 분리하는 정책도 팀 결정. AI는 요구사항에 따라 파일 이동 작업만 수행 |
 
 **세부 변경 내역:**
 
-| 변경 사항 | AI 수행 | 인간 판단 |
+| 변경 사항 | AI 수행 | 팀의 결정 |
 |-----------|---------|-----------|
-| `rag/`, `finetuning/`, `eval/` → `src/` 하위로 통합 | 파일 이동, import 경로 수정, 커밋 생성 | 구조 방향 승인 |
-| `prompts/` → `configs/prompts/` 이동 | 파일 이동 및 YAML 참조 경로 수정 | 프롬프트를 config 하위로 둘지 결정 |
-| `configs/*.yaml` → `configs/experiments/` 정리 | 디렉토리 구조화 | 네이밍 승인 |
-| `docs/submission_materials/` → `course/` 분리 | 파일 이동 | 수업 제출물 유지 + 분리 결정 |
-| `self_demo.md` → `docs/demo.md` 이동 | 파일 이동 | - |
-| `results/` → `outputs/` 이름 변경 | 디렉토리 rename | - |
-| `pyproject.toml` 추가 | 파일 생성 (패키지 메타데이터, pytest 설정) | - |
-| `scripts/`, `tests/` 디렉토리 추가 | 디렉토리 및 CLI 스크립트 생성 | - |
-| `.DS_Store` git 추적 해제 | `git rm --cached` 실행 | - |
-| `pipeline_stub.py` 삭제 | 실제 pipeline.py로 대체 후 삭제 | - |
-| README.md, CLAUDE.md 경로 전체 업데이트 | 파일 참조 경로 일괄 수정 | 최종 내용 확인 |
-
-**관련 커밋:** `4296c12` ~ `0de275c` (13개 커밋)
+| `src/` 하위로 모듈 통합 | 파일 이동, import 경로 수정 | 구조 방향 및 네이밍 규칙 설계 |
+| `configs/experiments/` 정리 | 디렉토리 구조화 | 실험 설정과 프롬프트 분리 방침 결정 |
+| `course/` 분리 | 파일 이동 | 연구 코드 ↔ 수업 제출물 분리 정책 결정 |
+| `outputs/`, `scripts/`, `tests/` 추가 | 디렉토리 생성, CLI 스크립트 작성 | 결과물 위치 및 엔트리포인트 구조 설계 |
 
 ### 1.3 RAG 파이프라인 구현
 
 | 항목 | 내용 |
 |------|------|
-| **사용 도구** | Cursor (Claude Opus 4.6) |
-| **활용 내용** | RAG 파이프라인의 모듈별 코드 생성. 아래 세부 내역 참조 |
-| **인간 판단** | 구현 범위 및 모듈 분할 방식 결정. 모델 선택 (phi-2, all-MiniLM-L6-v2), FAISS 백엔드 채택 |
+| **사용 도구** | Claude Code (claude-sonnet-4-6) |
+| **활용 내용** | 팀이 설계한 모듈 구조와 인터페이스 명세를 바탕으로 각 모듈 코드 초안 생성 |
+| **팀의 판단** | **임베딩 모델(all-MiniLM-L6-v2)과 벡터 스토어(FAISS)는 경량성·무료·재현 가능성을 기준으로 팀이 직접 선택**. 로컬 smoke test용으로 phi-2를, 본 연구 타겟으로 Llama 3.1-8B를 선택한 연구적 근거(규모별 conflict 처리 능력 차이 측정)도 팀 결정. Conflict-Aware 프롬프트 내용은 팀이 직접 설계하고 AI가 코드로 구현 |
 
-**세부 구현 내역:**
-
-| 모듈 | AI 생성 내용 | 인간 판단 |
-|------|-------------|-----------|
-| `config.py` | YAML 설정 로더 + `.env` 로딩 | - |
-| `document_loader.py` | txt/json/jsonl 포맷 문서 로딩, Document 데이터클래스 | - |
-| `chunker.py` | 문장 경계 인식 텍스트 청킹 (overlap 지원) | chunk_size, overlap 값 |
-| `embedder.py` | sentence-transformers 래퍼, L2 정규화 임베딩 | 모델 선택 |
-| `vector_store.py` | FAISS IndexFlatIP 래퍼, 저장/로드 지원 | 백엔드 선택 |
-| `retriever.py` | Embedder + VectorStore 결합 검색 | top_k 설정 |
-| `prompt_builder.py` | base/conflict-aware 프롬프트 빌더, chat template 형식 | 프롬프트 내용 검토 |
-| `generator.py` | HuggingFace AutoModelForCausalLM 래퍼 | 모델 선택 |
-| `pipeline.py` | 전체 파이프라인 오케스트레이션 + CLI | 파이프라인 구조 승인 |
-
-**관련 커밋:** `f9cff2f` ~ `6ce882a` (12개 커밋)
+**팀이 검증한 항목:**
+- 각 모듈의 입출력 인터페이스가 설계 명세와 일치하는지 코드 리뷰
+- phi-2 로컬 실행으로 파이프라인 전체 흐름(Load→Chunk→Embed→Retrieve→Generate) 동작 확인
+- `outputs/runs/` 결과물 JSON 구조와 필드명 검토
 
 ### 1.4 HuggingFace Spaces 인터랙티브 데모 구축
 
 | 항목 | 내용 |
 |------|------|
 | **사용 도구** | Claude Code (claude-sonnet-4-6) |
-| **활용 내용** | Gradio 기반 `app.py` 생성 — Base RAG vs Conflict-Aware Prompting 실시간 비교 데모. HuggingFace Spaces 배포, 연구 사이트(alltology.zapto.org) 연동 |
-| **인간 판단** | 데모 시나리오(Northwood Institute 충돌 케이스) 설계, 샘플 질문 선정, UI 구성 방향, 공개 범위 결정 |
-
-**관련 파일:** `app.py`, `data/sample_docs/example_conflict.txt`
+| **활용 내용** | Gradio 기반 `app.py` 구현, HuggingFace Spaces 배포 설정 |
+| **팀의 판단** | **데모 시나리오(Northwood Institute 마스코트 색상 충돌 케이스)는 팀이 설계**. parametric memory(deep blue) vs retrieved context(silver-green) 충돌 구조가 연구 RQ를 직관적으로 보여줄 수 있는지 팀이 직접 판단. 샘플 질문 선정, UI 레이아웃, 공개 범위 결정 모두 팀 주도 |
 
 ### 1.5 파일럿 실험 (API 모델 기반)
 
 | 항목 | 내용 |
 |------|------|
-| **사용 도구** | OpenAI gpt-4o-mini API, Anthropic claude-haiku API (LiteLLM 경유), Claude Code (실험 코드 작성) |
-| **활용 내용** | exp1~exp4 실험 설계 및 코드 작성: ClashEval 기반 거짓 문서 거부율 측정, A/B/C 타입 분해, temporal conflict 시나리오 구성 |
-| **인간 판단** | 실험 설계 방향 결정 (RQ와의 정합성 판단), 천장 효과 발견 후 exp3→exp4로 재설계, 결과 해석 (50%→83%, 75%→100% 의미 분석), Llama-8B 타겟 모델로의 방향 확정 |
+| **사용 도구** | OpenAI gpt-4o-mini, Anthropic claude-haiku (실험 대상 모델로 활용), Claude Code (실험 코드 작성 보조) |
+| **활용 내용** | 실험 실행 코드 초안 생성, 결과 집계 스크립트 작성 보조 |
+| **팀의 판단** | **실험 설계 전체를 팀이 주도**: exp1 결과에서 conflict-aware의 효과를 확인한 후, exp2 분해 실험으로 A/B/C 타입을 정의한 것도 팀 아이디어. **exp2에서 "거짓 거부"와 "최신 수용"이 RQ와 방향이 반대임을 팀이 직접 발견** → exp3 temporal 시나리오로 재설계 결정. 강한 API 모델의 천장 효과(~100%)를 "상한선 확정"으로 재해석하고, **Llama 3.1-8B를 진짜 측정 대상으로 확정**한 것도 팀의 연구적 판단 |
 
-**핵심 발견 (인간 해석):** 강한 API 모델은 temporal conflict를 프롬프트 없이도 ~100% 처리 → Llama-8B가 본 연구의 실질 측정 대상임을 확정.  
-**관련 파일:** `experiments/2026-05-31/`, `experiments/api_pilot_2026-05-28/`
+**팀이 수행한 검증:**
+- 각 실험 케이스별 gold answer와 모델 출력을 직접 대조하여 채점
+- 천장 효과 발생 원인(충돌 신호가 명시적) 분석 및 데이터 설계 교훈 도출
+- 결과 수치(75%→100%, 50%→83%)의 연구적 의미를 팀이 직접 해석
 
 ### 1.6 레포 문서화 및 인간 친화적 구성
 
 | 항목 | 내용 |
 |------|------|
 | **사용 도구** | Claude Code (claude-sonnet-4-6) |
-| **활용 내용** | README 전면 재구성 (Why/Problem/Solution 플로우, mermaid 다이어그램, Tech Stack 배지), self_demo.md 작성 (단계별 시연 요령, 기업 문서 시나리오), verification_checklist.md 검증 기록 작성, docs/demo.md 실제 실행 결과 추가 |
-| **인간 판단** | 구성 방향 결정, 기업 문서 검색 시나리오 선정, 보안 정책(/whoami 안내) 방침 확정, PR 리뷰 및 머지 승인 |
+| **활용 내용** | README 구성, self_demo.md 초안, verification_checklist 작성 보조 |
+| **팀의 판단** | **Why→Problem→Solution 스토리 구조와 기업 문서 검색 시나리오는 팀이 기획**. 평가자(교수)가 설치 없이 체험할 수 있어야 한다는 방향도 팀 결정. 각 문서의 공개 범위, 스크린샷 선정, 강조 포인트는 팀이 검토 후 확정 |
 
-**관련 파일:** `README.md`, `self_demo.md`, `docs/demo.md`, `docs/verification_checklist.md`
-
-### 1.7 데이터 구성 (예정)
+### 1.7 Telegram RAG 봇 개발 및 운영 보안
 
 | 항목 | 내용 |
 |------|------|
-| **사용 도구** | ChatGPT-3.5 (예정) |
-| **활용 내용** | RAG-aware preference 데이터 자동 생성. chosen/rejected 쌍 생성으로 비용 효율성 확보 |
-| **인간 검증** | 데이터 샘플링 통한 품질, 정합성 검수 필수 |
+| **사용 도구** | Claude Code (claude-sonnet-4-6) |
+| **활용 내용** | 봇 코드 구조 정리, HTML 포맷 변환, 보안 옵션 코드 구현 |
+| **팀의 판단** | **저장소 공유·온보딩 용도로 봇을 유지할지 결정한 것이 팀**. Telegram API·LLM API·Railway 비용이 발생하므로 allowlist 기반 접근 제어가 필요하다고 판단한 것도 팀. 민감 커맨드(`/reindex`, `/save`, `/status`) 기본 잠금 정책, 응답이 문장 중간에 끊기는 UX 문제를 발견하고 이어쓰기 방식으로 개선 방향을 제시한 것 모두 팀 주도. AI는 해당 방향에 맞춰 코드를 구현 |
 
-### 1.8 실험 설계 및 평가 (진행 중)
+**팀이 수행한 검증:**
+- Telegram 봇 실행 및 `/start`, `/about`, `/where`, `/reindex` 커맨드 플로우 직접 확인
+- allowlist 미설정 시 민감 커맨드 거부 동작 실봇 테스트
+- Railway 배포 후 응답 안정성 확인 (`docs/verification_checklist.md` D섹션 기록)
 
-| 항목 | 내용 |
-|------|------|
-| **사용 도구** | GPT-4o, Gemini 1.5 Pro (예정) |
-| **활용 내용** | Baseline vs Hybrid 대조군 설정 자문. Faithfulness Score 등 주관적 지표 평가. LLM-as-a-judge 방식 도입 |
-| **인간 검증** | RAGAS 지표와 병행 교차 검증 (RTX 3090 x 4 환경 고려) |
-
-### 1.9 Telegram 프로젝트 공유용 RAG 봇 개발/운영 개선
+### 1.8 데이터 구성 (진행 예정)
 
 | 항목 | 내용 |
 |------|------|
-| **사용 도구** | Cursor (GPT-5 계열) |
-| **활용 내용** | Telegram 봇 코드 정리(폴더 구조), 텍스트 출력 UX 개선(텔레그램 포맷), 응답 끊김 완화, 운영 보안(allowlist/그룹 차단/레이트리밋) 강화, 운영 문서화 및 커맨드 UX 추가 |
-| **인간 판단** | 봇을 저장소 공유/온보딩 용도로 유지할지, 공개 범위(allowlist 강제/민감 커맨드 기본 잠금), 모델/임베딩 비용-품질 트레이드오프 선택, README vs docs 문서 위치 결정, "서버리스 운영 시 수동 `/reindex`" 운영 방침 확정 |
+| **사용 도구** | GPT-4o (예정) |
+| **활용 내용** | synthetic conflict preference pair 생성 보조 |
+| **팀의 판단** | chosen/rejected 쌍의 품질 기준(어떤 응답이 conflict를 올바르게 처리하는가)은 팀이 설계. AI 생성 데이터는 팀이 샘플링하여 연구 목적 정합성 및 편향 여부를 직접 검수할 예정 |
 
-**재현 가능한 검증 절차(별도 문서):** `docs/verification_checklist.md`
+### 1.9 실험 및 평가 (진행 예정)
 
-**세부 변경 내역:**
-
-| 변경 사항 | AI 수행 | 인간 판단 |
-|-----------|---------|-----------|
-| Telegram 봇 코드 위치 명확화 | `src/chatbot/telegram_bot.py`로 로직 이동, `scripts/telegram_bot.py`를 얇은 엔트리포인트로 정리 | "챗봇은 챗봇 폴더로" 구조 요구 승인 |
-| README 갱신 | `README.md`에 `src/chatbot/` 반영, `configs/` 역할 설명 추가, "Telegram 프로젝트 공유용 RAG 봇" 섹션 추가(봇 이름/초대 링크 제외) | README에 포함할 범위/표현 톤 결정 |
-| 봇 기능 설명 커맨드 | `/what`(alias `/intro`) 커맨드 추가로 "이 봇이 RAG로 동작하는 구조"를 고정 문구로 안내 | 사용자가 봇을 테스트/공유할 때 반복 질문을 줄이기 위한 UX 요구 승인 |
-| 텔레그램 포맷 대응 | `**bold**`, `` `code` ``를 Telegram HTML(`<b>`, `<code>`)로 변환하여 전송 (`ParseMode.HTML`) | "텔레그램에서는 **가 아님" UX 요구 승인 |
-| 응답 끊김 완화 | 문장 미완성으로 끝나면 "짧게 재생성" 대신 "이어쓰기(continue)"로 1~3문장만 보강 | "재생성 구림" 피드백 반영 |
-| 전송 안정화 | 다중 메시지 전송 중 rate-limit 발생 시 대기 후 재전송(재시도) | 운영 안정성 우선 |
-| 접근 제어 강화 | allowlist/그룹 차단/채팅 제한 옵션 추가 + **민감 커맨드(`/reindex`, `/save`, `/status`)는 allowlist 없으면 기본 거부**로 잠금 | 키 도난/과금 리스크를 "설정 실수"까지 포함해 방지하도록 정책 확정 |
-| 운영 문서화 | `docs/telegram_bot_ops.md`에 서버리스 운영 플로우(문서 변경 → `/reindex`) 및 비용/보안 주의사항을 명시, `docs/decision_log.md`에 기록 | README에는 개요만 유지하고 운영 디테일은 docs로 분리한다는 방침 확정 |
-
-**검증/점검(인간 수행):**
-- Telegram 봇 실행 및 주요 커맨드 플로우(`/start`, `/what`, `/reindex`) 동작 확인
-- 보안 정책 확인: allowlist 미설정 시 민감 커맨드가 거부되는지, 그룹 차단/채팅 제한 옵션이 기대대로 작동하는지 점검
-- 비용 구조 점검: `retrieval.index_dir` 기반 인덱스 재사용 여부 확인 및 "문서 재인덱싱 비용 vs 질문당 비용" 구분을 문서화
-
-**관련 파일:**
-- `src/chatbot/telegram_bot.py`
-- `scripts/telegram_bot.py`
-- `README.md`
-- `docs/telegram_bot_ops.md`
-- `docs/decision_log.md`
-- `configs/experiments/rag_github_bot.yaml`
+| 항목 | 내용 |
+|------|------|
+| **사용 도구** | GPT-4o (LLM-as-a-judge, 예정) |
+| **활용 내용** | Conflict resolution 품질 평가 보조 |
+| **팀의 판단** | 평가 루브릭(어떤 기준으로 conflict 처리를 "올바름"으로 볼 것인가)은 팀이 설계. RAGAS 등 자동 지표와 LLM-as-a-judge를 병행하여 교차 검증할 계획 |
 
 ---
 
 ## 2. 인간 주도 핵심 연구 영역
 
-연구의 독창성과 신뢰성을 담보하기 위해 다음 영역은 AI의 보조 없이 연구진이 직접 수행합니다.
+다음 영역은 AI 보조 없이 팀이 직접 수행하였습니다.
 
-- **연구 주제 및 가설 설정**: Knowledge Conflict를 PA-RAG 확장 축으로 삼는 연구 방향, 4개 RQ 설정
-- **DPO 학습 데이터 품질 검토**: AI가 생성한 선호도 데이터 쌍을 직접 샘플링하여 연구 목적과의 정합성 및 편향 여부를 직접 판단
-- **핵심 가설 및 로직 설계**: 지식 충돌 시나리오에서 외부 근거 vs 내부 지식 우선순위를 DPO로 내재화하는 방법론 고안
-- **최종 의사결정**: AI가 제시한 다양한 선택지 중 최적의 방법론을 채택하고, 도출된 데이터에 대한 의미론적 분석을 수행
-- **결과 검증**: AI가 요약·정리한 모든 내용과 실제 논문의 수식, 수치 데이터를 대조하여 정확성 최종 확인
-
----
-
-## 3. AI 활용 원칙 및 윤리
-
-- **교차 검증 원칙**: AI 도구의 답변을 무비판적으로 수용하지 않으며, 모든 기술적 인용구와 수치는 원문 논문을 직접 대조하여 검증
-- **데이터 보안**: NotebookLM 등 활용 시 개인정보나 비공개 데이터는 업로드하지 않으며, 모든 처리는 연구용 공개 벤치마크 데이터셋에 한정
-- **코드 검토**: AI가 생성한 코드는 팀원이 리뷰하고, 핵심 로직(DPO loss, conflict resolution 규칙 등)은 논문 수식과 대조 검증
-- **투명성**: AI가 관여한 모든 작업은 본 문서에 기록하며, 커밋 로그를 통해 AI 생성 코드와 인간 작성 코드를 추적 가능하게 유지
+| 영역 | 팀의 기여 내용 |
+|------|--------------|
+| **연구 주제 설정** | PA-RAG의 context–memory conflict 누락을 팀이 식별하고, 이를 명시적 정렬 축으로 추가하는 연구 방향 설정 |
+| **핵심 가설** | conflict-aware prompting의 효과를 DPO+LoRA로 내재화하면 도메인 일반화 성능이 향상된다는 가설 수립 |
+| **실험 설계 및 재설계** | exp1→2→3→4 순서의 점진적 실험 설계, exp2에서 RQ 불일치 발견 후 temporal 시나리오로 pivot |
+| **결과 해석** | 천장 효과를 "실패"가 아닌 "상한선 확정"으로 해석, Llama-8B가 진짜 측정 구간임을 판단 |
+| **모델 선택** | phi-2(로컬 smoke test), Llama 3.1-8B(타겟), claude-haiku(실험 upper bound) 선택 근거 결정 |
+| **평가 기준** | conflict resolution 정답 기준, substring 매칭의 한계 인식 및 대안 지표 검토 |
 
 ---
 
-## 4. AI 활용 도구 요약
+## 3. 검증 충실성 요약
+
+| 항목 | 검증 방법 | 기록 위치 |
+|------|----------|-----------|
+| RAG 파이프라인 동작 | phi-2 로컬 실행, `outputs/runs/` 결과물 확인 | `docs/verification_checklist.md` C섹션 |
+| 파일럿 실험 결과 | 모델 출력 직접 채점, 타입별 정답률 계산 | `experiments/2026-05-31/` 각 README |
+| Telegram 봇 보안 | allowlist 미설정 시 거부 동작 실봇 테스트 | `docs/verification_checklist.md` D섹션 |
+| 단위 테스트 | `pytest -q` 6 passed 확인 (2026-05-31) | `docs/verification_checklist.md` B섹션 |
+| 데모 접근성 | HF Spaces 라이브 동작, 텔레그램 봇 응답 확인 | `docs/verification_checklist.md` |
+
+---
+
+## 4. AI 활용 원칙 및 책임성
+
+- **AI 생성 결과 무비판 수용 금지**: 모든 코드·요약·수치는 팀이 직접 실행하거나 원문과 대조하여 검증
+- **데이터 보안**: 개인정보·API 키·비공개 데이터를 AI 도구에 입력하지 않음. `.env` 파일은 `.gitignore`로 추적 제외
+- **저작권·라이선스**: AI 생성 코드에 외부 라이브러리 포함 시 라이선스(MIT, Apache 2.0 등) 확인 후 사용
+- **한계 명시**: 파일럿 실험 수치는 API 모델 기반이며 최종 벤치마크가 아님을 README와 발표 자료에 명시
+- **투명성 유지**: AI가 관여한 모든 작업을 본 문서에 기록. 커밋 로그에서 AI 생성 코드 추적 가능 (`Co-Authored-By: Claude Sonnet 4.6`)
+
+---
+
+## 5. AI 활용 도구 요약
 
 | 도구 | 용도 | 활용 단계 |
 |------|------|-----------|
-| **Claude Code (claude-sonnet-4-6)** | 코드 생성·리팩토링·커밋, README/문서 작성, 데모 구축 | 구현, 구조 설계, 문서화 |
+| **Claude Code (claude-sonnet-4-6)** | 코드 구현, 구조 리팩토링, 문서 초안 | 구현, 문서화 전반 |
 | **Claude 3.5 Sonnet** | 논문 분석, 방법론 정리 | 선행 연구 |
 | **NotebookLM** | 논문 기반 폐쇄형 질의응답 | 선행 연구 |
-| **OpenAI gpt-4o-mini** | 파일럿 실험 (exp1, api_pilot) | 실험 (상한선 측정) |
-| **Anthropic claude-haiku** | 파일럿 실험 (exp2~exp4) | 실험 (타입 분해) |
-| **ChatGPT-3.5** | preference 데이터 생성 (예정) | 데이터 구성 |
-| **GPT-4o** | LLM-as-a-judge (예정) | 실험 및 평가 |
+| **OpenAI gpt-4o-mini** | 파일럿 실험 대상 모델 (exp1) | 실험 상한선 측정 |
+| **Anthropic claude-haiku** | 파일럿 실험 대상 모델 (exp2~4) | 실험 타입 분해 |
+| **GPT-4o** | LLM-as-a-judge, preference 데이터 생성 | 평가 (예정) |
 
-<div align=”center”>
+<div align="center">
 <sub>최종 업데이트: 2026-06-01</sub>
 </div>
