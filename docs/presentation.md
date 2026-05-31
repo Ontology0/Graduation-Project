@@ -143,7 +143,7 @@ style: |
 
 # RAG에서 지식 충돌 완화를 위한<br/>Preference Learning 기반 정렬 연구
 
-## Conflict-Aware PA-RAG
+## Conflict-Aware PA-RAG<br/><span style="font-size:18px; font-weight:500;">작은 모델은 어디까지 배울 수 있는가 — LoRA 기반 지식 충돌 정렬의 한계 분석</span>
 
 <p>
 팀 03 · Alltology<br/>
@@ -197,7 +197,7 @@ style: |
 
 | | 박세령 (2276121) | 손현경 (2329019) | 이다영 (2317022) |
 |:---:|:---:|:---:|:---:|
-| **역할** | Conflict type 설계<br/>RAG 파이프라인 구현 | DPO 학습 설계<br/>LoRA fine-tuning | 데이터 파이프라인<br/>평가 프로토콜 |
+| **역할** | Conflict type 설계<br/>RAG 파이프라인 구현 | DPO 학습 설계<br/>연구 설계 · 파일럿 실험 | 데이터 파이프라인<br/>평가 프로토콜 |
 | **GitHub** | @ryeong03 | @bbberylll | @dev-ldy03 |
 
 </div>
@@ -417,6 +417,28 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 
 ---
 
+---
+
+<!-- _class: mvp-table -->
+
+# 9-1. 파일럿 실험 결과
+
+## 모델 규모별 충돌 해소 능력 — upper / lower bound 매핑
+
+| 실험 | 셋업 | 핵심 결과 |
+|---|---|---|
+| **exp1** ClashEval 기본 | 거짓 문서 판별 | Base 50% → Conflict-Aware **100%** (거짓 문서 거부율) |
+| **exp2** A/B/C 타입 분해 | 문서 구성 3종 분리 | A(거짓만) Base 50% vs CA **83%** · B·C는 둘 다 100% |
+| **exp3** temporal (명시적) | 내부 옛 지식 vs 외부 최신 ("2023년 변경") | 두 arm 모두 update **100%** — 문서가 친절해 추론 불필요 |
+| **exp4** temporal (암묵적) | 변화 설명 없이 최신 사실만 전제 | 두 arm 모두 **100%** — 강한 모델 천장효과 |
+
+<div class="highlight">
+<b>결론:</b> 강한 모델 = <b>upper bound</b>(충돌 거의 자동 해결) · 약한 모델(phi-2) = <b>lower bound</b>(exp1 실패)<br/>
+<b>→ 핵심 질문: 작은 모델(Llama 3.1-8B)을 LoRA/DPO로 upper bound까지 끌어올릴 수 있는가?</b>
+</div>
+
+---
+
 # 10. 한계와 향후 개선 방향
 
 ## 현재 한계
@@ -436,7 +458,7 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 |------|------|
 | **단기** | DPO 학습 완료 · ClashEval 벤치마크 정량 평가 실행 |
 | **중기** | WikiContradict 자연 충돌 실험 — synthetic → natural 전이 측정 |
-| **장기** | 충돌 유형 확장 (inter-context, intra-memory) · 모델 다양화 |
+| **장기** | 특정 도메인(의료·생활검색 등)에서 강건하게 작동하는 conflict-aware 모델 구축 (general → domain 확장) |
 
 ---
 
@@ -446,14 +468,14 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 
 | | 박세령 | 손현경 | 이다영 |
 |:---:|:---:|:---:|:---:|
-| **주요 담당** | Conflict type 설계<br/>RAG 파이프라인 | DPO 학습<br/>LoRA fine-tuning | 데이터 파이프라인<br/>평가 프로토콜 |
-| **주요 기여** | `src/rag/` 10개 모듈 구현<br/>레포 구조·문서화 총괄<br/>연구 사이트 운영 | HF Spaces 배포<br/>DPO scaffold 구현<br/>Conflict preference 데이터 설계 | `data/schema/` 설계<br/>벤치마크 선정 전략<br/>평가 루브릭 설계 |
+| **주요 담당** | Conflict type 설계<br/>RAG 파이프라인 | DPO 학습 설계<br/>LoRA fine-tuning | 데이터 파이프라인<br/>평가 프로토콜 |
+| **주요 기여** | `src/rag/` 10개 모듈 구현<br/>레포 구조·문서화 총괄<br/>연구 사이트 운영 | RQ 구체화·검증, 파일럿 실험 설계·진행·검증<br/>HF Spaces 배포 · DPO scaffold 구현<br/>Conflict preference 데이터 설계 | `data/schema/` 설계<br/>벤치마크 선정 전략<br/>평가 루브릭 설계 |
 | **GitHub** | @ryeong03 | @bbberylll | @dev-ldy03 |
 
 <br/>
 
 <div class="blue">
-<b>공통:</b> 연구 주제·RQ 설계 · AI 출력 교차 검증 · 핵심 로직 판단 — 전원 참여
+<b>공통:</b> 연구 방향 설계 · AI 출력 교차 검증 · 핵심 로직 판단 — 전원 참여
 </div>
 
 ---
@@ -491,7 +513,7 @@ PA-RAG (기존)              →   Conflict-Aware PA-RAG (제안)
 | 레포 구조 설계 | Cursor (Claude) | 리팩토링, 파일 이동, import 수정 | 구조 방향 승인, 네이밍 결정 |
 | RAG 파이프라인 구현 | Cursor (Claude) | 모듈 코드 생성 | 모듈 분할 방식, 모델 선택 |
 | Telegram RAG 봇 | Cursor (GPT-5) | UX·보안·운영 문서화 | 공개 범위, allowlist 정책 확정 |
-| 실험 설계 | GPT-4o (예정) | 데이터 스키마 초안 | 충돌 유형 정의, 평가 기준 결정 |
+| 파일럿 실험 | Claude(haiku/sonnet) · gpt-4o-mini | 데이터 스키마 초안, 실험 코드 보조 | 충돌 유형 정의, 평가 기준 결정, 결과 해석 |
 
 <br/>
 
