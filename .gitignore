@@ -17,9 +17,8 @@ outputs/*
 !outputs/.gitkeep
 !outputs/runs/
 outputs/runs/*
-!outputs/runs/20260531T104426Z.json
-!outputs/runs/20260531T104426Z.md
-!outputs/.gitkeep
+!outputs/runs/*.json
+!outputs/runs/*.md
 
 # Ephemeral stdout captures at repo root (keep experiments/pilot results)
 e2e_out.txt
