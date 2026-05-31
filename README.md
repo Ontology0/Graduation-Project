@@ -176,12 +176,26 @@ flowchart LR
 | 📊 발표 슬라이드 | [Google Slides](https://docs.google.com/presentation/d/1mxabIcWOkVXfYbtppBo_TeJ6ah2Be-5RHgmoqRcUIaw/edit?usp=sharing) · [PDF](docs/presentation/presentation.pdf) · [Marp 원본](docs/presentation.md) | 기말 발표 자료 |
 
 **로컬 실행:**
+
+> **Step 1** — 레포 클론 및 의존성 설치
+
 ```bash
 git clone https://github.com/Ontology0/Graduation-Project.git
 cd Graduation-Project
 pip install -r requirements.txt
+```
+
+> **Step 2** — 환경변수 설정 (HuggingFace 모델 사용 시 API 키 불필요)
+
+```bash
+cp .env.example .env   # 필요 시 ANTHROPIC_API_KEY 등 입력
+```
+
+> **Step 3** — 파이프라인 실행
+
+```bash
 make demo          # Base RAG smoke test
-make demo-conflict # Base vs Conflict-Aware 비교
+make demo-conflict # Base RAG vs Conflict-Aware 비교
 ```
 
 <br/>
@@ -267,6 +281,16 @@ Graduation-Project/
 
 <br/>
 
+## 🤝 기여하기
+
+버그 리포트, 실험 아이디어, 코드 기여 모두 환영합니다.
+
+1. `dev` 브랜치에서 작업 브랜치를 생성합니다 (`feat/`, `fix/`, `docs/` 등)
+2. 변경 후 `dev`로 Pull Request를 올립니다
+3. 커밋 메시지 형식 · 브랜치 전략 · PR 절차는 [CONTRIBUTING.md](CONTRIBUTING.md) 참고
+
+<br/>
+
 ## 🌿 브랜치 전략
 
 ```
@@ -289,7 +313,7 @@ main  ← 제출 / 배포 스냅샷
 
 **팀명:** Alltology · **팀 번호:** 03 · **트랙:** 연구 · **지도교수:** 황의원 교수님
 
-**Project Brief:** [course/elevator_speech_team03.md](course/elevator_speech_team03.md) · **AI 투명성 리포트:** [docs/ai_transparency_report.md](docs/ai_transparency_report.md)
+**AI 투명성 리포트:** [docs/ai_transparency_report.md](docs/ai_transparency_report.md)
 
 ---
 
