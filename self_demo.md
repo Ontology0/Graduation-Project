@@ -53,6 +53,11 @@
 - `How does conflict-aware prompting work?`
 - `What datasets are used?`
 
+> **봇 접근이 막혀있는 경우 (보안 정책)**  
+> 봇은 허가된 사용자만 이용 가능합니다. 접근 제한 시 아래 절차를 따르세요:
+> 1. `/whoami` 입력 → 본인 Telegram User ID 확인
+> 2. 해당 ID를 팀에 공유하면 허용 목록에 등록해드립니다
+
 ---
 
 ### 🎬 데모 영상
