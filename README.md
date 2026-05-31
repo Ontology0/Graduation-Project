@@ -60,6 +60,15 @@ DPO(Direct Preference Optimization) + LoRA로 **Knowledge Conflict 처리 능력
 
 **핵심 주장:** 프롬프트 수준의 conflict-aware 지시는 효과가 있으나(파일럿 결과 참조), preference learning으로 내재화하면 더 강건하고 일반화 가능한 conflict 처리가 가능할 것으로 가설 설정.
 
+### 연구 단계
+
+> 본 프로젝트는 **Start 트랙**으로 진행 중입니다.
+
+| 단계 | 내용 | 상태 |
+|------|------|:----:|
+| **Start** (이번 학기) | Knowledge Conflict 문제 정의 · Base RAG vs Conflict-Aware Prompting 파일럿 실험 · 문제 존재 및 개선 가능성 검증 | ✅ 완료 |
+| **Growth** (확장 방향) | Llama 3.1-8B 기반 DPO + LoRA 내재화 · 정량 벤치마크 (ClashEval, WikiContradict) | 🔄 진행 예정 |
+
 <br/>
 
 ## 🔬 RAG Pipeline
