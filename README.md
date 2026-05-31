@@ -64,6 +64,10 @@ DPO(Direct Preference Optimization) + LoRA로 **Knowledge Conflict 처리 능력
 
 ## 🔬 RAG Pipeline
 
+<p align="center">
+  <img src="docs/assets/rag_diagram.png" alt="RAG Pipeline 다이어그램" width="600"/>
+</p>
+
 ```mermaid
 flowchart LR
     subgraph Input
@@ -146,6 +150,22 @@ flowchart LR
 > 설치 없이 바로 체험하려면 → **[📋 Self-Demo 가이드](self_demo.md)** 를 따라하세요.
 
 [![Quickstart Guide](https://img.shields.io/badge/📋_Quickstart_Guide-self__demo.md-2EA44F?style=for-the-badge)](self_demo.md)
+
+<div align="center">
+<img src="docs/assets/demo_screenshot.png" alt="HuggingFace Spaces 인터랙티브 데모" width="780"/>
+<br/><sub>🤗 HuggingFace Spaces — Base RAG vs Conflict-Aware Prompting 실시간 비교</sub>
+</div>
+
+<br/>
+
+<div align="center">
+<img src="docs/assets/bot_screenshot.png" alt="텔레그램 RAG 봇" width="340"/>
+&nbsp;&nbsp;&nbsp;
+<img src="docs/assets/web_screenshot.png" alt="연구 사이트 alltology.zapto.org" width="420"/>
+<br/><sub>✈️ 텔레그램 RAG 봇 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🌐 연구 사이트 alltology.zapto.org</sub>
+</div>
+
+<br/>
 
 | 방법 | 링크 | 설명 |
 |------|------|------|

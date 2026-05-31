@@ -65,7 +65,38 @@
 
 **관련 커밋:** `f9cff2f` ~ `6ce882a` (12개 커밋)
 
-### 1.4 데이터 구성 (예정)
+### 1.4 HuggingFace Spaces 인터랙티브 데모 구축
+
+| 항목 | 내용 |
+|------|------|
+| **사용 도구** | Claude Code (claude-sonnet-4-6) |
+| **활용 내용** | Gradio 기반 `app.py` 생성 — Base RAG vs Conflict-Aware Prompting 실시간 비교 데모. HuggingFace Spaces 배포, 연구 사이트(alltology.zapto.org) 연동 |
+| **인간 판단** | 데모 시나리오(Northwood Institute 충돌 케이스) 설계, 샘플 질문 선정, UI 구성 방향, 공개 범위 결정 |
+
+**관련 파일:** `app.py`, `data/sample_docs/example_conflict.txt`
+
+### 1.5 파일럿 실험 (API 모델 기반)
+
+| 항목 | 내용 |
+|------|------|
+| **사용 도구** | OpenAI gpt-4o-mini API, Anthropic claude-haiku API (LiteLLM 경유), Claude Code (실험 코드 작성) |
+| **활용 내용** | exp1~exp4 실험 설계 및 코드 작성: ClashEval 기반 거짓 문서 거부율 측정, A/B/C 타입 분해, temporal conflict 시나리오 구성 |
+| **인간 판단** | 실험 설계 방향 결정 (RQ와의 정합성 판단), 천장 효과 발견 후 exp3→exp4로 재설계, 결과 해석 (50%→83%, 75%→100% 의미 분석), Llama-8B 타겟 모델로의 방향 확정 |
+
+**핵심 발견 (인간 해석):** 강한 API 모델은 temporal conflict를 프롬프트 없이도 ~100% 처리 → Llama-8B가 본 연구의 실질 측정 대상임을 확정.  
+**관련 파일:** `experiments/2026-05-31/`, `experiments/api_pilot_2026-05-28/`
+
+### 1.6 레포 문서화 및 인간 친화적 구성
+
+| 항목 | 내용 |
+|------|------|
+| **사용 도구** | Claude Code (claude-sonnet-4-6) |
+| **활용 내용** | README 전면 재구성 (Why/Problem/Solution 플로우, mermaid 다이어그램, Tech Stack 배지), self_demo.md 작성 (단계별 시연 요령, 기업 문서 시나리오), verification_checklist.md 검증 기록 작성, docs/demo.md 실제 실행 결과 추가 |
+| **인간 판단** | 구성 방향 결정, 기업 문서 검색 시나리오 선정, 보안 정책(/whoami 안내) 방침 확정, PR 리뷰 및 머지 승인 |
+
+**관련 파일:** `README.md`, `self_demo.md`, `docs/demo.md`, `docs/verification_checklist.md`
+
+### 1.7 데이터 구성 (예정)
 
 | 항목 | 내용 |
 |------|------|
@@ -73,7 +104,7 @@
 | **활용 내용** | RAG-aware preference 데이터 자동 생성. chosen/rejected 쌍 생성으로 비용 효율성 확보 |
 | **인간 검증** | 데이터 샘플링 통한 품질, 정합성 검수 필수 |
 
-### 1.5 실험 설계 및 평가 (예정)
+### 1.8 실험 설계 및 평가 (진행 중)
 
 | 항목 | 내용 |
 |------|------|
@@ -81,7 +112,7 @@
 | **활용 내용** | Baseline vs Hybrid 대조군 설정 자문. Faithfulness Score 등 주관적 지표 평가. LLM-as-a-judge 방식 도입 |
 | **인간 검증** | RAGAS 지표와 병행 교차 검증 (RTX 3090 x 4 환경 고려) |
 
-### 1.6 Telegram 프로젝트 공유용 RAG 봇 개발/운영 개선
+### 1.9 Telegram 프로젝트 공유용 RAG 봇 개발/운영 개선
 
 | 항목 | 내용 |
 |------|------|
@@ -144,13 +175,14 @@
 
 | 도구 | 용도 | 활용 단계 |
 |------|------|-----------|
-| **Cursor (Claude Opus 4.6)** | 코드 생성, 리팩토링, 커밋 관리 | 구현, 구조 설계 |
+| **Claude Code (claude-sonnet-4-6)** | 코드 생성·리팩토링·커밋, README/문서 작성, 데모 구축 | 구현, 구조 설계, 문서화 |
 | **Claude 3.5 Sonnet** | 논문 분석, 방법론 정리 | 선행 연구 |
 | **NotebookLM** | 논문 기반 폐쇄형 질의응답 | 선행 연구 |
+| **OpenAI gpt-4o-mini** | 파일럿 실험 (exp1, api_pilot) | 실험 (상한선 측정) |
+| **Anthropic claude-haiku** | 파일럿 실험 (exp2~exp4) | 실험 (타입 분해) |
 | **ChatGPT-3.5** | preference 데이터 생성 (예정) | 데이터 구성 |
-| **GPT-4o** | 실험 설계 자문, LLM-as-a-judge (예정) | 실험 및 평가 |
-| **Gemini 1.5 Pro** | 평가 교차 검증 (예정) | 실험 및 평가 |
+| **GPT-4o** | LLM-as-a-judge (예정) | 실험 및 평가 |
 
 <div align=”center”>
-<sub>최종 업데이트: 2026-05-28</sub>
+<sub>최종 업데이트: 2026-06-01</sub>
 </div>
