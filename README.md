@@ -153,6 +153,7 @@ flowchart LR
 | 🤗 인터랙티브 데모 | [HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) | Base RAG vs Conflict-Aware 실시간 비교 |
 | ✈️ 텔레그램 봇 | [@alltology_rag_bot](https://t.me/alltology_rag_bot) | 저장소 문서 기반 RAG 챗봇 |
 | 🎬 데모 영상 | [youtu.be/qc0GkgJoBBk](https://youtu.be/qc0GkgJoBBk) | 전체 시연 영상 |
+| 📊 발표 슬라이드 | [Google Slides](https://docs.google.com/presentation/d/1mxabIcWOkVXfYbtppBo_TeJ6ah2Be-5RHgmoqRcUIaw/edit?usp=sharing) · [PDF](docs/presentation/presentation.pdf) · [Marp 원본](docs/presentation.md) | 기말 발표 자료 |
 
 **로컬 실행:**
 ```bash
