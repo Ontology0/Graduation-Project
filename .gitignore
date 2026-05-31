@@ -15,6 +15,11 @@ data/external/
 checkpoints/
 outputs/*
 !outputs/.gitkeep
+!outputs/runs/
+outputs/runs/*
+!outputs/runs/20260531T104426Z.json
+!outputs/runs/20260531T104426Z.md
+!outputs/.gitkeep
 
 # Ephemeral stdout captures at repo root (keep experiments/pilot results)
 e2e_out.txt
@@ -22,5 +27,5 @@ prompts_out.txt
 /e2e_result.txt
 
 wandb/
-runs/
+/runs/
 logs/
