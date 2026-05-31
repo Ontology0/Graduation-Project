@@ -141,7 +141,11 @@ flowchart LR
 
 <br/>
 
-## 🚀 체험하기
+## 🚀 Quickstart
+
+> 설치 없이 바로 체험하려면 → **[📋 Self-Demo 가이드](self_demo.md)** 를 따라하세요.
+
+[![Quickstart Guide](https://img.shields.io/badge/📋_Quickstart_Guide-self__demo.md-2EA44F?style=for-the-badge)](self_demo.md)
 
 | 방법 | 링크 | 설명 |
 |------|------|------|
@@ -149,7 +153,6 @@ flowchart LR
 | 🤗 인터랙티브 데모 | [HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) | Base RAG vs Conflict-Aware 실시간 비교 |
 | ✈️ 텔레그램 봇 | [@alltology_rag_bot](https://t.me/alltology_rag_bot) | 저장소 문서 기반 RAG 챗봇 |
 | 🎬 데모 영상 | [youtu.be/qc0GkgJoBBk](https://youtu.be/qc0GkgJoBBk) | 전체 시연 영상 |
-| 📋 체험 가이드 | [self_demo.md](self_demo.md) | 단계별 시연 요령 |
 
 **로컬 실행:**
 ```bash
@@ -159,6 +162,23 @@ pip install -r requirements.txt
 make demo          # Base RAG smoke test
 make demo-conflict # Base vs Conflict-Aware 비교
 ```
+
+<br/>
+
+## 📖 Deep into Research
+
+연구 설계와 구현의 상세 내용을 담은 문서입니다.
+
+| 문서 | 내용 |
+|------|------|
+| [🏗 Architecture](docs/architecture.md) | 시스템 구조 · 데이터 흐름 · 핵심 엔트리포인트 1페이지 요약 |
+| [🎬 Demo & Evidence](docs/demo.md) | CLI smoke test · 실제 실행 결과 · 파이프라인 동작 증빙 |
+| [✅ Verification Checklist](docs/verification_checklist.md) | 재현성 · 보안 · 운영 항목별 검증 기록 |
+| [🤖 AI 투명성 리포트](docs/ai_transparency_report.md) | AI 도구 활용 내역 · 인간 판단 영역 명시 |
+| [🗺 RQ ↔ 구현 매핑](docs/rq_to_implementation_map.md) | 연구 질문과 실제 코드의 1:1 대응 관계 |
+| [🔬 실험 설계](docs/experiment_design.md) | 5개 arm 비교 설계 · 데이터셋 · 평가 메트릭 |
+| [📚 관련 연구](docs/related_work.md) | PA-RAG · DPO · Knowledge Conflict 선행 연구 |
+| [📋 Project Brief](course/elevator_speech_team03.md) | 팀 소개 · 연구 방향 · 가치 제안 요약 |
 
 <br/>
 
@@ -175,24 +195,54 @@ make demo-conflict # Base vs Conflict-Aware 비교
 
 ## 📁 저장소 구조
 
-```
+```text
 Graduation-Project/
-├── src/rag/          # RAG 파이프라인 (Load→Chunk→Embed→Retrieve→Generate)
-├── src/chatbot/      # 텔레그램 RAG 봇
-├── src/training/     # DPO + LoRA 학습 (진행 중)
-├── src/evaluation/   # 평가 파이프라인 (진행 중)
-├── scripts/          # CLI 실행 엔트리포인트
-├── configs/          # 실험 YAML + 프롬프트 템플릿
-├── data/             # 스키마 · 샘플 문서 · 합성 데이터
-├── experiments/      # 파일럿 실험 결과 (날짜별)
-├── outputs/runs/     # 파이프라인 실행 결과물
-├── docs/             # 연구·운영 문서
-├── course/           # 수업 제출물 (Project Brief 포함)
-├── app.py            # HuggingFace Spaces 데모
-└── self_demo.md      # 방문자용 5분 체험 가이드
+├── src/
+│   ├── rag/                      # RAG 파이프라인 (핵심 구현)
+│   │   ├── pipeline.py           #   전체 파이프라인 오케스트레이터
+│   │   ├── document_loader.py    #   문서 로딩
+│   │   ├── chunker.py            #   텍스트 청킹
+│   │   ├── embedder.py           #   임베딩 생성
+│   │   ├── vector_store.py       #   FAISS 벡터 스토어
+│   │   ├── retriever.py          #   검색 모듈
+│   │   ├── prompt_builder.py     #   프롬프트 빌더
+│   │   ├── generator.py          #   LLM 생성 (HF / Anthropic)
+│   │   └── config.py             #   설정 로더
+│   ├── chatbot/
+│   │   └── telegram_bot.py       #   텔레그램 RAG 봇 (Railway 배포)
+│   ├── training/
+│   │   └── train.py              #   DPO + LoRA 학습 (진행 중)
+│   └── evaluation/
+│       └── evaluate.py           #   평가 파이프라인 (진행 중)
+├── scripts/
+│   ├── run_pipeline.py           # RAG 파이프라인 실행 CLI
+│   ├── run_batch.py              # 배치 실행
+│   └── telegram_bot.py           # 텔레그램 봇 엔트리포인트
+├── configs/
+│   ├── experiments/              # 실험 설정 YAML (rag_base, prompting, lora_*, rag_github_bot)
+│   └── prompts/                  # 프롬프트 템플릿 (base_rag, conflict_aware, judge, github_bot)
+├── data/
+│   ├── schema/                   # conflict·preference JSON Schema
+│   ├── sample_docs/              # smoke test용 샘플 문서
+│   ├── synthetic_conflicts/      # DPO 학습용 합성 conflict 데이터
+│   ├── synthetic/                # 합성 데이터 (예정)
+│   └── natural/                  # 자연 conflict 케이스 (예정)
+├── experiments/                  # 파일럿 실험 (날짜별 폴더)
+│   ├── 2026-05-31/               #   ClashEval 기반 exp1~4
+│   └── api_pilot_2026-05-28/    #   GPT-4o-mini API 파일럿
+├── outputs/
+│   └── runs/                     # 파이프라인 실행 결과물 (JSON / MD)
+├── docs/                         # 연구·운영 문서 (architecture, demo, verification 등)
+├── course/                       # 수업 제출물 (Project Brief, PMF, 팀 규칙 등)
+├── tests/                        # pytest 테스트 스위트
+├── app.py                        # HuggingFace Spaces Gradio 데모
+├── self_demo.md                  # 방문자용 5분 체험 가이드
+├── Makefile                      # make demo / make demo-conflict
+├── requirements.txt              # RAG 파이프라인 패키지
+├── requirements_bot.txt          # 텔레그램 봇 배포 전용 패키지
+├── Procfile                      # Railway 봇 배포 설정
+└── railway.json                  # Railway 배포 구성
 ```
-
-상세: [`docs/architecture.md`](docs/architecture.md) · [`docs/rq_to_implementation_map.md`](docs/rq_to_implementation_map.md)
 
 <br/>
 
