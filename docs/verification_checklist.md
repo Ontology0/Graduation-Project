@@ -8,9 +8,10 @@
 
 | 항목 | 검증일 | 검증자 | 환경 (OS / Python) | 결과 | Evidence (로그·경로·PR) |
 |------|--------|--------|---------------------|------|-------------------------|
-| 예: B. RAG CLI | YYYY-MM-DD | 이름 | macOS / 3.11 | Pass | `Saved run: JSON: outputs/runs/...` |
-| C. RAG CLI | 2026-05-31 | (네 이름) | Windows / 3.x | Pass | `outputs/runs/20260531T104426Z.json` |
-
+| C. RAG CLI | 2026-05-31 | bbberylll | Windows / 3.x | Pass | `outputs/runs/20260531T104426Z.json` |
+| C. RAG CLI smoke test | 2026-05-31 | 박세령 | macOS 24.6 / Python 3.12, phi-2 MPS | Pass | `outputs/runs/smoke_test_base_rag.json` |
+| C. Conflict 시나리오 (base) | 2026-05-31 | 박세령 | macOS 24.6 / Python 3.12, phi-2 MPS | Pass | `outputs/runs/smoke_test_conflict_base.json` |
+| C. Conflict 시나리오 (conflict-aware) | 2026-05-31 | 박세령 | macOS 24.6 / Python 3.12, phi-2 MPS | Pass | `outputs/runs/smoke_test_conflict_aware.json` |
 
 ## 사전 준비
 
@@ -72,8 +73,8 @@ pytest -q
 
 ### Preflight
 
-- [ ] `.env` 또는 환경 변수에 `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`가 설정되어 있다
-- [ ] `outputs/runs/` 디렉터리가 없으면 자동 생성되는지 확인 (또는 `mkdir -p outputs/runs`)
+- [x] `.env` 또는 환경 변수에 `ANTHROPIC_API_KEY`가 설정되어 있다 (HF 모델 사용 시 불필요)
+- [x] `outputs/runs/` 디렉터리가 없으면 자동 생성되는지 확인 → 자동 생성 확인
 
 > 메모: 로컬 phi-2 실행은 외부 API 키 불필요. `.env` 항목은 LLM API 백엔드 사용 시에만 해당.
 
@@ -92,7 +93,7 @@ python scripts/run_pipeline.py \
 - [x] 콘솔에 `Experiment:` / `Question:` / `Answer:` / `Sources:`가 출력된다
 - [x] `Saved run:` 아래 JSON·MD 경로가 출력된다
 - [x] 출력된 경로에 실제 파일이 생성된다 (`outputs/runs/<stem>.json`, `.md`)
-- [x] JSON에 `question`, `answer`, `retrieved_sources` (또는 동등 필드)가 포함된다
+- [x] JSON에 `question`, `predicted_answer`, `retrieved_sources` 필드가 포함된다
 
 **실패 시 점검:** API 키·요금 한도 · `requirements.txt` 설치 · `--verbose`로 임베딩/LLM 단계 로그 확인
 

@@ -48,11 +48,30 @@ Saved run:
 
 ## Evidence (captured example)
 
-> 아직 영상/스크린샷을 레포에 포함하지 않는 대신, **재현 가능한 관찰 포인트**를 고정합니다.  
-> 캡처를 추가할 경우, 개인키/토큰/챗ID 등 민감정보가 노출되지 않게 주의합니다.
+실제 로컬 실행 결과 (2026-05-31, macOS / Python 3.12, phi-2 on MPS):
 
-- CLI 실행 시 출력되는 “Saved run” 경로
-  - 예: `Saved run: JSON: outputs/runs/...  MD: outputs/runs/...`
+```
+Experiment: base_rag
+
+Question: What is knowledge conflict in RAG?
+
+Answer: Knowledge conflict in RAG refers to situations where there is a discrepancy
+between two pieces of information or sources that are related to each other. ...
+This conflict arises because the retrieved evidence contradicts the model's parametric answer.
+
+Sources:
+  - [knowledge_conflict.md#chunk0] (score: 0.6396)
+  - [README.md#chunk0] (score: 0.2724)
+  - [example_conflict.txt#chunk1] (score: 0.2633)
+  - [example_conflict.txt#chunk2] (score: 0.1863)
+  - [example_conflict.txt#chunk0] (score: 0.1748)
+
+Saved run:
+  - JSON: outputs/runs/smoke_test_base_rag.json
+  - MD:   outputs/runs/smoke_test_base_rag.md
+```
+
+결과 파일: [`outputs/runs/smoke_test_base_rag.json`](../outputs/runs/smoke_test_base_rag.json) · [`outputs/runs/smoke_test_base_rag.md`](../outputs/runs/smoke_test_base_rag.md)
 
 ## Demo goal (final presentation)
 
@@ -75,21 +94,24 @@ Show a **context–memory conflict** scenario where retrieved evidence and the m
 | Conflict-Aware RAG LoRA | `configs/experiments/lora_conflict_only.yaml` (when trained) |
 | Conflict-Aware PA-RAG LoRA | `configs/experiments/lora_conflict_parrag.yaml` (when trained) |
 
-## Demo result table (template; fill after runs)
+## Demo result table (pilot runs, 2026-05-31)
+
+질문: *"What color is the Northwood Institute mascot [after the 2019 revision]?"*  
+문서: `data/sample_docs/example_conflict.txt` (parametric=deep blue, retrieved=silver-green)
 
 | Method | Follows evidence? | States conflict? | Resolution correct? | Notes |
 |--------|-------------------|------------------|---------------------|-------|
-| Base RAG | TBD | TBD | TBD | |
-| Conflict-aware prompting | TBD | TBD | TBD | |
-| PA-RAG-style LoRA | TBD | TBD | TBD | |
-| Conflict-Aware RAG LoRA | TBD | TBD | TBD | |
-| Conflict-Aware PA-RAG LoRA | TBD | TBD | TBD | |
+| Base RAG | △ (silver-green 언급하나 확실히 선택 안 함) | ✅ 충돌 서술 | △ 불명확 | `outputs/runs/smoke_test_conflict_base.md` |
+| Conflict-aware prompting | ✅ retrieved 우선 | ✅ 충돌 명시 | ✅ | `outputs/runs/smoke_test_conflict_aware.md` |
+| PA-RAG-style LoRA | — | — | — | 학습 미완 |
+| Conflict-Aware RAG LoRA | — | — | — | 학습 미완 |
+| Conflict-Aware PA-RAG LoRA | — | — | — | 학습 미완 |
 
-*No numeric scores — fill after live demo runs.*
+*LoRA 결과는 학습 완료 후 업데이트 예정. 정량 RAGAS 스코어 미측정.*
 
 ## Demo video
 
-- **URL:** `TODO` (e.g., presentation recording link)
+- **URL:** https://youtu.be/qc0GkgJoBBk
 
 ## Notes for final presentation
 
