@@ -255,9 +255,17 @@ Graduation-Project/
 ├── docs/                         # 연구·운영 문서
 ├── course/                       # 수업 제출물
 ├── outputs/                      # 실험 산출물
-├── .env.example
+├── app.py                        # HuggingFace Spaces Gradio 데모 엔트리포인트
+├── self_demo.md                  # 평가자·방문자용 5분 체험 가이드
+├── .env.example                  # 환경변수 템플릿 (API 키·토큰)
 ├── pyproject.toml
-├── requirements.txt
+├── requirements.txt              # RAG 파이프라인·학습 패키지
+├── requirements_bot.txt          # Telegram 봇 배포 전용 패키지 (Railway)
+├── Procfile                      # Railway 봇 배포 프로세스 정의
+├── railway.json                  # Railway 배포 설정
+├── vercel.json                   # Vercel 데모 사이트 배포 설정
+├── CNAME                         # GitHub Pages 커스텀 도메인 (alltology.zapto.org)
+├── index.html                    # GitHub Pages 연구 소개 페이지
 └── README.md
 ```
 
