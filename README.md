@@ -128,7 +128,14 @@ flowchart LR
 
 **핵심 발견:** 강한 API 모델은 temporal conflict를 프롬프트 없이도 ~100% 처리 (천장 효과). → **Llama 3.1-8B에서 gap이 존재할 것으로 예상** — 본 연구의 핵심 측정 구간.
 
-파이프라인 실행 결과물: [`outputs/runs/`](outputs/runs/)
+파이프라인 실행 결과물 (직접 확인 가능):
+
+| 파일 | 내용 |
+|------|------|
+| [smoke_test_conflict_base.json](outputs/runs/smoke_test_conflict_base.json) | Base RAG 실행 결과 |
+| [smoke_test_conflict_aware.json](outputs/runs/smoke_test_conflict_aware.json) | Conflict-Aware RAG 실행 결과 |
+| [smoke_test_base_rag.json](outputs/runs/smoke_test_base_rag.json) | 단독 Base RAG smoke test |
+| [20260531T104426Z.json](outputs/runs/20260531T104426Z.json) | ClashEval 파일럿 배치 실행 결과 |
 
 <br/>
 
@@ -235,7 +242,7 @@ make demo-conflict # Base RAG vs Conflict-Aware 비교
 
 | 방향 | 내용 | 상태 |
 |------|------|:----:|
-| **DPO+LoRA 코드** | `src/training/train.py` dry-run 구현 · 1-step 체크포인트 확인 | ✅ dry-run 완료 |
+| **DPO+LoRA 코드** | `src/training/train.py` dry-run 구현 · [1-step 체크포인트](outputs/checkpoints/lora_conflict_only/training_log.jsonl) 확인 (`train_loss=0.693`, epoch=0.5) | ✅ dry-run 완료 |
 | **Llama 3.1-8B 대규모 학습** | 파일럿에서 확인한 gap을 타겟 모델에서 측정 · conflict 처리 lower bound 확보 | 🔄 Growth |
 | **DPO 학습 데이터 확장** | synthetic conflict JSONL 확장 + ClashEval 활용 · preference pair 품질 개선 | 🔄 Growth |
 | **정량 벤치마크** | WikiContradict · ClashEval 5-arm 비교 평가 | 🔄 Growth |
