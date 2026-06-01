@@ -7,8 +7,11 @@
 - **Conflict focus:** Primary research target is **context–memory conflict** (retrieved external context vs. internal/parametric knowledge).
 - **Preference format:** **Chosen/rejected pairs** for DPO-style training (see `data/schema/preference_pair.schema.json`).
 - **Compute strategy:** Primary training path is **DPO + LoRA**, not full fine-tuning as in original PA-RAG.
+- **TRL version (issue #54):** Pin `trl==0.9.6` in `requirements.txt` for stable `DPOTrainer` / `DPOConfig` API while wiring `src/training/train.py` (avoids unpinned `trl>=0.8.0` pulling breaking releases).
 - **Repository role:** This repo is a **research scaffold**; `src/rag/` is a first working draft; `src/training/` and `src/evaluation/` remain entrypoint scaffolds.
 - **Benchmark train/eval split (issue #55):** Documented in `docs/benchmark_selection.md`. **Train** = unambiguous DPO labels only (version/time authority, **true_doc vs. false_doc**, clear context–memory resolution). **Eval** = held-out quantitative partitions plus **controversial** slices (**false_doc-only**, **model_knows** / low-confidence parametric cases) and natural/debate sets (WikiContradict; CONFLICTS opinion/complementary types). **Reference-only:** CONFLICTS taxonomy for schema/judge; not bulk training. **Not train:** WikiContradict; ambiguous multi-answer conflicts. Preprocessing scripts and exact subset sizes are **not implemented** yet.
+- **LoRA DPO hyperparameters (issue #54):** rank 16, alpha 32, dropout 0.05, beta 0.1, learning rate `5e-6`, 1 epoch; 4-bit QLoRA via `src/training/train.py` scaffold. Rationale: LoRA adapters typically use a higher learning rate than full fine-tuning; PA-RAG full-FT DPO uses `2e-6` (paper reference).
+- **Multi-stage training order (issue #54, arm5):** **RI → RR → Conflict** in `configs/experiments/lora_conflict_parrag.yaml`. Rationale: PA-RAG Tables 3–4 show stage order matters for final performance; DPO is relatively robust to catastrophic forgetting when chaining stages (literature-level claim; no repo benchmark scores yet).
 
 ## Deferred (pending)
 - **Final evaluation metrics** (RAGAS subsets, conflict-resolution accuracy, LLM-judge rubric weights).
@@ -31,3 +34,5 @@
 | 2026-05 (paths) | `results/` → `outputs/`, prompts under `configs/prompts/` | Align docs and configs with `src/` layout |
 | 2026-05 (ops) | Telegram bot ops doc in `docs/telegram_bot_ops.md` | Keep README research-focused; document cost/security knobs separately |
 | 2026-06-01 | Benchmark train/eval split (#55) | Train/eval roles and principles in `benchmark_selection.md`; metrics/protocol still TBD |
+| 2026-06-01 | TRL version pin (#54) | `trl==0.9.6` in requirements; bitsandbytes added for QLoRA path |
+| 2026-06-01 | LoRA hyperparams + stage order (#54) | rank16/alpha32, lr 5e-6, RI→RR→Conflict per PA-RAG staging |
