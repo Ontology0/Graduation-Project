@@ -61,6 +61,26 @@ Self-evident resolution rules are required for **DPO train labels**: the preferr
 | **false_doc only + model_knows** (exp2 type A; `has_true_doc: false`) | Eval only (controversial) | No true passage in retrieval; label depends on whether to trust parametric knowledge vs. misleading context — priority is annotator- or rubric-dependent | Low — “context vs. parametric” trade-off is not self-evident |
 | **Debate / multi-answer** (WikiContradict; CONFLICTS opinion / complementary) | Eval only (controversial) | No single gold resolution; multiple defensible answers or stance aggregation | Low — not suitable for chosen/rejected DPO supervision |
 
+## Train Inclusion Criteria
+
+**Train (include in DPO preference construction)** — only when the resolution rule is **self-evident** from the conflict setup:
+
+- Version/time authority conflicts where the correct source is identifiable from document metadata or explicit dating.
+- Instances with **true_doc vs. false_doc** in retrieval (pilot exp2 type B; ClashEval-style perturbations with reliable gold).
+- Other context–memory pairs where a single resolution rule is fixed in the schema (see table above).
+
+**Eval only (exclude from train)** — when label reliability is low or multiple answers are valid:
+
+- **false_doc only** and **model_knows** slices (pilot exp2 type A): used for **capability mapping** and limitation analysis, not for preference learning.
+- Natural debate and opinion-style sets (WikiContradict; CONFLICTS opinion/complementary types).
+- Held-out quantitative partitions per benchmark — disjoint from train by question ID / domain (preprocess TBD).
+
+**Literature basis:** Following ClashEval (Wu et al., 2024), which constructs conflicts with **self-evident resolution** against parametric priors, we restrict DPO training to cases where chosen/rejected labels do not require subjective adjudication. Ambiguous slices remain for eval and qualitative error analysis.
+
+**Limitation:** Type A (`has_true_doc: false`, model_knows) cases measure whether the model defaults to context or memory when both are misleading or underspecified; they are **not** used to teach a single resolution policy.
+
+**Consistency:** This scoping matches the train/eval split recorded in issue **#55** (`docs/benchmark_selection.md`, `docs/decision_log.md`).
+
 ## Evaluation (TBD)
 
 - Quantitative metrics and judge protocol not finalized — see `benchmark_selection.md` and `src/evaluation/README.md`.
