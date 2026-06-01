@@ -1,0 +1,39 @@
+{
+  "question": "What color is the Northwood Institute mascot?",
+  "answer": "According to the context, the official mascot color of Northwood Institute in the \"Glass Harbor\" novel continuity was revised to silver-green in the 2019 appendix. However, earlier fan summaries often describe the color as deep blue based on pre-revision lore. Therefore, it is uncertain which color the mascot is currently.",
+  "retrieved_sources": [
+    {
+      "source": "example_conflict.txt#chunk0",
+      "score": 0.6777,
+      "text": "[FICTITIOUS EXAMPLE — not real facts]\n\nSource: fictional_corpus:NH-7\nTitle: Northwood Institute — Continuity Revision Appendix (2019)\n\nThe official mascot color of Northwood Institute in the \"Glass Ha"
+    },
+    {
+      "source": "example_conflict.txt#chunk1",
+      "score": 0.6005,
+      "text": "al mascot color of Northwood Institute in the \"Glass Harbor\" novel continuity was revised to silver-green in the 2019 appendix. Earlier fan summaries often describe the color as deep blue based on pre"
+    },
+    {
+      "source": "example_conflict.txt#chunk2",
+      "score": 0.1617,
+      "text": "wer that still says \"deep blue.\"\n\nResolution rule (annotation example):\nPrefer this retrieved appendix when the question targets post-2019 canon and source NH-7 is in context."
+    },
+    {
+      "source": "knowledge_conflict.md#chunk0",
+      "score": -0.0523,
+      "text": "# Knowledge conflict in RAG\n\nRAG에서 **knowledge conflict**는 서로 다른 문서/출처가 동일한 질문에 대해 상충하는 정보를 제공하는 상황을 말한다.\n예를 들어 어떤 문서는 “A가 맞다”라고 하고, 다른 문서는 “B가 맞다”라고 말할 수 있다.\n\n이럴 때 좋은 답변은\n- 출처를 명확히 인용하고\n- 충돌을 드러내며\n- "
+    },
+    {
+      "source": "README.md#chunk0",
+      "score": -0.0662,
+      "text": "# sample_docs\n\n텔레그램 RAG 봇/CLI를 바로 테스트하기 위한 아주 작은 샘플 문서 모음.\n\n"
+    }
+  ],
+  "generation_output": {
+    "text": "According to the context, the official mascot color of Northwood Institute in the \"Glass Harbor\" novel continuity was revised to silver-green in the 2019 appendix. However, earlier fan summaries often describe the color as deep blue based on pre-revision lore. Therefore, it is uncertain which color the mascot is currently.",
+    "model_name": "microsoft/phi-2",
+    "prompt_tokens": 926,
+    "generated_tokens": 68,
+    "metadata": {}
+  },
+  "config_name": "base_rag"
+}
