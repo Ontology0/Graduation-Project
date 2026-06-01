@@ -249,12 +249,15 @@ Graduation-Project/
 │   ├── rag/                      # RAG 파이프라인 (핵심 구현)
 │   │   ├── pipeline.py           #   전체 파이프라인 오케스트레이터
 │   │   ├── document_loader.py    #   문서 로딩
+│   │   ├── github_kb.py          #   GitHub repo KB ingest (Telegram 봇)
+│   │   ├── pilot_dataset.py      #   파일럿/배치용 데이터셋 헬퍼
 │   │   ├── chunker.py            #   텍스트 청킹
 │   │   ├── embedder.py           #   임베딩 생성
 │   │   ├── vector_store.py       #   FAISS 벡터 스토어
 │   │   ├── retriever.py          #   검색 모듈
 │   │   ├── prompt_builder.py     #   프롬프트 빌더
 │   │   ├── generator.py          #   LLM 생성 (HF / Anthropic)
+│   │   ├── reporting.py          #   실행 결과 JSON/MD 저장 (outputs/runs/)
 │   │   └── config.py             #   설정 로더
 │   ├── chatbot/
 │   │   └── telegram_bot.py       #   텔레그램 RAG 봇 (Railway 배포)
