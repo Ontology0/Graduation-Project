@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 from dataclasses import dataclass
@@ -13,7 +14,7 @@ from datasets import Dataset
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainerCallback
 
-from src.rag.config import resolve_path
+from src.rag.config import load_config, resolve_path
 from trl import DPOConfig, DPOTrainer
 
 logger = logging.getLogger(__name__)
@@ -194,6 +195,51 @@ def create_dpo_trainer(
     )
 
 
+def training_config_from_yaml(yaml_cfg: dict[str, Any]) -> TrainingConfig:
+    """Build TrainingConfig from an experiment YAML dict."""
+    training = yaml_cfg.get("training") or {}
+    preference_data = training.get("preference_data") or yaml_cfg.get("train_data_path")
+    model_name = yaml_cfg.get("model_name") or training.get("model_name") or "microsoft/phi-2"
+
+    payload: dict[str, Any] = {
+        "experiment_name": yaml_cfg.get("experiment_name", "default"),
+        "model_name": model_name,
+        "lora_rank": training.get("lora_rank", 16),
+        "lora_alpha": training.get("lora_alpha", 32),
+        "lora_dropout": training.get("lora_dropout", 0.05),
+        "learning_rate": training.get("learning_rate", 5e-5),
+        "batch_size": training.get("batch_size", 4),
+        "num_epochs": training.get("epochs", training.get("num_epochs", 3)),
+        "beta": training.get("beta", 0.1),
+        "max_length": training.get("max_length", 1024),
+    }
+    if preference_data:
+        payload["train_data_path"] = preference_data
+    return TrainingConfig.from_dict(payload)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="DPO + LoRA training entrypoint")
+    parser.add_argument(
+        "--config",
+        type=str,
+        default=None,
+        help="Experiment YAML (e.g. configs/experiments/lora_conflict_only.yaml)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="CPU smoke: phi-2, 2 pairs, few steps",
+    )
+    parser.add_argument(
+        "--max-steps",
+        type=int,
+        default=None,
+        help="Override training step count",
+    )
+    return parser.parse_args()
+
+
 def _limit_dataset(dataset: Dataset, limit: int) -> Dataset:
     if len(dataset) <= limit:
         return dataset
@@ -248,7 +294,17 @@ def run_training(
     }
 
 
-if __name__ == "__main__":
+def main() -> None:
     logging.basicConfig(level=logging.INFO)
-    result = run_training()
+    args = parse_args()
+    if args.config:
+        yaml_cfg = load_config(args.config)
+        config = training_config_from_yaml(yaml_cfg)
+    else:
+        config = TrainingConfig()
+    result = run_training(config, dry_run=args.dry_run, max_steps=args.max_steps)
     print(result)
+
+
+if __name__ == "__main__":
+    main()
