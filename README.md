@@ -228,6 +228,7 @@ make demo-conflict # Base RAG vs Conflict-Aware 비교
 
 | 문서 | 내용 |
 |------|------|
+| [📋 Project Brief](docs/project_brief.md) | 연구 동기 · 고객 · 솔루션 · 파일럿 결과 요약 |
 | [🏗 Architecture](docs/architecture.md) | 시스템 구조 · 데이터 흐름 · 핵심 엔트리포인트 1페이지 요약 |
 | [🎬 Demo & Evidence](docs/demo.md) | CLI smoke test · 실제 실행 결과 · 파이프라인 동작 증빙 |
 | [✅ Verification Checklist](docs/verification_checklist.md) | 재현성 · 보안 · 운영 항목별 검증 기록 |
@@ -352,3 +353,4 @@ main  ← 제출 / 배포 스냅샷
 *2026 이화여자대학교 캡스톤디자인*
 
 </div>
+
