@@ -27,6 +27,7 @@ pytest tests/test_prompt_builder.py -q
 | `test_prompt_builder.py` | `configs/prompts/*.md` 프롬프트 템플릿 로딩 검증 |
 | `test_schema_files.py` | `data/schema/*.json` JSON Schema 파일 파싱 가능 여부 검증 |
 | `test_run_batch.py` | pilot JSONL 로드·`Document` 변환·batch 출력 경로 헬퍼 검증 |
+| `test_telegram_format.py` | Telegram HTML 포맷 변환 (`src/chatbot/telegram_format.py`) |
 
 ---
 
