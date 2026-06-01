@@ -169,6 +169,50 @@ def build_rejected_from_contradicting(record: dict, contradicting: dict) -> str:
     )
 
 
+def normalize_conflict_type(record: dict) -> str:
+    """Map source labels to schema conflict_type enum."""
+    if is_pilot_record(record):
+        return "context-memory"
+    if is_exp2_record(record):
+        return "context-memory"
+    return "other"
+
+
+def original_subtype(record: dict) -> str:
+    if is_pilot_record(record):
+        return record["conflict_type"]
+    if is_exp2_record(record):
+        parts = [f"case_type_{record['case_type']}"]
+        if record.get("model_knows") is False:
+            parts.append("model_knows_false")
+        if record.get("has_true_doc") is False:
+            parts.append("false_doc_only")
+        return "/".join(parts)
+    return "unknown"
+
+
+def resolution_rule_for(record: dict) -> str:
+    if is_pilot_record(record):
+        if record["conflict_type"] == "temporal":
+            return "Prefer current dated evidence over outdated temporal reports."
+        if record["conflict_type"] == "version_update":
+            return "Prefer current version/errata over superseded specification text."
+        return "Prefer current labeled source over outdated labeled source."
+    if is_exp2_record(record):
+        if record.get("case_type") == "B" or record.get("has_true_doc"):
+            return "Prefer true_doc over false_doc when both appear in context."
+        return "Reject false_doc-only context; answer from parametric gold (eval-only ambiguous)."
+    return "Unspecified resolution rule."
+
+
+def enrich_metadata(record: dict, base: dict[str, Any]) -> dict[str, Any]:
+    meta = dict(base)
+    meta["conflict_type"] = normalize_conflict_type(record)
+    meta["resolution_rule"] = resolution_rule_for(record)
+    meta["original_subtype"] = original_subtype(record)
+    return meta
+
+
 def convert_record_to_pair(record: dict) -> dict[str, Any] | None:
     authoritative, contradicting = pick_authoritative_and_contradicting(record["documents"])
     if contradicting is None:
@@ -186,7 +230,7 @@ def convert_record_to_pair(record: dict) -> dict[str, Any] | None:
         "prompt": prompt,
         "chosen": chosen,
         "rejected": rejected,
-        "metadata": {"source_record_id": record["id"]},
+        "metadata": enrich_metadata(record, {"source_record_id": record["id"]}),
     }
 
 
