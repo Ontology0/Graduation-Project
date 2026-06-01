@@ -81,6 +81,19 @@ def build_bnb_config() -> BitsAndBytesConfig:
     )
 
 
+def load_model_for_dry_run(model_name: str):
+    """Load a small model on CPU for smoke tests (no 4-bit)."""
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        torch_dtype=torch.float32,
+        device_map="cpu",
+    )
+    return model, tokenizer
+
+
 def load_model_4bit(model_name: str):
     """Load a causal LM in 4-bit for QLoRA training."""
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -181,7 +194,18 @@ def create_dpo_trainer(
     )
 
 
-def run_training(config: TrainingConfig | None = None) -> dict:
+def _limit_dataset(dataset: Dataset, limit: int) -> Dataset:
+    if len(dataset) <= limit:
+        return dataset
+    return dataset.select(range(limit))
+
+
+def run_training(
+    config: TrainingConfig | None = None,
+    *,
+    dry_run: bool = False,
+    max_steps: int | None = None,
+) -> dict:
     """Run DPO + LoRA fine-tuning."""
     config = config or TrainingConfig()
 
@@ -189,7 +213,14 @@ def run_training(config: TrainingConfig | None = None) -> dict:
     logger.info("Loaded %d preference pairs from %s", len(train_dataset), config.train_data_path)
 
     checkpoint_dir = checkpoint_dir_for(config)
-    model, tokenizer = load_model_4bit(config.model_name)
+    steps = max_steps if max_steps is not None else (2 if dry_run else None)
+
+    if dry_run:
+        train_dataset = _limit_dataset(train_dataset, 2)
+        model, tokenizer = load_model_for_dry_run(config.model_name)
+    else:
+        model, tokenizer = load_model_4bit(config.model_name)
+
     model = apply_lora(model, config)
     trainer = create_dpo_trainer(
         model,
@@ -197,16 +228,17 @@ def run_training(config: TrainingConfig | None = None) -> dict:
         train_dataset,
         config,
         checkpoint_dir,
+        max_steps=steps,
     )
     trainer.train()
-    # transformers writes trainer_state.json under output_dir by default
     trainer_state_path = checkpoint_dir / "trainer_state.json"
 
     return {
-        "status": "completed",
+        "status": "dry_run_completed" if dry_run else "completed",
         "checkpoint_dir": str(checkpoint_dir),
         "trainer_state": str(trainer_state_path) if trainer_state_path.exists() else None,
         "num_rows": len(train_dataset),
+        "max_steps": steps,
         "config": {
             "model": config.model_name,
             "lora_rank": config.lora_rank,
