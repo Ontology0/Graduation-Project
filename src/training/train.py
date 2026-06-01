@@ -14,6 +14,7 @@ from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 from src.rag.config import resolve_path
+from trl import DPOConfig, DPOTrainer
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,7 @@ class TrainingConfig:
     max_length: int = 1024
     beta: float = 0.1  # DPO beta parameter
     output_dir: str = "outputs/checkpoints"
+    experiment_name: str = "default"
     train_data_path: str = "data/synthetic_conflicts/preference_pairs_train.jsonl"
 
     @classmethod
@@ -113,20 +115,76 @@ def apply_lora(model, config: TrainingConfig):
     return get_peft_model(model, lora_config)
 
 
-def run_training(config: TrainingConfig | None = None) -> dict:
-    """Run DPO + LoRA fine-tuning.
+def checkpoint_dir_for(config: TrainingConfig) -> Path:
+    path = resolve_path(config.output_dir) / config.experiment_name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
-    Currently loads preference data only; training loop wired in later commits.
-    """
+
+def build_dpo_config(
+    config: TrainingConfig,
+    output_dir: Path,
+    *,
+    max_steps: int | None = None,
+) -> DPOConfig:
+    kwargs: dict[str, Any] = {
+        "output_dir": str(output_dir),
+        "per_device_train_batch_size": config.batch_size,
+        "learning_rate": config.learning_rate,
+        "num_train_epochs": config.num_epochs,
+        "beta": config.beta,
+        "max_length": config.max_length,
+        "logging_steps": 10,
+        "save_steps": 500,
+        "report_to": [],
+    }
+    if max_steps is not None:
+        kwargs["max_steps"] = max_steps
+    return DPOConfig(**kwargs)
+
+
+def create_dpo_trainer(
+    model,
+    tokenizer,
+    train_dataset: Dataset,
+    config: TrainingConfig,
+    output_dir: Path,
+    *,
+    max_steps: int | None = None,
+) -> DPOTrainer:
+    training_args = build_dpo_config(config, output_dir, max_steps=max_steps)
+    return DPOTrainer(
+        model=model,
+        ref_model=None,
+        args=training_args,
+        train_dataset=train_dataset,
+        tokenizer=tokenizer,
+    )
+
+
+def run_training(config: TrainingConfig | None = None) -> dict:
+    """Run DPO + LoRA fine-tuning."""
     config = config or TrainingConfig()
 
     train_dataset = load_preference_dataset(config.train_data_path)
     logger.info("Loaded %d preference pairs from %s", len(train_dataset), config.train_data_path)
 
+    checkpoint_dir = checkpoint_dir_for(config)
+    model, tokenizer = load_model_4bit(config.model_name)
+    model = apply_lora(model, config)
+    trainer = create_dpo_trainer(
+        model,
+        tokenizer,
+        train_dataset,
+        config,
+        checkpoint_dir,
+    )
+    trainer.train()
+
     return {
-        "status": "data_loaded",
+        "status": "completed",
+        "checkpoint_dir": str(checkpoint_dir),
         "num_rows": len(train_dataset),
-        "columns": train_dataset.column_names,
         "config": {
             "model": config.model_name,
             "lora_rank": config.lora_rank,
