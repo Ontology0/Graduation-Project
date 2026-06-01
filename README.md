@@ -279,8 +279,9 @@ Graduation-Project/
 │   ├── synthetic/                # 합성 데이터 (예정)
 │   └── natural/                  # 자연 conflict 케이스 (예정)
 ├── experiments/                  # 파일럿 실험 (날짜별 폴더)
-│   ├── 2026-05-31/               #   ClashEval 기반 exp1~4
-│   └── api_pilot_2026-05-28/    #   GPT-4o-mini API 파일럿
+│   ├── pilot_2026-05-26/        #   로컬 sanity-check (config·prompt·batch 배선)
+│   ├── api_pilot_2026-05-28/    #   GPT-4o-mini API 파일럿
+│   └── 2026-05-31/              #   ClashEval 기반 exp1~4
 ├── outputs/
 │   └── runs/                     # 파이프라인 실행 결과물 (JSON / MD)
 ├── docs/                         # 연구·운영 문서 (architecture, demo, verification 등)
