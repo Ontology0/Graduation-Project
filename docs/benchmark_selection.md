@@ -1,14 +1,15 @@
-# Benchmark Selection (Draft)
+# Benchmark Selection
 
-> **Final decision:** **pending** for train/eval split. Candidate **metadata** (license · scale · conflict types) reviewed below (issue #55).
+> **Status (issue #55):** Train/eval roles and split principles are **decided** below. Per-dataset download paths, exact subset sizes, and preprocessing scripts are **not implemented** in this repo yet — no benchmark scores are reported.
 
 ## Role legend
 
 | Role | Meaning |
 |------|---------|
-| **Train candidate** | May supply DPO pairs or conflict annotations with relatively clear resolution |
-| **Eval candidate** | Held-out quantitative evaluation |
-| **Reference** | Schema, conflict types, or qualitative analysis only |
+| **Train** | DPO preference pairs or conflict annotations with **unambiguous** resolution (clear chosen/rejected) |
+| **Eval (quantitative)** | Held-out instances for leaderboard-style metrics |
+| **Eval (qualitative)** | Natural or debate-style conflicts for limitation / transfer analysis |
+| **Reference** | Taxonomy, schema fields, or rubric design — not primary train/eval data |
 
 ## Candidate review (license · scale · conflict type)
 
@@ -34,14 +35,14 @@ Sources: NeurIPS / arXiv papers and official GitHub or Hugging Face dataset card
 #### ConflictBank
 
 - **Conflict focus:** Broader than context–memory only (includes semantic polysemy and pre-training-style embedded conflicts).
-- **Train use (candidate):** Prefer **temporal_conflict** and high-confidence **misinformation** slices where newer fact or false claim is structurally labeled; avoid dumping full 7M pairs.
-- **Eval use (candidate):** Held-out QA partition by conflict cause or Wikidata entity cluster (protocol TBD in `src/evaluation/`).
+- **Train use:** Prefer **temporal_conflict** and high-confidence **misinformation** slices where newer fact or false claim is structurally labeled; avoid dumping full 7M pairs.
+- **Eval use:** Held-out QA partition by conflict cause or Wikidata entity cluster (protocol TBD in `src/evaluation/`).
 
 #### WikiContradict
 
 - **Conflict focus:** Real Wikipedia maintenance contradictions; often **no single authoritative answer**.
-- **Not for train (candidate):** Ambiguous resolution violates “unambiguous ground truth” principle.
-- **Eval use (candidate):** Natural generalization / limitation section (`data/natural/` planned role).
+- **Not for train:** Ambiguous resolution violates “unambiguous ground truth” principle.
+- **Eval use:** Natural generalization / limitation section (`data/natural/` planned role).
 
 #### CONFLICTS (DRAGged into Conflicts)
 
@@ -71,8 +72,40 @@ Sources: NeurIPS / arXiv papers and official GitHub or Hugging Face dataset card
 | ConflictQA | ICLR 2024 — [HF](https://huggingface.co/datasets/osunlp/ConflictQA) |
 | ConFiQA | ACL 2025 Findings (Context-DPO) — [arXiv:2412.15280](https://arxiv.org/abs/2412.15280) |
 
-## Principles (draft)
+## Train / eval split (decided)
+
+### Training data — unambiguous resolution only
+
+Use instances where **chosen vs. rejected** is structurally justified without human debate:
+
+| Signal | Description | Primary sources |
+|--------|-------------|-----------------|
+| **Version / time** | Newer authoritative fact vs. outdated context (prefer external when current and sourced) | ConflictBank `temporal_conflict`; ClashEval domains with dated facts; CONFLICTS “freshness” **only** where annotator gold answer exists |
+| **true_doc vs. false_doc** | Retrieved passage explicitly true or false relative to fixed `gold` / `ground_truth` | ClashEval perturbations; pilot JSONL (`has_true_doc`, `stance`); ConflictQA / ConFiQA where counterfactual is marked; ConflictBank misinformation slice |
+| **Clear context-over-memory or memory-over-context** | Single correct resolution rule per item (e.g., reject blatant false doc; follow true doc when parametric is wrong) | ClashEval; ConFiQA faithful vs. stubborn pairs; ConflictQA with verified `ground_truth` |
+
+**Excluded from train:** WikiContradict; CONFLICTS **conflicting opinions** and **complementary information** (multi-answer or debate-style); ClashEval items without reliable gold; any instance requiring subjective judge agreement.
+
+**Scale control:** ConflictBank and ConFiQA via **fixed subsets** (seed + document in preprocessing scripts when implemented) — not full corpus.
+
+### Evaluation data — held-out + controversial
+
+| Bucket | Description | Primary sources |
+|--------|-------------|-----------------|
+| **Held-out quantitative** | Disjoint from train by **question ID**, **domain**, or **entity cluster**; same metrics as train-eligible slices but no overlap | ClashEval / ConflictBank / ConflictQA / ConFiQA holdout partitions (split specs TBD at preprocess time) |
+| **false_doc only** | Context contains **only false** supporting doc (+ distractors); tests rejection without true passage in retrieval (`has_true_doc: false`, case type A in pilot) | ClashEval-style eval; pilot `clash_conflicts_v2.jsonl` |
+| **model_knows / low confidence** | Model likely knows gold (`model_knows: true`) vs. **counterintuitive** or low-parametric-confidence items (`model_knows: false`) — controversial adherence | ClashEval confidence analyses; pilot case types; ConflictQA popularity strata |
+| **Natural / debate** | Ambiguous or multi-valid answers; qualitative error analysis | WikiContradict; CONFLICTS conflicting opinions & complementary (expected-behavior metrics, not single-label accuracy) |
+
+### Split hygiene (implementation pending)
+
+- Record `split`, `source_dataset`, and `split_rationale` on each exported row (see `data/schema/`).
+- No test labels in training checkpoints; eval sets frozen before DPO runs.
+- Document actual counts in run reports under `outputs/runs/` when pipelines exist — **do not fabricate numbers here**.
+
+## Principles
 
 - Prefer **unambiguous ground truth** for **training** preference pairs.
-- Reserve **ambiguous natural** conflicts for **limitation analysis** and case studies (`data/natural/`).
-- Document final train/eval split in `decision_log.md` when confirmed.
+- Reserve **ambiguous natural** and **opinion-style** conflicts for **eval (qualitative)** and limitation analysis (`data/natural/`).
+- **Context–memory** remains the thesis focus; ConflictBank semantic/inter-context slices are auxiliary unless explicitly scoped in an experiment arm.
+- Final rationale mirrored in `docs/decision_log.md` (Benchmark lock entry).
