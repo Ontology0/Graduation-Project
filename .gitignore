@@ -16,6 +16,11 @@ checkpoints/
 outputs/*
 !outputs/.gitkeep
 !outputs/runs/
+# Training checkpoint weights (never commit; see experiment README for adapter distribution)
+outputs/checkpoints/**/*.safetensors
+outputs/checkpoints/**/*.bin
+outputs/checkpoints/**/pytorch_model*
+outputs/checkpoints/**/model*.safetensors
 outputs/runs/*
 !outputs/runs/*.json
 !outputs/runs/*.md
