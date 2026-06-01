@@ -37,6 +37,34 @@ class EvalCase:
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
+def normalize_text(text: str) -> str:
+    """Normalize text for substring matching (exp2 clasheval_v2 style)."""
+    lowered = text.lower()
+    for token in ("approximately", "about", ","):
+        lowered = lowered.replace(token, "")
+    return " ".join(lowered.split())
+
+
+def contains_target(answer: str, target: str) -> bool:
+    """True if ``target`` appears in ``answer`` (token fallback for short gold spans)."""
+    if not target or not target.strip():
+        return False
+    answer_norm = normalize_text(answer)
+    target_norm = normalize_text(target)
+    if target_norm in answer_norm:
+        return True
+    tokens = [tok for tok in target_norm.split() if len(tok) > 2]
+    return bool(tokens) and all(tok in answer_norm for tok in tokens)
+
+
+def conflict_resolution_accuracy(rows: list[dict[str, Any]]) -> float:
+    """Fraction of answers containing the authoritative gold substring."""
+    if not rows:
+        return 0.0
+    hits = sum(1 for row in rows if row.get("true_hit"))
+    return hits / len(rows)
+
+
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     with path.open(encoding="utf-8") as handle:
@@ -100,6 +128,17 @@ def adapter_dir_for(arm: str, yaml_cfg: dict[str, Any]) -> Path | None:
     return None
 
 
+def annotate_scoring_fields(row: dict[str, Any]) -> dict[str, Any]:
+    """Add true_hit / correct flags using gold_answer substring match."""
+    predicted = row["predicted_answer"]
+    gold = row["gold_answer"]
+    true_hit = contains_target(predicted, gold)
+    annotated = dict(row)
+    annotated["true_hit"] = true_hit
+    annotated["correct"] = true_hit
+    return annotated
+
+
 def predict_placeholder(arm: str, case: EvalCase, yaml_cfg: dict[str, Any]) -> str:
     """Arm-specific generation placeholder until full RAG/LoRA inference is wired."""
     adapter = adapter_dir_for(arm, yaml_cfg)
@@ -136,8 +175,9 @@ def run_arm(
                 "case_type": case.case_type,
                 "metadata": case.metadata,
             }
-            rows.append(row)
-            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+            scored = annotate_scoring_fields(row)
+            rows.append(scored)
+            handle.write(json.dumps(scored, ensure_ascii=False) + "\n")
 
     summary = {
         "arm": arm,
@@ -145,7 +185,9 @@ def run_arm(
         "model_name": yaml_cfg.get("model_name"),
         "adapter_dir": str(adapter_dir_for(arm, yaml_cfg) or ""),
         "num_cases": len(rows),
-        "metrics": {},
+        "metrics": {
+            "conflict_resolution_accuracy": conflict_resolution_accuracy(rows),
+        },
         "by_case_type": {},
     }
     summary_path = output_dir / "summary.json"
