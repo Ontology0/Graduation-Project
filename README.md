@@ -222,7 +222,6 @@ make demo-conflict # Base RAG vs Conflict-Aware 비교
 | [🗺 RQ ↔ 구현 매핑](docs/rq_to_implementation_map.md) | 연구 질문과 실제 코드의 1:1 대응 관계 |
 | [🔬 실험 설계](docs/experiment_design.md) | 5개 arm 비교 설계 · 데이터셋 · 평가 메트릭 |
 | [📚 관련 연구](docs/related_work.md) | PA-RAG · DPO · Knowledge Conflict 선행 연구 |
-| [📋 Project Brief](course/elevator_speech_team03.md) | 팀 소개 · 연구 방향 · 가치 제안 요약 |
 | [📊 Benchmark selection](docs/benchmark_selection.md) | 벤치마크 후보 검토 및 train/eval split (**#55 반영**) |
 | [📝 Decision log](docs/decision_log.md) | 확정·보류·제외 결정 |
 
