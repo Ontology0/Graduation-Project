@@ -69,6 +69,8 @@ DPO(Direct Preference Optimization) + LoRA로 **Knowledge Conflict 처리 능력
 | **Start** (이번 학기) | Knowledge Conflict 문제 정의 · Base RAG vs Conflict-Aware Prompting 파일럿 실험 · 문제 존재 및 개선 가능성 검증 | ✅ 완료 |
 | **Growth** (확장 방향) | Llama 3.1-8B 기반 DPO + LoRA 내재화 · 정량 벤치마크 (ClashEval, WikiContradict) | 🔄 진행 예정 |
 
+> **이번 학기 평가 대상 범위:** 본 프로젝트는 Start 트랙으로, DPO+LoRA 최종 학습 성능 검증이 아니라 Knowledge Conflict 문제 정의, RAG 파이프라인 구현, Base RAG vs Conflict-Aware Prompting 파일럿 실험, 데모 검증을 완료 범위로 한다. DPO+LoRA 코드는 dry-run 수준에서 동작 확인이 완료되었으며, 대규모 학습 및 정량 벤치마크는 Growth 방향이다.
+
 <br/>
 
 ## 🔬 RAG Pipeline
@@ -136,9 +138,9 @@ flowchart LR
 
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
 ![HuggingFace](https://img.shields.io/badge/🤗_Transformers-FFD21E?style=flat-square)
-![LoRA](https://img.shields.io/badge/LoRA_PEFT_(scaffold)-8A2BE2?style=flat-square)
-![DPO](https://img.shields.io/badge/DPO_TRL_(scaffold)-412991?style=flat-square)
-![Llama](https://img.shields.io/badge/Llama_3.1--8B_(scaffold)-0467DF?style=flat-square)
+![LoRA](https://img.shields.io/badge/LoRA_PEFT_(dry--run)-8A2BE2?style=flat-square)
+![DPO](https://img.shields.io/badge/DPO_TRL_(dry--run)-412991?style=flat-square)
+![Llama](https://img.shields.io/badge/Llama_3.1--8B_(dry--run)-0467DF?style=flat-square)
 
 **RAG / 검색**
 
@@ -181,7 +183,7 @@ flowchart LR
 | 🌐 연구 사이트 | [alltology.zapto.org](http://alltology.zapto.org) | 연구 소개 · 팀 정보 |
 | 🤗 인터랙티브 데모 | [HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) | Base RAG vs Conflict-Aware 실시간 비교 |
 | ✈️ 텔레그램 봇 | [@alltology_rag_bot](https://t.me/alltology_rag_bot) | 저장소 문서 기반 RAG 챗봇 |
-| 🎬 데모 영상 | [youtu.be/qc0GkgJoBBk](https://youtu.be/qc0GkgJoBBk) | 전체 시연 영상 |
+| 🎬 데모 영상 | [YouTube 시연 영상](https://youtu.be/qc0GkgJoBBk) | 전체 시연 영상 |
 | 📊 발표 슬라이드 | [Google Slides](https://docs.google.com/presentation/d/1mxabIcWOkVXfYbtppBo_TeJ6ah2Be-5RHgmoqRcUIaw/edit?usp=sharing) · [PDF](docs/presentation/presentation.pdf) · [Marp 원본](docs/presentation.md) | 기말 발표 자료 |
 
 **로컬 실행:**
@@ -231,12 +233,12 @@ make demo-conflict # Base RAG vs Conflict-Aware 비교
 
 ## 🗺 What's Next
 
-| 방향 | 내용 | 기대 효과 |
-|------|------|----------|
-| **Llama 3.1-8B 실험** | 파일럿에서 확인한 gap을 타겟 모델에서 측정 | conflict 처리 lower bound 확보, DPO 학습 기준선 설정 |
-| **DPO 학습 데이터 구축** | synthetic conflict JSONL 확장 + ClashEval 활용 | preference pair 품질이 학습 효과 직결 |
-| **LoRA Fine-tuning** | Conflict-Aware PA-RAG LoRA (제안 방법 5번 arm) 학습 | 프롬프트 없이도 충돌 처리 능력 내재화 |
-| **정량 벤치마크** | WikiContradict · ClashEval 평가 | 제안 방법의 일반화 성능 검증 |
+| 방향 | 내용 | 상태 |
+|------|------|:----:|
+| **DPO+LoRA 코드** | `src/training/train.py` dry-run 구현 · 1-step 체크포인트 확인 | ✅ dry-run 완료 |
+| **Llama 3.1-8B 대규모 학습** | 파일럿에서 확인한 gap을 타겟 모델에서 측정 · conflict 처리 lower bound 확보 | 🔄 Growth |
+| **DPO 학습 데이터 확장** | synthetic conflict JSONL 확장 + ClashEval 활용 · preference pair 품질 개선 | 🔄 Growth |
+| **정량 벤치마크** | WikiContradict · ClashEval 5-arm 비교 평가 | 🔄 Growth |
 
 <br/>
 
@@ -261,9 +263,9 @@ Graduation-Project/
 │   ├── chatbot/
 │   │   └── telegram_bot.py       #   텔레그램 RAG 봇 (Railway 배포)
 │   ├── training/
-│   │   └── train.py              #   DPO + LoRA 학습 (진행 중)
+│   │   └── train.py              #   DPO+LoRA dry-run 구현 완료 · 정식 대규모 학습은 Growth 범위
 │   └── evaluation/
-│       └── evaluate.py           #   평가 파이프라인 (진행 중)
+│       └── evaluate.py           #   5-arm 평가 하네스 구현 완료 · 정식 벤치마크 평가는 Growth 범위
 ├── scripts/
 │   ├── run_pipeline.py           # RAG 파이프라인 실행 CLI
 │   ├── run_batch.py              # 배치 실행
@@ -282,7 +284,8 @@ Graduation-Project/
 │   ├── api_pilot_2026-05-28/    #   GPT-4o-mini API 파일럿
 │   └── 2026-05-31/              #   ClashEval 기반 exp1~4
 ├── outputs/
-│   └── runs/                     # 파이프라인 실행 결과물 (JSON / MD)
+│   ├── runs/                     # 파이프라인 실행 결과물 (JSON / MD)
+│   └── checkpoints/              # DPO+LoRA dry-run 체크포인트
 ├── docs/                         # 연구·운영 문서 (architecture, demo, verification 등)
 ├── course/                       # 수업 제출물 (Project Brief, PMF, 팀 규칙 등)
 ├── tests/                        # pytest 테스트 스위트
