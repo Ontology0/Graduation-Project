@@ -8,7 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import torch
 from datasets import Dataset
+from peft import prepare_model_for_kbit_training
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 from src.rag.config import resolve_path
 
@@ -55,6 +58,30 @@ def load_preference_dataset(path: str | Path) -> Dataset:
                 }
             )
     return Dataset.from_list(rows)
+
+
+def build_bnb_config() -> BitsAndBytesConfig:
+    return BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16,
+    )
+
+
+def load_model_4bit(model_name: str):
+    """Load a causal LM in 4-bit for QLoRA training."""
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    bnb_config = build_bnb_config()
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        quantization_config=bnb_config,
+        device_map="auto",
+    )
+    model = prepare_model_for_kbit_training(model)
+    return model, tokenizer
 
 
 def run_training(config: TrainingConfig | None = None) -> dict:
