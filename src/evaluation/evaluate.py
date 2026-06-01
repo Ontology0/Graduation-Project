@@ -101,6 +101,41 @@ def abstention_rate(rows: list[dict[str, Any]]) -> float:
     return sum(1 for row in rows if row.get("abstention")) / len(rows)
 
 
+def metrics_for_rows(rows: list[dict[str, Any]]) -> dict[str, float]:
+    return {
+        "conflict_resolution_accuracy": conflict_resolution_accuracy(rows),
+        "false_doc_follow_rate": false_doc_follow_rate(rows),
+        "abstention_rate": abstention_rate(rows),
+        "count": float(len(rows)),
+    }
+
+
+def aggregate_by_case_type(rows: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
+    """Per case_type metric breakdown for capability mapping."""
+    buckets: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        case_type = row.get("case_type") or "unknown"
+        buckets.setdefault(case_type, []).append(row)
+    return {case_type: metrics_for_rows(bucket_rows) for case_type, bucket_rows in sorted(buckets.items())}
+
+
+def build_capability_map(by_case_type: dict[str, dict[str, float]]) -> dict[str, str]:
+    """Summarize which conflict types meet a resolution-accuracy threshold."""
+    capability: dict[str, str] = {}
+    threshold = 0.5
+    for case_type, metrics in by_case_type.items():
+        accuracy = metrics.get("conflict_resolution_accuracy", 0.0)
+        if metrics.get("count", 0) == 0:
+            capability[case_type] = "no_cases"
+        elif accuracy >= threshold:
+            capability[case_type] = "handled"
+        elif accuracy > 0:
+            capability[case_type] = "partial"
+        else:
+            capability[case_type] = "not_handled"
+    return capability
+
+
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     with path.open(encoding="utf-8") as handle:
@@ -220,18 +255,16 @@ def run_arm(
             rows.append(scored)
             handle.write(json.dumps(scored, ensure_ascii=False) + "\n")
 
+    by_case_type = aggregate_by_case_type(rows)
     summary = {
         "arm": arm,
         "experiment_name": yaml_cfg.get("experiment_name"),
         "model_name": yaml_cfg.get("model_name"),
         "adapter_dir": str(adapter_dir_for(arm, yaml_cfg) or ""),
         "num_cases": len(rows),
-        "metrics": {
-            "conflict_resolution_accuracy": conflict_resolution_accuracy(rows),
-            "false_doc_follow_rate": false_doc_follow_rate(rows),
-            "abstention_rate": abstention_rate(rows),
-        },
-        "by_case_type": {},
+        "metrics": metrics_for_rows(rows),
+        "by_case_type": by_case_type,
+        "capability_map": build_capability_map(by_case_type),
     }
     summary_path = output_dir / "summary.json"
     summary_path.write_text(
