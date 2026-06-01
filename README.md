@@ -12,6 +12,10 @@
 [![Demo Site](https://img.shields.io/badge/🌐_연구_사이트-alltology.zapto.org-4A90D9?style=for-the-badge)](http://alltology.zapto.org)
 [![Telegram](https://img.shields.io/badge/✈️_Telegram_RAG봇-@alltology__rag__bot-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/alltology_rag_bot)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+[![Contributing](https://img.shields.io/badge/Contributing-Guide-4CAF50?style=flat-square)](CONTRIBUTING.md)
+[![Tests](https://img.shields.io/badge/Tests-pytest-orange?style=flat-square)](tests/)
+
 <br/>
 
 **2026 이화여자대학교 캡스톤디자인 · 03팀 Alltology · 연구 트랙 · 지도교수: 황의원 교수님**
