@@ -10,12 +10,22 @@ from typing import Any
 
 import torch
 from datasets import Dataset
-from peft import prepare_model_for_kbit_training
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 from src.rag.config import resolve_path
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_LORA_TARGET_MODULES = [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj",
+]
 
 
 @dataclass
@@ -26,6 +36,7 @@ class TrainingConfig:
     lora_rank: int = 16
     lora_alpha: int = 32
     lora_target_modules: list[str] | None = None
+    lora_dropout: float = 0.05
     learning_rate: float = 5e-5
     batch_size: int = 4
     num_epochs: int = 3
@@ -82,6 +93,24 @@ def load_model_4bit(model_name: str):
     )
     model = prepare_model_for_kbit_training(model)
     return model, tokenizer
+
+
+def build_lora_config(config: TrainingConfig) -> LoraConfig:
+    target_modules = config.lora_target_modules or DEFAULT_LORA_TARGET_MODULES
+    return LoraConfig(
+        r=config.lora_rank,
+        lora_alpha=config.lora_alpha,
+        lora_dropout=config.lora_dropout,
+        target_modules=target_modules,
+        bias="none",
+        task_type="CAUSAL_LM",
+    )
+
+
+def apply_lora(model, config: TrainingConfig):
+    """Attach LoRA adapters to a prepared model."""
+    lora_config = build_lora_config(config)
+    return get_peft_model(model, lora_config)
 
 
 def run_training(config: TrainingConfig | None = None) -> dict:
