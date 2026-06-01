@@ -16,6 +16,13 @@ checkpoints/
 outputs/*
 !outputs/.gitkeep
 !outputs/runs/
+!outputs/checkpoints/
+outputs/checkpoints/*
+!outputs/checkpoints/lora_conflict_only/
+outputs/checkpoints/lora_conflict_only/*
+!outputs/checkpoints/lora_conflict_only/README.md
+!outputs/checkpoints/lora_conflict_only/training_log.jsonl
+!outputs/checkpoints/lora_conflict_only/trainer_state.json
 # Training checkpoint weights (never commit; see experiment README for adapter distribution)
 outputs/checkpoints/**/*.safetensors
 outputs/checkpoints/**/*.bin
