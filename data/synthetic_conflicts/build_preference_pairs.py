@@ -5,6 +5,14 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from typing import Any
+
+from src.rag.document_loader import Document
+from src.rag.prompt_builder import PromptTemplate, build_prompt, load_prompt_template
+from src.rag.retriever import RetrievalResult
+
+CONFLICT_AWARE_PROMPT = "configs/prompts/conflict_aware.md"
+_PROMPT_TEMPLATE: PromptTemplate | None = None
 
 # Pilot (current/outdated/distractor) and exp2 (true_doc/false_doc/distractor).
 STANCE_TO_ROLE: dict[str, str] = {
@@ -76,6 +84,121 @@ def load_all_inputs(input_paths: list[Path]) -> list[dict]:
     return merged
 
 
+def get_prompt_template() -> PromptTemplate:
+    global _PROMPT_TEMPLATE
+    if _PROMPT_TEMPLATE is None:
+        _PROMPT_TEMPLATE = load_prompt_template(CONFLICT_AWARE_PROMPT)
+    return _PROMPT_TEMPLATE
+
+
+def documents_to_results(documents: list[dict]) -> list[RetrievalResult]:
+    results: list[RetrievalResult] = []
+    for index, doc in enumerate(documents, 1):
+        doc_id = doc.get("doc_id", f"d{index}")
+        stance = doc.get("stance", "")
+        source = f"{doc_id}:{stance}" if stance else doc_id
+        results.append(
+            RetrievalResult(
+                document=Document(text=doc["text"], source=source),
+                score=1.0,
+            )
+        )
+    return results
+
+
+def serialize_prompt(messages: list[dict[str, str]]) -> str:
+    """Stable string form shared by train and eval (rule B)."""
+    parts = [f"### {msg['role']}\n{msg['content']}" for msg in messages]
+    return "\n\n".join(parts)
+
+
+def build_prompt_text(question: str, documents: list[dict]) -> str:
+    template = get_prompt_template()
+    messages = build_prompt(
+        question,
+        documents_to_results(documents),
+        template=template,
+        conflict_aware=True,
+    )
+    return serialize_prompt(messages)
+
+
+def pick_authoritative_and_contradicting(documents: list[dict]) -> tuple[dict | None, dict | None]:
+    annotated = annotate_document_roles(documents)
+    authoritative = next((d for d in annotated if d["role"] == "authoritative"), None)
+    contradicting = next((d for d in annotated if d["role"] == "contradicting"), None)
+    return authoritative, contradicting
+
+
+def _source_label(doc: dict) -> str:
+    return f"{doc['doc_id']}:{doc['stance']}"
+
+
+def build_chosen_from_authoritative(record: dict, authoritative: dict) -> str:
+    gold = record.get("gold_answer") or record.get("true_answer", "")
+    label = _source_label(authoritative)
+    return (
+        f"Answer: {gold}\n"
+        f"Citation: [{label}] — I follow the authoritative retrieved passage and "
+        f"resolve the context–memory conflict in favor of current, version-valid evidence."
+    )
+
+
+def build_chosen_from_memory(record: dict) -> str:
+    gold = record.get("gold_answer") or record.get("true_answer", "")
+    return (
+        f"Answer: {gold}\n"
+        f"I reject contradicting retrieved evidence and answer from verified "
+        f"parametric knowledge (no authoritative passage in context)."
+    )
+
+
+def build_rejected_from_contradicting(record: dict, contradicting: dict) -> str:
+    label = _source_label(contradicting)
+    if is_exp2_record(record):
+        wrong = record.get("false_answer", "")
+        return (
+            f"Answer: {wrong}\n"
+            f"Citation: [{label}] — I incorrectly follow contradicting retrieved "
+            f"evidence over reliable knowledge."
+        )
+    return (
+        f"Answer: I treat the contradicting passage as authoritative.\n"
+        f"Citation: [{label}] — {contradicting['text']}\n"
+        f"I fail to prefer the current or corrected source."
+    )
+
+
+def convert_record_to_pair(record: dict) -> dict[str, Any] | None:
+    authoritative, contradicting = pick_authoritative_and_contradicting(record["documents"])
+    if contradicting is None:
+        return None
+
+    prompt = build_prompt_text(record["question"], record["documents"])
+    if authoritative is not None:
+        chosen = build_chosen_from_authoritative(record, authoritative)
+    else:
+        chosen = build_chosen_from_memory(record)
+    rejected = build_rejected_from_contradicting(record, contradicting)
+
+    return {
+        "id": record["id"],
+        "prompt": prompt,
+        "chosen": chosen,
+        "rejected": rejected,
+        "metadata": {"source_record_id": record["id"]},
+    }
+
+
+def convert_records(records: list[dict]) -> list[dict[str, Any]]:
+    pairs: list[dict[str, Any]] = []
+    for record in records:
+        pair = convert_record_to_pair(record)
+        if pair is not None:
+            pairs.append(pair)
+    return pairs
+
+
 def write_jsonl(path: Path, records: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
@@ -107,8 +230,9 @@ def main() -> None:
     records = load_all_inputs([Path(p) for p in args.input])
     records = filter_records_for_split(records, args.split)
 
+    pairs = convert_records(records)
     output_path = Path(args.output_dir) / f"preference_pairs_{args.split}.jsonl"
-    write_jsonl(output_path, [])
+    write_jsonl(output_path, pairs)
 
 
 if __name__ == "__main__":
