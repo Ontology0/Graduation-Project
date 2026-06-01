@@ -49,6 +49,38 @@
 - **Training:** DPO + LoRA.
 - **Expected role:** Primary proposed method; compare to arms 1–4.
 
+## Resolution Rule Justifiability — Conflict Type Scoping
+
+Self-evident resolution rules are required for **DPO train labels**: the preferred response must follow from the conflict setup without subjective adjudication. Types that admit multiple reasonable resolutions are scoped to **eval / capability mapping** only.
+
+| Conflict type | Scoping | 정답 근거 | 라벨 신뢰도 |
+|---------------|---------|-----------|-------------|
+| **version_update** | Train (self-evident) | Document carries explicit recency or authority markers (version id, “latest”, effective date); gold follows the authoritative source | High — rule is inspectable from metadata/text |
+| **temporal** | Train (self-evident) | Time fields or event ordering in context vs. question date make the correct fact determinate | High — temporal logic fixes the label |
+| **true_doc vs. false_doc co-present** (exp2 type B; `has_true_doc: true`) | Train (self-evident) | One retrieved passage is marked true relative to fixed `gold`; chosen = follow true doc / reject false doc | High — binary doc quality is given in the benchmark or pilot schema |
+| **false_doc only + model_knows** (exp2 type A; `has_true_doc: false`) | Eval only (controversial) | No true passage in retrieval; label depends on whether to trust parametric knowledge vs. misleading context — priority is annotator- or rubric-dependent | Low — “context vs. parametric” trade-off is not self-evident |
+| **Debate / multi-answer** (WikiContradict; CONFLICTS opinion / complementary) | Eval only (controversial) | No single gold resolution; multiple defensible answers or stance aggregation | Low — not suitable for chosen/rejected DPO supervision |
+
+## Train Inclusion Criteria
+
+**Train (include in DPO preference construction)** — only when the resolution rule is **self-evident** from the conflict setup:
+
+- Version/time authority conflicts where the correct source is identifiable from document metadata or explicit dating.
+- Instances with **true_doc vs. false_doc** in retrieval (pilot exp2 type B; ClashEval-style perturbations with reliable gold).
+- Other context–memory pairs where a single resolution rule is fixed in the schema (see table above).
+
+**Eval only (exclude from train)** — when label reliability is low or multiple answers are valid:
+
+- **false_doc only** and **model_knows** slices (pilot exp2 type A): used for **capability mapping** and limitation analysis, not for preference learning.
+- Natural debate and opinion-style sets (WikiContradict; CONFLICTS opinion/complementary types).
+- Held-out quantitative partitions per benchmark — disjoint from train by question ID / domain (preprocess TBD).
+
+**Literature basis:** Following ClashEval (Wu et al., 2024), which constructs conflicts with **self-evident resolution** against parametric priors, we restrict DPO training to cases where chosen/rejected labels do not require subjective adjudication. Ambiguous slices remain for eval and qualitative error analysis.
+
+**Limitation:** Type A (`has_true_doc: false`, model_knows) cases measure whether the model defaults to context or memory when both are misleading or underspecified; they are **not** used to teach a single resolution policy.
+
+**Consistency:** This scoping matches the train/eval split recorded in issue **#55** (`docs/benchmark_selection.md`, `docs/decision_log.md`).
+
 ## Evaluation (TBD)
 
 - Quantitative metrics and judge protocol not finalized — see `benchmark_selection.md` and `src/evaluation/README.md`.
