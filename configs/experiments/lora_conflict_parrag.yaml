@@ -1,24 +1,35 @@
-# Conflict-Aware PA-RAG LoRA (multi-criterion + conflict) — scaffold
+# Conflict-Aware PA-RAG LoRA (arm5) — multi-stage RI → RR → Conflict
 experiment_name: conflict_aware_parrag_lora
-model_name: null  # TODO
+model_name: meta-llama/Llama-3.1-8B-Instruct
+seed: 42
+output_dir: outputs/checkpoints
 dataset: null
 retrieval:
   backend: null
   top_k: null
   embedding_model: null
-prompt_file: configs/prompts/conflict_aware.md  # TODO: stage-specific prompts TBD
+prompt_file: configs/prompts/conflict_aware.md
 training:
   enabled: true
   method: dpo
   adapter: lora
-  stages: null  # TODO: PA-RAG stage order + conflict stage
-  lora_rank: null
-  lora_alpha: null
-  learning_rate: null
-  batch_size: null
-  epochs: null
-  preference_data: null
+  quantization: 4bit
+  lora_rank: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  learning_rate: 5.0e-6
+  batch_size: 1
+  epochs: 1
+  beta: 0.1
+  max_length: 1024
+  stages:
+    - name: RI
+      preference_data: null  # TBD: PA-RAG informativeness preference pairs
+    - name: RR
+      preference_data: null  # TBD: PA-RAG robustness preference pairs
+    - name: Conflict
+      preference_data: null  # TBD: conflict preference pairs (pilot: preference_pairs_train.jsonl)
 evaluation:
   enabled: null
   metrics: []
-notes: "Planned main proposed arm — staging protocol not implemented"
+notes: "Arm5 — stage order RI→RR→Conflict per PA-RAG; multi-stage runner TBD in src/training/train.py"
