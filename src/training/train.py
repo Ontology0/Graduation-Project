@@ -2,9 +2,15 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
+
+from datasets import Dataset
+
+from src.rag.config import resolve_path
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +29,7 @@ class TrainingConfig:
     max_length: int = 1024
     beta: float = 0.1  # DPO beta parameter
     output_dir: str = "outputs/checkpoints"
+    train_data_path: str = "data/synthetic_conflicts/preference_pairs_train.jsonl"
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> TrainingConfig:
@@ -30,26 +37,46 @@ class TrainingConfig:
         return cls(**{k: v for k, v in d.items() if k in fields})
 
 
+def load_preference_dataset(path: str | Path) -> Dataset:
+    """Load preference-pair JSONL into a Dataset with TRL DPO columns."""
+    resolved = resolve_path(path)
+    rows: list[dict[str, str]] = []
+    with resolved.open(encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            record = json.loads(line)
+            rows.append(
+                {
+                    "prompt": record["prompt"],
+                    "chosen": record["chosen"],
+                    "rejected": record["rejected"],
+                }
+            )
+    return Dataset.from_list(rows)
+
+
 def run_training(config: TrainingConfig | None = None) -> dict:
     """Run DPO + LoRA fine-tuning.
 
-    Currently a placeholder that validates config and reports readiness.
-    Real training loop will be wired with TRL's DPOTrainer and PEFT.
+    Currently loads preference data only; training loop wired in later commits.
     """
     config = config or TrainingConfig()
 
-    logger.info("Training config: %s", config)
-    logger.info("Model: %s | LoRA rank: %d | LR: %s", config.model_name, config.lora_rank, config.learning_rate)
+    train_dataset = load_preference_dataset(config.train_data_path)
+    logger.info("Loaded %d preference pairs from %s", len(train_dataset), config.train_data_path)
 
     return {
-        "status": "not_implemented",
+        "status": "data_loaded",
+        "num_rows": len(train_dataset),
+        "columns": train_dataset.column_names,
         "config": {
             "model": config.model_name,
             "lora_rank": config.lora_rank,
             "learning_rate": config.learning_rate,
             "epochs": config.num_epochs,
         },
-        "message": "Training pipeline is scaffolded. Wire TRL DPOTrainer to execute.",
     }
 
 
