@@ -11,7 +11,7 @@ from typing import Any
 import torch
 from datasets import Dataset
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainerCallback
 
 from src.rag.config import resolve_path
 from trl import DPOConfig, DPOTrainer
@@ -143,6 +143,21 @@ def build_dpo_config(
     return DPOConfig(**kwargs)
 
 
+class TrainingLogCallback(TrainerCallback):
+    """Append per-step trainer logs to training_log.jsonl."""
+
+    def __init__(self, log_path: Path) -> None:
+        self.log_path = log_path
+        self.log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def on_log(self, args, state, control, logs=None, **kwargs) -> None:
+        if not logs:
+            return
+        entry = {"step": state.global_step, **logs}
+        with self.log_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(entry) + "\n")
+
+
 def create_dpo_trainer(
     model,
     tokenizer,
@@ -151,14 +166,18 @@ def create_dpo_trainer(
     output_dir: Path,
     *,
     max_steps: int | None = None,
+    extra_callbacks: list[TrainerCallback] | None = None,
 ) -> DPOTrainer:
     training_args = build_dpo_config(config, output_dir, max_steps=max_steps)
+    callbacks = list(extra_callbacks or [])
+    callbacks.append(TrainingLogCallback(output_dir / "training_log.jsonl"))
     return DPOTrainer(
         model=model,
         ref_model=None,
         args=training_args,
         train_dataset=train_dataset,
         tokenizer=tokenizer,
+        callbacks=callbacks,
     )
 
 
@@ -180,10 +199,13 @@ def run_training(config: TrainingConfig | None = None) -> dict:
         checkpoint_dir,
     )
     trainer.train()
+    # transformers writes trainer_state.json under output_dir by default
+    trainer_state_path = checkpoint_dir / "trainer_state.json"
 
     return {
         "status": "completed",
         "checkpoint_dir": str(checkpoint_dir),
+        "trainer_state": str(trainer_state_path) if trainer_state_path.exists() else None,
         "num_rows": len(train_dataset),
         "config": {
             "model": config.model_name,
