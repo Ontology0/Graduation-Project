@@ -297,7 +297,7 @@ async def cmd_run(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 def _run_git(args: list[str]) -> str:
     try:
-        out = subprocess.check_output(["git", *args], cwd=str(_REPO_ROOT), text=True)
+        out = subprocess.check_output(["git", *args], cwd=str(_REPO_ROOT), text=True, stderr=subprocess.DEVNULL)
         return out.strip()
     except Exception:
         return ""
@@ -313,7 +313,7 @@ def _read_repo_one_liner() -> str:
         s = line.strip()
         if not s:
             continue
-        if s.lower().startswith("<br"):
+        if s.startswith("<"):  # skip HTML tags (<div>, <br/>, badges, etc.)
             continue
         s = re.sub(r"^#{1,6}\s+", "", s).strip()
         if len(s) >= 10:
@@ -324,8 +324,16 @@ def _read_repo_one_liner() -> str:
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not await _guard(update, sensitive=True):
         return
-    branch = _run_git(["rev-parse", "--abbrev-ref", "HEAD"]) or "(unknown)"
-    head = _run_git(["log", "-1", "--oneline"]) or "(no git log)"
+    branch = (
+        _run_git(["rev-parse", "--abbrev-ref", "HEAD"])
+        or os.getenv("RAILWAY_GIT_BRANCH")
+        or "(unknown)"
+    )
+    sha = _run_git(["log", "-1", "--oneline"])
+    if not sha:
+        raw_sha = os.getenv("RAILWAY_GIT_COMMIT_SHA", "")
+        sha = raw_sha[:12] if raw_sha else "(no git log)"
+    head = sha
 
     latest_runs = []
     runs_dir = _REPO_ROOT / "outputs" / "runs"
