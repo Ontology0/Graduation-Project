@@ -6,6 +6,33 @@ import argparse
 import json
 from pathlib import Path
 
+# Pilot (current/outdated/distractor) and exp2 (true_doc/false_doc/distractor).
+STANCE_TO_ROLE: dict[str, str] = {
+    "current": "authoritative",
+    "true_doc": "authoritative",
+    "outdated": "contradicting",
+    "false_doc": "contradicting",
+    "distractor": "distractor",
+}
+
+
+def map_stance_to_role(stance: str) -> str:
+    """Map source stance label to normalized document role."""
+    try:
+        return STANCE_TO_ROLE[stance]
+    except KeyError as exc:
+        raise ValueError(f"Unknown stance: {stance!r}") from exc
+
+
+def annotate_document_roles(documents: list[dict]) -> list[dict]:
+    """Return documents with an added ``role`` field from ``stance``."""
+    annotated: list[dict] = []
+    for doc in documents:
+        doc_copy = dict(doc)
+        doc_copy["role"] = map_stance_to_role(doc["stance"])
+        annotated.append(doc_copy)
+    return annotated
+
 
 def read_jsonl(path: Path) -> list[dict]:
     records: list[dict] = []
