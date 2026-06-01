@@ -65,6 +65,42 @@ def conflict_resolution_accuracy(rows: list[dict[str, Any]]) -> float:
     return hits / len(rows)
 
 
+ABSTENTION_PHRASES: tuple[str, ...] = (
+    "i don't know",
+    "i do not know",
+    "cannot determine",
+    "can't determine",
+    "insufficient information",
+    "not enough information",
+    "uncertain",
+    "unable to determine",
+    "모르겠",
+    "불확실",
+    "확실하지 않",
+)
+
+
+def detects_abstention(answer: str) -> bool:
+    normalized = normalize_text(answer)
+    return any(phrase in normalized for phrase in ABSTENTION_PHRASES)
+
+
+def false_doc_follow_rate(rows: list[dict[str, Any]]) -> float:
+    """Share of answers that follow false evidence without gold (vulnerability)."""
+    eligible = [row for row in rows if row.get("false_answer")]
+    if not eligible:
+        return 0.0
+    follows = sum(1 for row in eligible if row.get("false_follow_only"))
+    return follows / len(eligible)
+
+
+def abstention_rate(rows: list[dict[str, Any]]) -> float:
+    """Share of answers expressing uncertainty / refusal to answer."""
+    if not rows:
+        return 0.0
+    return sum(1 for row in rows if row.get("abstention")) / len(rows)
+
+
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     with path.open(encoding="utf-8") as handle:
@@ -129,13 +165,18 @@ def adapter_dir_for(arm: str, yaml_cfg: dict[str, Any]) -> Path | None:
 
 
 def annotate_scoring_fields(row: dict[str, Any]) -> dict[str, Any]:
-    """Add true_hit / correct flags using gold_answer substring match."""
+    """Add scoring flags (true/false hit, abstention) for metric aggregation."""
     predicted = row["predicted_answer"]
     gold = row["gold_answer"]
+    false = row.get("false_answer", "")
     true_hit = contains_target(predicted, gold)
+    false_hit = contains_target(predicted, false)
     annotated = dict(row)
     annotated["true_hit"] = true_hit
+    annotated["false_hit"] = false_hit
     annotated["correct"] = true_hit
+    annotated["false_follow_only"] = false_hit and not true_hit
+    annotated["abstention"] = detects_abstention(predicted)
     return annotated
 
 
@@ -187,6 +228,8 @@ def run_arm(
         "num_cases": len(rows),
         "metrics": {
             "conflict_resolution_accuracy": conflict_resolution_accuracy(rows),
+            "false_doc_follow_rate": false_doc_follow_rate(rows),
+            "abstention_rate": abstention_rate(rows),
         },
         "by_case_type": {},
     }
