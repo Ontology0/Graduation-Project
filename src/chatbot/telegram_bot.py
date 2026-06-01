@@ -63,6 +63,13 @@ def _split_for_telegram(text: str, limit: int | None = None) -> list[str]:
     return [p for p in parts if p]
 
 
+def _strip_html_tags(text: str) -> str:
+    """Remove HTML tags and collapse excessive blank lines."""
+    s = re.sub(r"<[^>]+>", "", text)
+    s = re.sub(r"\n{3,}", "\n\n", s)
+    return s.strip()
+
+
 def _format_for_telegram_html(text: str) -> str:
     """Convert a small markdown-ish subset to Telegram HTML safely.
 
@@ -591,7 +598,8 @@ def build_app(*, config: str, docs: str, verbose: bool = False) -> Application:
     app.bot_data["docs_path"] = docs_path
     app.bot_data["repo_kb_cfg"] = repo_kb_cfg
     try:
-        app.bot_data["about_text"] = (_REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        raw = (_REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        app.bot_data["about_text"] = _strip_html_tags(raw)
     except Exception:
         app.bot_data["about_text"] = ""
 
