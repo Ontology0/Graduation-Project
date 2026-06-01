@@ -136,9 +136,9 @@ flowchart LR
 
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
 ![HuggingFace](https://img.shields.io/badge/🤗_Transformers-FFD21E?style=flat-square)
-![LoRA](https://img.shields.io/badge/LoRA_PEFT-8A2BE2?style=flat-square)
-![DPO](https://img.shields.io/badge/DPO_TRL-412991?style=flat-square)
-![Llama](https://img.shields.io/badge/Llama_3.1--8B-0467DF?style=flat-square)
+![LoRA](https://img.shields.io/badge/LoRA_PEFT_(scaffold)-8A2BE2?style=flat-square)
+![DPO](https://img.shields.io/badge/DPO_TRL_(scaffold)-412991?style=flat-square)
+![Llama](https://img.shields.io/badge/Llama_3.1--8B_(scaffold)-0467DF?style=flat-square)
 
 **RAG / 검색**
 
