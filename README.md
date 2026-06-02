@@ -24,7 +24,7 @@
 
 ---
 
-## Why
+## Background
 
 > AI가 검색한 문서와 자신이 학습한 지식이 다른 말을 할 때, 어느 쪽을 믿어야 할까?
 
@@ -34,7 +34,7 @@
 
 <br/>
 
-## Problem
+## Research Gap
 
 RAG(Retrieval-Augmented Generation)는 외부 문서를 검색해 LLM 답변의 정확성을 높이는 방식이다. 그러나 **검색된 문서와 LLM 내부 지식이 서로 다른 답을 가리킬 때** 문제가 생긴다.
 
@@ -50,7 +50,7 @@ RAG(Retrieval-Augmented Generation)는 외부 문서를 검색해 LLM 답변의 
 
 <br/>
 
-## Solution
+## Hypothesis
 
 DPO(Direct Preference Optimization) + LoRA로 **Knowledge Conflict 처리 능력을 모델에 학습으로 내재화**한다.
 
@@ -112,7 +112,7 @@ flowchart LR
 
 <br/>
 
-## 🧪 파일럿 실험 결과
+## Pilot Results
 
 > API 모델(gpt-4o-mini, claude-haiku) 기반 파일럿. 본 연구 타겟인 **Llama 3.1-8B** 실험의 사전 탐색 단계. 상세: [`experiments/2026-05-31/`](experiments/2026-05-31/)
 
@@ -243,7 +243,7 @@ make demo-conflict # Base RAG vs Conflict-Aware 비교
 
 <br/>
 
-## 🗺 What's Next
+## 🗺 Future Work
 
 | 방향 | 내용 | 상태 |
 |------|------|:----:|
