@@ -127,7 +127,7 @@ def build_capability_map(by_case_type: dict[str, dict[str, float]]) -> dict[str,
         accuracy = metrics.get("conflict_resolution_accuracy", 0.0)
         if metrics.get("count", 0) == 0:
             capability[case_type] = "no_cases"
-        elif accuracy >= threshold:
+        elif accuracy > threshold:
             capability[case_type] = "handled"
         elif accuracy > 0:
             capability[case_type] = "partial"
@@ -148,7 +148,8 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
 
 def _answer_line(text: str) -> str:
     if text.startswith("Answer: "):
-        return text.split("\n", 1)[0][len("Answer: ") :].strip()
+        return text.split("
+", 1)[0][len("Answer: ") :].strip()
     return ""
 
 
@@ -253,7 +254,8 @@ def run_arm(
             }
             scored = annotate_scoring_fields(row)
             rows.append(scored)
-            handle.write(json.dumps(scored, ensure_ascii=False) + "\n")
+            handle.write(json.dumps(scored, ensure_ascii=False) + "
+")
 
     by_case_type = aggregate_by_case_type(rows)
     summary = {
@@ -268,7 +270,8 @@ def run_arm(
     }
     summary_path = output_dir / "summary.json"
     summary_path.write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(summary, ensure_ascii=False, indent=2) + "
+",
         encoding="utf-8",
     )
     logger.info("Wrote %s and %s", results_path, summary_path)
