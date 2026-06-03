@@ -1,23 +1,30 @@
-# PA-RAG-style LoRA (no conflict-specific curriculum) — scaffold
+# PA-RAG-style LoRA (arm3) — no conflict-specific curriculum
 experiment_name: parrag_style_lora
-model_name: null  # TODO
-dataset: null  # TODO: PA-RAG-style preference data source
+model_name: meta-llama/Llama-3.1-8B-Instruct
+seed: 42
+output_dir: outputs/checkpoints
+dataset: null
 retrieval:
   backend: null
   top_k: null
   embedding_model: null
-prompt_file: configs/prompts/base_rag.md  # TODO: PA-RAG prompt variant if different
+prompt_file: configs/prompts/base_rag.md
 training:
   enabled: true
   method: dpo
   adapter: lora
-  lora_rank: null
-  lora_alpha: null
-  learning_rate: null
-  batch_size: null
-  epochs: null
-  preference_data: null  # TODO: path or dataset id
+  quantization: 4bit
+  lora_rank: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  learning_rate: 5.0e-6
+  batch_size: 1
+  epochs: 1
+  beta: 0.1
+  max_length: 1024
+  # TBD: PA-RAG-style pairs — same path as conflict train until dedicated data exists
+  preference_data: data/synthetic_conflicts/preference_pairs_train.jsonl
 evaluation:
   enabled: null
   metrics: []
-notes: "Planned — see src/training/train.py"
+notes: "Arm3 — DPO+LoRA on PA-RAG-style preference pairs (data source TBD; path mirrors conflict train for now)"

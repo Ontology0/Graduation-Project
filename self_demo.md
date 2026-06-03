@@ -1,17 +1,44 @@
-# Self-Demo 시연 요령
+# self_demo 시연 가이드
 
-> **대상:** 이 레포를 처음 보는 평가자 / 외부 방문자  
-> **목표:** 설치 없이 5분 안에 프로젝트의 핵심 기능을 직접 체험한다.  
-> **준비물:** 인터넷 브라우저, (선택) 텔레그램 앱
+<div align="center">
+<img src="docs/assets/web_screenshot.png" alt="Alltology 연구 소개 사이트" width="780"/>
+</div>
+
+<br/>
+
+Conflict-Aware PA-RAG 연구를 **설치 없이 5분** 안에 직접 체험하는 가이드입니다.  
+AI가 검색 문서와 내부 지식이 충돌할 때 어느 쪽을 따르는지, Base RAG와 직접 비교해 보세요.
+
+---
+
+## 시작 전 준비 🧭
+
+| | 링크 | 설명 |
+|---|------|------|
+| 🌐 | [alltology.zapto.org](http://alltology.zapto.org) | 연구 소개 사이트 |
+| 🤗 | [HuggingFace Spaces 데모](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) | Base RAG vs Conflict-Aware 실시간 비교 |
+| 🎬 | [YouTube 시연 영상](https://youtu.be/qc0GkgJoBBk) | 전체 흐름 영상 |
+| ✈️ | [@alltology_rag_bot](https://t.me/alltology_rag_bot) | 텔레그램 RAG 봇 |
+
+**추천 시연 질문 (복사해서 바로 사용):**
+
+| 용도 | 질문 |
+|------|------|
+| ✅ Base RAG 충돌 확인 | `What color is the Northwood Institute mascot?` |
+| ✅ Conflict-Aware 비교 | `What color is the Northwood Institute mascot after the 2019 revision?` |
+| ✅ 저장소 범위 밖 처리 | `삼각형은 각이 몇 개야?` |
+
+> **참고** — 텔레그램 봇은 허가된 사용자만 이용 가능합니다 (API 비용 제어 목적).  
+> 접근이 제한된 경우 `/whoami`로 Telegram User ID를 확인 후 팀에 공유해 주세요.
 
 ---
 
 ## 전체 흐름 한눈에 보기
 
 ```
-1단계  연구 소개 사이트 방문        → 프로젝트 개요 파악
-2단계  인터랙티브 데모 체험         → Base RAG vs Conflict-Aware 비교
-3단계  텔레그램 RAG 봇 체험        → 저장소 기반 RAG 챗봇 확인
+1단계  연구 소개 사이트 방문        → 프로젝트 개요 파악 (1분)
+2단계  인터랙티브 데모 체험         → Base RAG vs Conflict-Aware 비교 (3분)
+3단계  텔레그램 RAG 봇 체험        → 저장소 기반 RAG 챗봇 확인 (1분)
 ```
 
 ---
@@ -20,7 +47,12 @@
 
 **🌐 http://alltology.zapto.org**
 
-브라우저에서 위 주소를 열면 프로젝트 소개 페이지가 나타납니다.
+<div align="center">
+<img src="docs/assets/web_screenshot2.png" alt="연구 소개 사이트 스크롤 화면" width="700"/>
+<br/><sub>연구 배경 · 핵심 질문 · 실험 접근 방법이 순서대로 정리되어 있습니다</sub>
+</div>
+
+<br/>
 
 **확인할 내용:**
 - 상단: 연구 주제 및 팀 소개 (팀원 이름, 지도교수, GitHub 링크)
@@ -29,8 +61,6 @@
 - **"텔레그램 봇 열기"** 버튼: 텔레그램 RAG 봇으로 연결
 - **Research** 탭: 진행 중인 실험 내용 및 참고 논문 목록
 
-> 페이지 하단 GitHub 아이콘을 클릭하면 이 저장소로 바로 이동합니다.
-
 ---
 
 ## 2단계. 인터랙티브 데모 — Base RAG vs Conflict-Aware RAG 비교
@@ -38,6 +68,13 @@
 **🤗 https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo**
 
 (또는 연구 사이트에서 "앱 데모 보기" 클릭)
+
+<div align="center">
+<img src="docs/assets/demo_screenshot.png" alt="HuggingFace Spaces 인터랙티브 데모" width="750"/>
+<br/><sub>좌측: 설정 패널 (RAG 방식 선택) · 우측: 질문 입력 및 결과 확인</sub>
+</div>
+
+<br/>
 
 이 데모는 저희 연구의 핵심 질문을 직접 체험하는 공간입니다.  
 **"검색된 문서와 AI 내부 지식이 충돌할 때, 어떻게 올바른 답을 낼까?"** 를 두 방법으로 비교합니다.
@@ -117,6 +154,13 @@
 
 (또는 연구 사이트에서 "텔레그램 봇 열기" 클릭)
 
+<div align="center">
+<img src="docs/assets/bot_screenshot.png" alt="텔레그램 RAG 봇" width="360"/>
+<br/><sub>저장소 문서를 지식베이스로 사용하는 RAG 챗봇 · Railway 서버 배포 중</sub>
+</div>
+
+<br/>
+
 저장소 문서(README, docs/ 등)를 지식베이스로 사용하는 RAG 챗봇입니다.  
 팀원들이 실험 로그·결과를 저장소에 올리면, 봇이 이를 인덱싱해 질문에 답변합니다.
 
@@ -158,9 +202,7 @@
 
 ## 데모 영상
 
-전체 시연 흐름을 영상으로 확인할 수 있습니다.
-
-**🎬 https://youtu.be/qc0GkgJoBBk**
+[![YouTube 시연 영상](https://img.shields.io/badge/YouTube-시연_영상_보기-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/qc0GkgJoBBk)
 
 ---
 
@@ -196,7 +238,7 @@ AI 보조(Claude Code)를 사용해 아래 항목을 검증하였습니다 (2026
 - [x] 텔레그램 봇 live 테스트: 질문 응답, HTML 포맷 렌더링, Railway 연결 확인
 - [x] 로컬 smoke test 실행 완료 (`outputs/runs/smoke_test_base_rag.json` 생성 확인)
 - [x] Conflict 시나리오 비교 실행 완료 (Base vs Conflict-Aware 결과물 커밋됨)
-- [x] `README.md` 충실성: 개요·설치·실행·팀정보·Project Brief 링크 포함
+- [x] `README.md` 충실성: 개요·설치·실행·팀정보·연구 문서 링크 포함
 - [x] 필요 파일 존재: `requirements.txt`, `configs/`, `data/sample_docs/`, `src/rag/` 모듈 14개
 - [x] 엔트리포인트 실재: `scripts/run_pipeline.py`, `scripts/telegram_bot.py`
 - [x] 데모 영상: https://youtu.be/qc0GkgJoBBk

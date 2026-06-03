@@ -12,6 +12,10 @@
 [![Demo Site](https://img.shields.io/badge/🌐_연구_사이트-alltology.zapto.org-4A90D9?style=for-the-badge)](http://alltology.zapto.org)
 [![Telegram](https://img.shields.io/badge/✈️_Telegram_RAG봇-@alltology__rag__bot-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/alltology_rag_bot)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+[![Contributing](https://img.shields.io/badge/Contributing-Guide-4CAF50?style=flat-square)](CONTRIBUTING.md)
+[![Tests](https://img.shields.io/badge/Tests-pytest-orange?style=flat-square)](tests/)
+
 <br/>
 
 **2026 이화여자대학교 캡스톤디자인 · 03팀 Alltology · 연구 트랙 · 지도교수: 황의원 교수님**
@@ -20,7 +24,7 @@
 
 ---
 
-## Why
+## Background
 
 > AI가 검색한 문서와 자신이 학습한 지식이 다른 말을 할 때, 어느 쪽을 믿어야 할까?
 
@@ -30,7 +34,7 @@
 
 <br/>
 
-## Problem
+## Research Gap
 
 RAG(Retrieval-Augmented Generation)는 외부 문서를 검색해 LLM 답변의 정확성을 높이는 방식이다. 그러나 **검색된 문서와 LLM 내부 지식이 서로 다른 답을 가리킬 때** 문제가 생긴다.
 
@@ -46,7 +50,7 @@ RAG(Retrieval-Augmented Generation)는 외부 문서를 검색해 LLM 답변의 
 
 <br/>
 
-## Solution
+## Hypothesis
 
 DPO(Direct Preference Optimization) + LoRA로 **Knowledge Conflict 처리 능력을 모델에 학습으로 내재화**한다.
 
@@ -68,6 +72,8 @@ DPO(Direct Preference Optimization) + LoRA로 **Knowledge Conflict 처리 능력
 |------|------|:----:|
 | **Start** (이번 학기) | Knowledge Conflict 문제 정의 · Base RAG vs Conflict-Aware Prompting 파일럿 실험 · 문제 존재 및 개선 가능성 검증 | ✅ 완료 |
 | **Growth** (확장 방향) | Llama 3.1-8B 기반 DPO + LoRA 내재화 · 정량 벤치마크 (ClashEval, WikiContradict) | 🔄 진행 예정 |
+
+> **이번 학기 평가 대상 범위:** 본 프로젝트는 Start 트랙으로, DPO+LoRA 최종 학습 성능 검증이 아니라 Knowledge Conflict 문제 정의, RAG 파이프라인 구현, Base RAG vs Conflict-Aware Prompting 파일럿 실험, 데모 검증을 완료 범위로 한다. DPO+LoRA 코드는 dry-run 수준에서 동작 확인이 완료되었으며, 대규모 학습 및 정량 벤치마크는 Growth 방향이다.
 
 <br/>
 
@@ -106,7 +112,7 @@ flowchart LR
 
 <br/>
 
-## 🧪 파일럿 실험 결과
+## Pilot Results
 
 > API 모델(gpt-4o-mini, claude-haiku) 기반 파일럿. 본 연구 타겟인 **Llama 3.1-8B** 실험의 사전 탐색 단계. 상세: [`experiments/2026-05-31/`](experiments/2026-05-31/)
 
@@ -126,7 +132,14 @@ flowchart LR
 
 **핵심 발견:** 강한 API 모델은 temporal conflict를 프롬프트 없이도 ~100% 처리 (천장 효과). → **Llama 3.1-8B에서 gap이 존재할 것으로 예상** — 본 연구의 핵심 측정 구간.
 
-파이프라인 실행 결과물: [`outputs/runs/`](outputs/runs/)
+파이프라인 실행 결과물 (직접 확인 가능):
+
+| 파일 | 내용 |
+|------|------|
+| [smoke_test_conflict_base.json](outputs/runs/smoke_test_conflict_base.json) | Base RAG 실행 결과 |
+| [smoke_test_conflict_aware.json](outputs/runs/smoke_test_conflict_aware.json) | Conflict-Aware RAG 실행 결과 |
+| [smoke_test_base_rag.json](outputs/runs/smoke_test_base_rag.json) | 단독 Base RAG smoke test |
+| [20260531T104426Z.json](outputs/runs/20260531T104426Z.json) | ClashEval 파일럿 배치 실행 결과 |
 
 <br/>
 
@@ -136,9 +149,9 @@ flowchart LR
 
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
 ![HuggingFace](https://img.shields.io/badge/🤗_Transformers-FFD21E?style=flat-square)
-![LoRA](https://img.shields.io/badge/LoRA_PEFT-8A2BE2?style=flat-square)
-![DPO](https://img.shields.io/badge/DPO_TRL-412991?style=flat-square)
-![Llama](https://img.shields.io/badge/Llama_3.1--8B-0467DF?style=flat-square)
+![LoRA](https://img.shields.io/badge/LoRA_PEFT_(dry--run)-8A2BE2?style=flat-square)
+![DPO](https://img.shields.io/badge/DPO_TRL_(dry--run)-412991?style=flat-square)
+![Llama](https://img.shields.io/badge/Llama_3.1--8B_(dry--run)-0467DF?style=flat-square)
 
 **RAG / 검색**
 
@@ -181,8 +194,8 @@ flowchart LR
 | 🌐 연구 사이트 | [alltology.zapto.org](http://alltology.zapto.org) | 연구 소개 · 팀 정보 |
 | 🤗 인터랙티브 데모 | [HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) | Base RAG vs Conflict-Aware 실시간 비교 |
 | ✈️ 텔레그램 봇 | [@alltology_rag_bot](https://t.me/alltology_rag_bot) | 저장소 문서 기반 RAG 챗봇 |
-| 🎬 데모 영상 | [youtu.be/qc0GkgJoBBk](https://youtu.be/qc0GkgJoBBk) | 전체 시연 영상 |
-| 📊 발표 슬라이드 | [Google Slides](https://docs.google.com/presentation/d/1mxabIcWOkVXfYbtppBo_TeJ6ah2Be-5RHgmoqRcUIaw/edit?usp=sharing) · [PDF](docs/presentation/presentation.pdf) · [Marp 원본](docs/presentation.md) | 기말 발표 자료 |
+| 🎬 데모 영상 | [YouTube 시연 영상](https://youtu.be/qc0GkgJoBBk) | 전체 시연 영상 |
+| 📊 발표 슬라이드 | [Google Slides](https://docs.google.com/presentation/d/1WYRi1R0Cs9c9ENMSW5hxTgeqclXKywSfk7IJl1dhgvQ/edit?usp=sharing) · [PDF](docs/presentation/presentation.pdf) · [Marp 원본](docs/presentation.md) | 기말 발표 자료 |
 
 **로컬 실행:**
 
@@ -215,6 +228,7 @@ make demo-conflict # Base RAG vs Conflict-Aware 비교
 
 | 문서 | 내용 |
 |------|------|
+| [📋 Project Brief](docs/project_brief.md) | 연구 동기 · 고객 · 솔루션 · 파일럿 결과 요약 |
 | [🏗 Architecture](docs/architecture.md) | 시스템 구조 · 데이터 흐름 · 핵심 엔트리포인트 1페이지 요약 |
 | [🎬 Demo & Evidence](docs/demo.md) | CLI smoke test · 실제 실행 결과 · 파이프라인 동작 증빙 |
 | [✅ Verification Checklist](docs/verification_checklist.md) | 재현성 · 보안 · 운영 항목별 검증 기록 |
@@ -222,18 +236,21 @@ make demo-conflict # Base RAG vs Conflict-Aware 비교
 | [🗺 RQ ↔ 구현 매핑](docs/rq_to_implementation_map.md) | 연구 질문과 실제 코드의 1:1 대응 관계 |
 | [🔬 실험 설계](docs/experiment_design.md) | 5개 arm 비교 설계 · 데이터셋 · 평가 메트릭 |
 | [📚 관련 연구](docs/related_work.md) | PA-RAG · DPO · Knowledge Conflict 선행 연구 |
-| [📋 Project Brief](course/elevator_speech_team03.md) | 팀 소개 · 연구 방향 · 가치 제안 요약 |
+| [📊 Benchmark selection](docs/benchmark_selection.md) | 벤치마크 후보 검토 및 train/eval split (**#55 반영**) |
+| [📝 Decision log](docs/decision_log.md) | 확정·보류·제외 결정 |
+
+벤치마크·데이터셋 전략 요약: **train** = 명확 라벨(버전·시간, true_doc/false_doc, context–memory); **eval** = held-out + 논쟁적(false-only, model_knows) + 자연/토론(WikiContradict 등). 상세는 `docs/benchmark_selection.md`, 근거는 `docs/decision_log.md`.
 
 <br/>
 
-## 🗺 What's Next
+## 🗺 Future Work
 
-| 방향 | 내용 | 기대 효과 |
-|------|------|----------|
-| **Llama 3.1-8B 실험** | 파일럿에서 확인한 gap을 타겟 모델에서 측정 | conflict 처리 lower bound 확보, DPO 학습 기준선 설정 |
-| **DPO 학습 데이터 구축** | synthetic conflict JSONL 확장 + ClashEval 활용 | preference pair 품질이 학습 효과 직결 |
-| **LoRA Fine-tuning** | Conflict-Aware PA-RAG LoRA (제안 방법 5번 arm) 학습 | 프롬프트 없이도 충돌 처리 능력 내재화 |
-| **정량 벤치마크** | WikiContradict · ClashEval 평가 | 제안 방법의 일반화 성능 검증 |
+| 방향 | 내용 | 상태 |
+|------|------|:----:|
+| **DPO+LoRA 코드** | `src/training/train.py` dry-run 구현 · [1-step 체크포인트](outputs/checkpoints/lora_conflict_only/training_log.jsonl) 확인 (`train_loss=0.693`, epoch=0.5) | ✅ dry-run 완료 |
+| **Llama 3.1-8B 대규모 학습** | 파일럿에서 확인한 gap을 타겟 모델에서 측정 · conflict 처리 lower bound 확보 | 🔄 Growth |
+| **DPO 학습 데이터 확장** | synthetic conflict JSONL 확장 + ClashEval 활용 · preference pair 품질 개선 | 🔄 Growth |
+| **정량 벤치마크** | WikiContradict · ClashEval 5-arm 비교 평가 | 🔄 Growth |
 
 <br/>
 
@@ -245,19 +262,22 @@ Graduation-Project/
 │   ├── rag/                      # RAG 파이프라인 (핵심 구현)
 │   │   ├── pipeline.py           #   전체 파이프라인 오케스트레이터
 │   │   ├── document_loader.py    #   문서 로딩
+│   │   ├── github_kb.py          #   GitHub repo KB ingest (Telegram 봇)
+│   │   ├── pilot_dataset.py      #   파일럿/배치용 데이터셋 헬퍼
 │   │   ├── chunker.py            #   텍스트 청킹
 │   │   ├── embedder.py           #   임베딩 생성
 │   │   ├── vector_store.py       #   FAISS 벡터 스토어
 │   │   ├── retriever.py          #   검색 모듈
 │   │   ├── prompt_builder.py     #   프롬프트 빌더
 │   │   ├── generator.py          #   LLM 생성 (HF / Anthropic)
+│   │   ├── reporting.py          #   실행 결과 JSON/MD 저장 (outputs/runs/)
 │   │   └── config.py             #   설정 로더
 │   ├── chatbot/
 │   │   └── telegram_bot.py       #   텔레그램 RAG 봇 (Railway 배포)
 │   ├── training/
-│   │   └── train.py              #   DPO + LoRA 학습 (진행 중)
+│   │   └── train.py              #   DPO+LoRA dry-run 구현 완료 · 정식 대규모 학습은 Growth 범위
 │   └── evaluation/
-│       └── evaluate.py           #   평가 파이프라인 (진행 중)
+│       └── evaluate.py           #   5-arm 평가 하네스 구현 완료 · 정식 벤치마크 평가는 Growth 범위
 ├── scripts/
 │   ├── run_pipeline.py           # RAG 파이프라인 실행 CLI
 │   ├── run_batch.py              # 배치 실행
@@ -272,10 +292,12 @@ Graduation-Project/
 │   ├── synthetic/                # 합성 데이터 (예정)
 │   └── natural/                  # 자연 conflict 케이스 (예정)
 ├── experiments/                  # 파일럿 실험 (날짜별 폴더)
-│   ├── 2026-05-31/               #   ClashEval 기반 exp1~4
-│   └── api_pilot_2026-05-28/    #   GPT-4o-mini API 파일럿
+│   ├── pilot_2026-05-26/        #   로컬 sanity-check (config·prompt·batch 배선)
+│   ├── api_pilot_2026-05-28/    #   GPT-4o-mini API 파일럿
+│   └── 2026-05-31/              #   ClashEval 기반 exp1~4
 ├── outputs/
-│   └── runs/                     # 파이프라인 실행 결과물 (JSON / MD)
+│   ├── runs/                     # 파이프라인 실행 결과물 (JSON / MD)
+│   └── checkpoints/              # DPO+LoRA dry-run 체크포인트
 ├── docs/                         # 연구·운영 문서 (architecture, demo, verification 등)
 ├── course/                       # 수업 제출물 (Project Brief, PMF, 팀 규칙 등)
 ├── tests/                        # pytest 테스트 스위트
@@ -331,3 +353,4 @@ main  ← 제출 / 배포 스냅샷
 *2026 이화여자대학교 캡스톤디자인*
 
 </div>
+
