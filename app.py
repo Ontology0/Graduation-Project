@@ -172,8 +172,8 @@ _Base RAG_ 와 _Conflict-Aware Prompting_ 이 어떻게 다르게 반응하는�
         """
 ---
 🔗 [GitHub Repo](https://github.com/Ontology0/Graduation-Project) ·
-[아키텍처](https://github.com/Ontology0/Graduation-Project/blob/refactoring/docs/architecture.md) ·
-[연구 계획](https://github.com/Ontology0/Graduation-Project/blob/refactoring/docs/research_plan.md)
+[아키텍처](https://github.com/Ontology0/Graduation-Project/blob/dev/docs/architecture.md) ·
+[연구 계획](https://github.com/Ontology0/Graduation-Project/blob/dev/docs/research_plan.md)
 """
     )
 
