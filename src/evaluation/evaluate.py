@@ -148,8 +148,7 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
 
 def _answer_line(text: str) -> str:
     if text.startswith("Answer: "):
-        return text.split("
-", 1)[0][len("Answer: ") :].strip()
+        return text.split("\n", 1)[0][len("Answer: ") :].strip()
     return ""
 
 
