@@ -253,8 +253,7 @@ def run_arm(
             }
             scored = annotate_scoring_fields(row)
             rows.append(scored)
-            handle.write(json.dumps(scored, ensure_ascii=False) + "
-")
+            handle.write(json.dumps(scored, ensure_ascii=False) + "\n")
 
     by_case_type = aggregate_by_case_type(rows)
     summary = {
@@ -269,8 +268,7 @@ def run_arm(
     }
     summary_path = output_dir / "summary.json"
     summary_path.write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2) + "
-",
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     logger.info("Wrote %s and %s", results_path, summary_path)
