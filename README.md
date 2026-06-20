@@ -1,9 +1,9 @@
 <div align="center">
 
-# 검색 결과와 내부 지식이 충돌할 때
+# AI가 "알고 있는 것" 과 "검색한 것"이 다를 때 어느 쪽을 믿어야 하는가
 ## Conflict-Aware PA-RAG
 
-*RAG에서 발생하는 Knowledge Conflict를 Preference Learning으로 해결하는 연구*
+*RAG의 Knowledge Conflict 상황에서 Preference Learning이 소형 모델의 지식 선택 행동을 어떻게 바꾸는가*
 
 <br/>
 
