@@ -127,7 +127,7 @@ def build_capability_map(by_case_type: dict[str, dict[str, float]]) -> dict[str,
         accuracy = metrics.get("conflict_resolution_accuracy", 0.0)
         if metrics.get("count", 0) == 0:
             capability[case_type] = "no_cases"
-        elif accuracy >= threshold:
+        elif accuracy > threshold:
             capability[case_type] = "handled"
         elif accuracy > 0:
             capability[case_type] = "partial"
