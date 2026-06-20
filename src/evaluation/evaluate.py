@@ -8,11 +8,13 @@ import logging
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from src.rag.config import load_config, resolve_path
-from src.rag.pilot_dataset import documents_from_case, load_conflict_dataset
-from src.rag.pipeline import RAGPipeline
+from src.rag.pilot_dataset import load_conflict_dataset
+
+if TYPE_CHECKING:
+    from src.rag.pipeline import RAGPipeline
 
 logger = logging.getLogger(__name__)
 
@@ -240,6 +242,8 @@ def predict_rag(
     pilot_index: dict[str, dict[str, Any]],
 ) -> str:
     """Run Base RAG or Conflict-Aware Prompting via :class:`RAGPipeline`."""
+    from src.rag.pilot_dataset import documents_from_case
+
     pilot = pilot_case_for(case, pilot_index)
     if pilot is None:
         raise ValueError(f"No pilot case found for eval id {case.id!r}")
@@ -275,6 +279,8 @@ def run_arm(
     pipeline: RAGPipeline | None = None
     pilot_index: dict[str, dict[str, Any]] | None = None
     if arm in RAG_INFERENCE_ARMS:
+        from src.rag.pipeline import RAGPipeline
+
         pipeline = RAGPipeline.from_config(config_path)
         pilot_index = load_pilot_case_index()
 
