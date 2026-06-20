@@ -203,6 +203,14 @@ class RAGPipeline:
             logger.info("Index not loaded (%s). Will rebuild when indexing docs.", e)
             return False
 
+    def reset_index(self) -> None:
+        """Drop indexed chunks so the next ``index_documents`` call starts fresh."""
+        backend = str(getattr(self, "_retrieval_backend", "faiss"))
+        self.retriever.store = make_vector_store(
+            backend=backend,
+            dimension=self.retriever.embedder.dimension,
+        )
+
     def query(self, question: str, top_k: int | None = None) -> RAGResult:
         """Run the full RAG pipeline for a single question."""
         k = top_k if top_k is not None else self.top_k
