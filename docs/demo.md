@@ -1,7 +1,7 @@
 # Demo / Quickstart
 
 > 목적: 평가자/외부 방문자가 “이 레포에 **실제로 돌아가는 코드**가 있다”는 걸 빠르게 확인할 수 있게, **smoke test**와 **증빙(예시 로그/결과 형태)**를 한 곳에 모읍니다.  
-> Status: 연구 레포 **scaffold** 단계이며, 최종 벤치마크/정량 결과는 아직 없습니다.
+> Status: Start-stage 연구 산출물입니다. Arm 1·2 파일럿·로컬 smoke 결과는 존재하며, 5-arm 정량 벤치마크는 Growth 단계입니다.
 
 ## Quick run (smoke test)
 
@@ -77,12 +77,16 @@ Saved run:
 
 Show a **context–memory conflict** scenario where retrieved evidence and the model’s default answer disagree, and compare how each method resolves the conflict (or abstains).
 
-## Demo scenario (planned)
+## Demo scenario (Start-stage implemented)
 
 - **Setting:** Single user question with one retrieved passage that contradicts the answer the base model would give without conflict instructions.
 - **Example type:** Fictional or clearly labeled synthetic domain (no real-world entity claims requiring verification).
-- **Sample document:** `data/sample_docs/example_conflict.txt` (fictional Northwood Institute mascot color revision).
-- **To be updated:** Concrete question, context block, and resolution rule once a pilot dataset slice exists.
+- **Sample document:** `data/sample_docs/example_conflict.txt`
+- **Question:** `What color is the Northwood Institute mascot after the 2019 revision?`
+- **Conflict structure:** parametric answer = deep blue, retrieved evidence = silver-green
+- **Resolution rule:** when the question targets the post-2019 revision, prefer the retrieved appendix evidence.
+
+This demo is a **qualitative smoke scenario**, not a final benchmark.
 
 ## Compared methods
 
@@ -108,6 +112,12 @@ Show a **context–memory conflict** scenario where retrieved evidence and the m
 | Conflict-Aware PA-RAG LoRA | — | — | — | 학습 미완 |
 
 *LoRA 결과는 학습 완료 후 업데이트 예정. 정량 RAGAS 스코어 미측정.*
+
+### Local phi-2 smoke vs API-model pilot
+
+The local phi-2 smoke output (`outputs/runs/smoke_test_conflict_aware.*`) verifies **retrieval/prompt wiring** and shows that the correct evidence is retrieved. It is **not** used as the main answer-quality benchmark.
+
+The answer-quality claim is based on the **API-model pilot experiments** in `experiments/2026-05-31/`.
 
 ## Demo video
 
