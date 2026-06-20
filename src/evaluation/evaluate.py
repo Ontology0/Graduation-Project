@@ -11,10 +11,17 @@ from pathlib import Path
 from typing import Any
 
 from src.rag.config import load_config, resolve_path
+from src.rag.pilot_dataset import documents_from_case, load_conflict_dataset
+from src.rag.pipeline import RAGPipeline
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_EVAL_PATH = "data/synthetic_conflicts/preference_pairs_eval.jsonl"
+PILOT_DATASET_PATH = "data/synthetic_conflicts/pilot_conflicts.jsonl"
+
+RAG_INFERENCE_ARMS: frozenset[str] = frozenset(
+    {"rag_base", "prompting_conflict_aware"}
+)
 
 ARM_CONFIGS: dict[str, str] = {
     "rag_base": "configs/experiments/rag_base.yaml",
@@ -215,6 +222,33 @@ def annotate_scoring_fields(row: dict[str, Any]) -> dict[str, Any]:
     return annotated
 
 
+def load_pilot_case_index(path: str | Path = PILOT_DATASET_PATH) -> dict[str, dict[str, Any]]:
+    """Map pilot case id → raw conflict record (documents + question)."""
+    return {case["id"]: case for case in load_conflict_dataset(path)}
+
+
+def pilot_case_for(eval_case: EvalCase, pilot_index: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    """Resolve the pilot JSONL row backing a preference-pair eval case."""
+    case_id = eval_case.metadata.get("source_record_id") or eval_case.id
+    return pilot_index.get(str(case_id))
+
+
+def predict_rag(
+    arm: str,
+    case: EvalCase,
+    pipeline: RAGPipeline,
+    pilot_index: dict[str, dict[str, Any]],
+) -> str:
+    """Run Base RAG or Conflict-Aware Prompting via :class:`RAGPipeline`."""
+    pilot = pilot_case_for(case, pilot_index)
+    if pilot is None:
+        raise ValueError(f"No pilot case found for eval id {case.id!r}")
+
+    pipeline.reset_index()
+    pipeline.index_documents(documents_from_case(pilot))
+    return pipeline.query(str(pilot["question"])).answer
+
+
 def predict_placeholder(arm: str, case: EvalCase, yaml_cfg: dict[str, Any]) -> str:
     """Arm-specific generation placeholder until full RAG/LoRA inference is wired."""
     adapter = adapter_dir_for(arm, yaml_cfg)
@@ -233,14 +267,33 @@ def run_arm(
     config_override: str | None = None,
     output_dir: Path,
 ) -> list[dict[str, Any]]:
+    config_path = config_override or ARM_CONFIGS[arm]
     yaml_cfg = resolve_arm_config(arm, config_override)
     output_dir.mkdir(parents=True, exist_ok=True)
     results_path = output_dir / "results.jsonl"
 
+    pipeline: RAGPipeline | None = None
+    pilot_index: dict[str, dict[str, Any]] | None = None
+    if arm in RAG_INFERENCE_ARMS:
+        pipeline = RAGPipeline.from_config(config_path)
+        pilot_index = load_pilot_case_index()
+
     rows: list[dict[str, Any]] = []
     with results_path.open("w", encoding="utf-8") as handle:
         for case in cases:
-            predicted = predict_placeholder(arm, case, yaml_cfg)
+            if arm in RAG_INFERENCE_ARMS and pipeline is not None and pilot_index is not None:
+                try:
+                    predicted = predict_rag(arm, case, pipeline, pilot_index)
+                except Exception as exc:
+                    logger.warning(
+                        "RAG inference failed for arm=%s case=%s: %s",
+                        arm,
+                        case.id,
+                        exc,
+                    )
+                    predicted = predict_placeholder(arm, case, yaml_cfg)
+            else:
+                predicted = predict_placeholder(arm, case, yaml_cfg)
             row = {
                 "id": case.id,
                 "arm": arm,
@@ -261,6 +314,7 @@ def run_arm(
         "experiment_name": yaml_cfg.get("experiment_name"),
         "model_name": yaml_cfg.get("model_name"),
         "adapter_dir": str(adapter_dir_for(arm, yaml_cfg) or ""),
+        "inference_mode": "rag_pipeline" if arm in RAG_INFERENCE_ARMS else "placeholder",
         "num_cases": len(rows),
         "metrics": metrics_for_rows(rows),
         "by_case_type": by_case_type,

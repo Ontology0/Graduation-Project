@@ -10,7 +10,10 @@ from src.evaluation.evaluate import (
     false_doc_follow_rate,
     abstention_rate,
     metrics_for_rows,
+    pilot_case_for,
+    RAG_INFERENCE_ARMS,
 )
+from src.evaluation.evaluate import EvalCase
 
 
 def test_contains_target_substring_and_tokens():
@@ -76,3 +79,15 @@ def test_aggregate_by_case_type_and_capability_map():
     overall = metrics_for_rows(rows)
     assert overall["count"] == 4.0
     assert overall["conflict_resolution_accuracy"] == 0.75
+
+
+def test_rag_inference_arms_and_pilot_case_lookup():
+    assert RAG_INFERENCE_ARMS == frozenset({"rag_base", "prompting_conflict_aware"})
+    eval_case = EvalCase(
+        id="case_001",
+        prompt="...",
+        gold_answer="g",
+        metadata={"source_record_id": "case_001"},
+    )
+    pilot_index = {"case_001": {"id": "case_001", "question": "q", "documents": []}}
+    assert pilot_case_for(eval_case, pilot_index)["id"] == "case_001"

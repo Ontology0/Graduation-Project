@@ -12,9 +12,9 @@
 [![Demo Site](https://img.shields.io/badge/🌐_연구_사이트-alltology.zapto.org-4A90D9?style=for-the-badge)](http://alltology.zapto.org)
 [![Telegram](https://img.shields.io/badge/✈️_Telegram_RAG봇-@alltology__rag__bot-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/alltology_rag_bot)
 
+[![tests](https://github.com/Ontology0/Graduation-Project/actions/workflows/test.yml/badge.svg)](https://github.com/Ontology0/Graduation-Project/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Contributing](https://img.shields.io/badge/Contributing-Guide-4CAF50?style=flat-square)](CONTRIBUTING.md)
-[![Tests](https://img.shields.io/badge/Tests-pytest-orange?style=flat-square)](tests/)
 
 <br/>
 
@@ -277,7 +277,7 @@ Graduation-Project/
 │   ├── training/
 │   │   └── train.py              #   DPO+LoRA dry-run 구현 완료 · 정식 대규모 학습은 Growth 범위
 │   └── evaluation/
-│       └── evaluate.py           #   5-arm 평가 하네스 구현 완료 · 정식 벤치마크 평가는 Growth 범위
+│       └── evaluate.py           #   5-arm 평가 결과 저장 및 metric aggregation scaffold. 정식 모델 추론은 Growth 단계이며, Arm 1·2 파일럿 결과는 experiments/와 outputs/runs/에서 확인 가능
 ├── scripts/
 │   ├── run_pipeline.py           # RAG 파이프라인 실행 CLI
 │   ├── run_batch.py              # 배치 실행
