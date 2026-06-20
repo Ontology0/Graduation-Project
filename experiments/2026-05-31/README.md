@@ -13,7 +13,7 @@
 
 | 실험 | 초점 | 모델 | 핵심 결과 |
 |---|---|---|---|
-| exp1 | 거짓 문서 vs 모델 지식 (기본) | gpt-4o-mini | conflict-aware가 거짓 거부에 우세 |
+| exp1 | 거짓 문서 vs 모델 지식 (기본) | gpt-4o-mini | conflict-aware가 거짓 거부에 우세 (설계 24케이스, **채점 12케이스**) |
 | exp2 | A/B/C 타입 분해 | claude-haiku | 효과는 "정답 문서 부재 시 robustness"에 한정 |
 | exp3 | temporal update (명시적) | claude-haiku | 두 arm 모두 100% (천장 효과) |
 | exp4 | temporal update (암묵적) | claude-haiku | 두 arm 모두 100% (천장 효과) |

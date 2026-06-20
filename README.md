@@ -116,12 +116,19 @@ flowchart LR
 
 > API 모델(gpt-4o-mini, claude-haiku) 기반 파일럿. 본 연구 타겟인 **Llama 3.1-8B** 실험의 사전 탐색 단계. 상세: [`experiments/2026-05-31/`](experiments/2026-05-31/)
 
-**exp1 — 거짓 문서 거부율** (gpt-4o-mini, 24케이스)
+**exp1 — 거짓 문서 거부율** (gpt-4o-mini)
+
+| 구분 | 규모 |
+|------|------|
+| **데이터 설계** | 24케이스 (doc_correct 12 + doc_false 12) — `build_dataset.py --expand 12` |
+| **실제 채점** | **12케이스** (doc_correct 6 + doc_false 6, `clash_conflicts.jsonl`) |
+
+> **Note.** exp1은 doc_correct 12개와 doc_false 12개로 총 24케이스를 설계했으며, 아래 수치는 초기 12케이스(doc_correct 6 + doc_false 6)를 채점한 파일럿 결과이다. 전체 24케이스 확장 채점은 **Growth** 단계에서 수행한다.
 
 | Arm | 전체 | 거짓 문서 거부 |
 |-----|:----:|:------------:|
-| Base RAG | 75% | 3 / 6 |
-| Conflict-Aware Prompting | **100%** | **6 / 6** |
+| Base RAG | 75% (9/12) | 3 / 6 |
+| Conflict-Aware Prompting | **100%** (12/12) | **6 / 6** |
 
 **exp2 — 문서 구성별 분해** (claude-haiku, 36케이스)
 
