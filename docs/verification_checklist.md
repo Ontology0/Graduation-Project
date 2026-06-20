@@ -9,6 +9,7 @@
 | 항목 | 검증일 | 검증자 | 환경 (OS / Python) | 결과 | Evidence (로그·경로·PR) |
 |------|--------|--------|---------------------|------|-------------------------|
 | B. pytest | 2026-05-31 | 박세령 | macOS 24.6 / Python 3.12 | Pass | `6 passed in 0.11s` |
+| B. pytest | 2026-06-20 | 박세령 | macOS 24.6 / Python 3.12 | Pass | `25 passed in 0.19s`, `test_train_dry_run.py` ignored by pyproject config |
 | C. RAG CLI | 2026-05-31 | bbberylll | Windows / 3.x | Pass | `outputs/runs/20260531T104426Z.json` |
 | C. RAG CLI smoke test | 2026-05-31 | 박세령 | macOS 24.6 / Python 3.12, phi-2 MPS | Pass | `outputs/runs/smoke_test_base_rag.json` |
 | C. Conflict 시나리오 (base) | 2026-05-31 | 박세령 | macOS 24.6 / Python 3.12, phi-2 MPS | Pass | `outputs/runs/smoke_test_conflict_base.json` |
@@ -69,7 +70,8 @@ pytest -q
 
 ### Pass criteria
 
-- [x] `tests/test_prompt_builder.py`, `tests/test_schema_files.py`, `tests/test_run_batch.py`가 모두 통과한다 — **6 passed in 0.11s** (2026-05-31)
+- [x] API 키 없이 실행 가능한 기본 pytest suite가 통과한다. 최신 실행 결과는 아래 **검증 기록**에 날짜별로 추가한다.
+- [x] `tests/test_prompt_builder.py`, `tests/test_schema_files.py`, `tests/test_run_batch.py` 등 기본 suite 통과 — **25 passed in 0.19s** (2026-06-20, `test_train_dry_run.py` 제외)
 - [x] 실패 시: 실패 테스트 이름과 traceback 첫 줄을 검증 기록에 남긴다 — 실패 없음
 
 ---

@@ -1,7 +1,10 @@
 # Architecture (1-page)
 
 > Goal: 외부 방문자가 “무엇이 어디서 어떻게 동작하는지”를 1분 내 파악할 수 있게 하는 요약 문서입니다.  
-> Status: 연구 레포 **scaffold** 단계이며, `src/rag/`는 1차 구현 초안, 학습/평가는 scaffold 입니다.
+> Status: **Start-stage implementation.**  
+> - `src/rag/`: implemented RAG pipeline for smoke tests and Arm 1·2 pilot comparison  
+> - `src/training/`: DPO+LoRA dry-run/scaffold for Growth-stage learning  
+> - `src/evaluation/`: metric and 5-arm evaluation harness scaffold; full benchmark deferred
 
 ## High-level overview
 
@@ -65,5 +68,6 @@ flowchart TD
 
 ## Notes (evaluation-alignment)
 
-- 본 레포는 “연구 scaffold”임을 README에 명시하며, **측정되지 않은 결과/점수는 절대 주장하지 않습니다.**
+- 본 레포는 Start-stage 산출물임을 README에 명시하며, **Arm 1·2 파일럿 결과**와 **로컬 smoke**는 근거 경로를 함께 제시합니다.
+- **측정되지 않은** 5-arm 정량 benchmark·RAGAS 수치·LoRA adapter inference 결과는 주장하지 않습니다.
 - “정합성” 점검을 위해 RQ ↔ 구현 링크는 `docs/rq_to_implementation_map.md`에 유지합니다.

@@ -19,15 +19,24 @@ pytest -q
 pytest tests/test_prompt_builder.py -q
 ```
 
+`test_train_dry_run.py`는 training dependency와 mock 기반 dry-run 경로를 확인하는 테스트이므로, 기본 `pytest -q`에서는 `pyproject.toml` 설정에 의해 제외됩니다. 필요 시 명시적으로 실행할 수 있습니다.
+
+```bash
+pytest tests/test_train_dry_run.py -q
+```
+
 ## 파일 설명
 
-| 파일 | 역할 |
-|------|------|
-| `__init__.py` | `tests` 패키지 마커 (내용 없음). pytest가 `tests/`를 테스트 루트로 인식하는 데 사용 |
-| `test_prompt_builder.py` | `configs/prompts/*.md` 프롬프트 템플릿 로딩 검증 |
-| `test_schema_files.py` | `data/schema/*.json` JSON Schema 파일 파싱 가능 여부 검증 |
-| `test_run_batch.py` | pilot JSONL 로드·`Document` 변환·batch 출력 경로 헬퍼 검증 |
-| `test_telegram_format.py` | Telegram HTML 포맷 변환 (`src/chatbot/telegram_format.py`) |
+| 파일 | 역할 | 상태 |
+|------|------|------|
+| `test_prompt_builder.py` | Base / conflict-aware prompt template 로딩 및 placeholder 검증 | active |
+| `test_schema_files.py` | `data/schema/*.json` JSON 파싱 검증 | active |
+| `test_run_batch.py` | pilot JSONL 로드, case → Document 변환, batch output path 검증 | active |
+| `test_telegram_format.py` | Telegram HTML escaping / formatting 검증 | active |
+| `test_eval_metrics.py` | conflict-resolution accuracy, false-doc follow rate, abstention rate 등 평가 metric 검증 | active |
+| `test_preference_schema.py` | preference pair schema와 train/eval JSONL 구조 검증 | active |
+| `test_build_preference_pairs.py` | synthetic conflict case → chosen/rejected preference pair 변환 검증 | active |
+| `test_train_dry_run.py` | DPO+LoRA dry-run path mock 기반 smoke test | excluded from default pytest by `pyproject.toml` |
 
 ---
 
@@ -70,12 +79,40 @@ pytest tests/test_prompt_builder.py -q
 
 ---
 
+### `test_eval_metrics.py`
+
+**대상:** `src/evaluation/evaluate.py` metric helpers
+
+**검증 내용:** `contains_target`, conflict-resolution accuracy, false-doc follow rate, abstention rate, case-type aggregation
+
+---
+
+### `test_preference_schema.py` / `test_build_preference_pairs.py`
+
+**대상:** `data/synthetic_conflicts/build_preference_pairs.py`, preference JSONL schema
+
+**검증 내용:** train/eval split 필터, stance→role 매핑, chosen/rejected pair 생성
+
+---
+
+### `test_train_dry_run.py`
+
+**대상:** `src/training/train.py` dry-run 경로 (mock 기반)
+
+**특징:** 기본 `pytest -q`에서 제외 (`pyproject.toml` → `addopts = "--ignore=tests/test_train_dry_run.py"`). heavy ML dependency 없이 scaffold 경로만 확인.
+
+---
+
 ## 현재 범위 밖
 
-아래는 **아직** 이 디렉터리에 테스트가 없습니다.
+아래 항목은 아직 **end-to-end** 테스트가 없습니다.
 
-- end-to-end RAG pipeline (`scripts/run_pipeline.py`) — API 키·모델 다운로드 필요
-- Telegram bot (`src/chatbot/telegram_bot.py`) — 봇 토큰·네트워크 필요
-- DPO 학습 / 평가 scaffold (`src/training/`, `src/evaluation/`)
+- Full end-to-end RAG pipeline with real model download / API call
+- Live Telegram bot execution with real bot token and network
+- Full-scale DPO+LoRA training on Llama 3.1-8B
+- Adapter-based inference for LoRA arms
+- Large benchmark evaluation across all five arms
+
+현재 테스트는 API 키·GPU 없이 빠르게 검증 가능한 **unit test**와 **scaffold smoke test**에 초점을 둡니다.
 
 추가 테스트는 `src/rag/pipeline.py` 등 실제 entrypoint를 확장할 때 같은 패턴으로 `test_*.py`를 추가하면 됩니다.
