@@ -61,12 +61,19 @@ RAG(Retrieval-Augmented Generation)는 외부 문서를 검색해 LLM 답변의 
 > 파일럿 대상: gpt-4o-mini, claude-haiku (강한 API 모델). 본 연구 타겟인 Llama 3.1-8B 탐색의 사전 검증 단계.  
 > 상세: [`experiments/2026-05-31/`](experiments/2026-05-31/)
 
-**exp1 — 거짓 문서 거부율** (gpt-4o-mini, 24케이스)
+**exp1 — 거짓 문서 거부율** (gpt-4o-mini)
+
+| 구분 | 규모 |
+|------|------|
+| **데이터 설계** | 24케이스 (doc_correct 12 + doc_false 12) — `build_dataset.py --expand 12` |
+| **실제 채점** | **12케이스** (doc_correct 6 + doc_false 6, `clash_conflicts.jsonl`) |
+
+> **Note.** exp1은 doc_correct 12개와 doc_false 12개로 총 24케이스를 설계했으며, 아래 수치는 초기 12케이스(doc_correct 6 + doc_false 6)를 채점한 파일럿 결과이다. 전체 24케이스 확장 채점은 **Growth** 단계에서 수행한다.
 
 | Arm | 전체 정확도 | 거짓 문서 거부 |
 |-----|:---------:|:------------:|
-| Base RAG | 75% | 3 / 6 |
-| Conflict-Aware Prompting | **100%** | **6 / 6** |
+| Base RAG | 75% (9/12) | 3 / 6 |
+| Conflict-Aware Prompting | **100%** (12/12) | **6 / 6** |
 
 **exp2 — 문서 구성별 분해** (claude-haiku, 36케이스)
 
@@ -85,7 +92,7 @@ RAG(Retrieval-Augmented Generation)는 외부 문서를 검색해 LLM 답변의 
 | 단계 | 내용 | 상태 |
 |------|------|:----:|
 | **Start** (이번 학기) | 문제 정의 · RAG 파이프라인 구현 · 파일럿 실험 (Arm 1·2) · 개선 가능성 검증 | ✅ 완료 |
-| **Growth** (확장) | Llama 3.1-8B 대규모 DPO+LoRA 학습 · ClashEval / WikiContradict 5-arm 정량 벤치마크 | 🔄 예정 |
+| **Growth** (확장) | Llama 3.1-8B 대규모 DPO+LoRA 학습 · ClashEval / WikiContradict 5-arm 정량 벤치마크 · exp1 24케이스 확장 채점 | 🔄 예정 |
 
 > DPO+LoRA 코드(`src/training/train.py`)는 dry-run 수준에서 동작 확인 완료 (train_loss=0.693, epoch=0.5).  
 > 대규모 학습 및 정량 비교는 Growth 단계 범위.

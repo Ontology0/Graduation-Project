@@ -6,19 +6,22 @@
 
 ## 설계
 - 모델: gpt-4o-mini (OpenAI API)
-- 데이터: 24케이스 (doc_correct 12 + doc_false 12)
+- **데이터 설계 (목표)**: 24케이스 (doc_correct 12 + doc_false 12)
+  - `build_dataset.py` 시드 12개 + `--expand 12` GPT 확장
   - doc_correct: 문서가 옳음 (모델 상식보다 최신/정확)
   - doc_false: 문서가 거짓 (유명 사실을 틀리게)
+- **실제 채점**: **12케이스** (`clash_conflicts.jsonl`: doc_correct 6 + doc_false 6)
 - 문서: contextual 문서 1개 + distractor
 
 ## 결과
+
+> **Note.** exp1은 doc_correct 12개와 doc_false 12개로 총 24케이스를 설계했으며, 아래 수치는 초기 12케이스(doc_correct 6 + doc_false 6)를 채점한 파일럿 결과이다. 전체 24케이스 확장 채점은 **Growth** 단계에서 수행한다.
+
 | | Base | Conflict-aware |
 |---|---|---|
-| 전체 정답률 | 75% (9/12)* | 100% (12/12)* |
+| 전체 정답률 | 75% (9/12) | 100% (12/12) |
 | doc_correct 정답 | 6/6 | 6/6 |
 | doc_false 정답 | 3/6 | 6/6 |
-
-(*초기 12케이스 버전 기준)
 
 - doc_correct(문서 옳음): 두 arm 모두 정답
 - **doc_false(문서 거짓): Base 3/6 속음, Conflict-aware 6/6 거부**

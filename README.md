@@ -12,9 +12,9 @@
 [![Demo Site](https://img.shields.io/badge/🌐_연구_사이트-alltology.zapto.org-4A90D9?style=for-the-badge)](http://alltology.zapto.org)
 [![Telegram](https://img.shields.io/badge/✈️_Telegram_RAG봇-@alltology__rag__bot-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/alltology_rag_bot)
 
+[![tests](https://github.com/Ontology0/Graduation-Project/actions/workflows/test.yml/badge.svg)](https://github.com/Ontology0/Graduation-Project/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Contributing](https://img.shields.io/badge/Contributing-Guide-4CAF50?style=flat-square)](CONTRIBUTING.md)
-[![Tests](https://img.shields.io/badge/Tests-pytest-orange?style=flat-square)](tests/)
 
 <br/>
 
@@ -116,12 +116,19 @@ flowchart LR
 
 > API 모델(gpt-4o-mini, claude-haiku) 기반 파일럿. 본 연구 타겟인 **Llama 3.1-8B** 실험의 사전 탐색 단계. 상세: [`experiments/2026-05-31/`](experiments/2026-05-31/)
 
-**exp1 — 거짓 문서 거부율** (gpt-4o-mini, 24케이스)
+**exp1 — 거짓 문서 거부율** (gpt-4o-mini)
+
+| 구분 | 규모 |
+|------|------|
+| **데이터 설계** | 24케이스 (doc_correct 12 + doc_false 12) — `build_dataset.py --expand 12` |
+| **실제 채점** | **12케이스** (doc_correct 6 + doc_false 6, `clash_conflicts.jsonl`) |
+
+> **Note.** exp1은 doc_correct 12개와 doc_false 12개로 총 24케이스를 설계했으며, 아래 수치는 초기 12케이스(doc_correct 6 + doc_false 6)를 채점한 파일럿 결과이다. 전체 24케이스 확장 채점은 **Growth** 단계에서 수행한다.
 
 | Arm | 전체 | 거짓 문서 거부 |
 |-----|:----:|:------------:|
-| Base RAG | 75% | 3 / 6 |
-| Conflict-Aware Prompting | **100%** | **6 / 6** |
+| Base RAG | 75% (9/12) | 3 / 6 |
+| Conflict-Aware Prompting | **100%** (12/12) | **6 / 6** |
 
 **exp2 — 문서 구성별 분해** (claude-haiku, 36케이스)
 
@@ -277,7 +284,7 @@ Graduation-Project/
 │   ├── training/
 │   │   └── train.py              #   DPO+LoRA dry-run 구현 완료 · 정식 대규모 학습은 Growth 범위
 │   └── evaluation/
-│       └── evaluate.py           #   5-arm 평가 하네스 구현 완료 · 정식 벤치마크 평가는 Growth 범위
+│       └── evaluate.py           #   5-arm 평가 결과 저장 및 metric aggregation scaffold. 정식 모델 추론은 Growth 단계이며, Arm 1·2 파일럿 결과는 experiments/와 outputs/runs/에서 확인 가능
 ├── scripts/
 │   ├── run_pipeline.py           # RAG 파이프라인 실행 CLI
 │   ├── run_batch.py              # 배치 실행
