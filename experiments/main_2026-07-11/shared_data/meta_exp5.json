@@ -1,0 +1,13 @@
+{
+  "experiment": "exp5_cb_audit",
+  "timestamp_utc": "2026-07-11T09:20:07.876069Z",
+  "dataset": "Warrieryes/CB_qa",
+  "split": "train",
+  "total_rows": 553117,
+  "n_sample": 1000,
+  "seed": 42,
+  "sample_file": "cbqa_sample_n1000_seed42.jsonl",
+  "sample_sha256": "06293de4d4a08394d5eb431acf0efd613e806b457ad750da767111f60df68d4c",
+  "datasets_version": "4.0.0",
+  "python": "3.12.13"
+}
