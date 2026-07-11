@@ -1,0 +1,29 @@
+{
+  "all": {
+    "n": 400,
+    "n_correct": 88,
+    "accuracy": 0.22,
+    "auroc": 0.8267045454545455,
+    "mean_entropy_correct": 0.41090536932077415,
+    "mean_entropy_incorrect": 0.674077430077723,
+    "confidently_wrong_frac": 0.019230769230769232
+  },
+  "CB": {
+    "n": 300,
+    "n_correct": 8,
+    "accuracy": 0.02666666666666667,
+    "auroc": 0.8125,
+    "mean_entropy_correct": 0.4383260088928535,
+    "mean_entropy_incorrect": 0.6660746423795922,
+    "confidently_wrong_frac": 0.06164383561643835
+  },
+  "TQA": {
+    "n": 100,
+    "n_correct": 80,
+    "accuracy": 0.8,
+    "auroc": 0.755625,
+    "mean_entropy_correct": 0.4081633053635663,
+    "mean_entropy_incorrect": 0.7909181304704327,
+    "confidently_wrong_frac": 0.2
+  }
+}
