@@ -1,8 +1,8 @@
 # 기말발표용 코드와 선행 실험
 
-> 2026-10-27에 [공유 Drive 폴더](https://drive.google.com/drive/folders/1F3Hk6TE6pbJ6TIz1hiQaoJerlQxdHr8Y)에서 가져온 발표·연구 흐름용 묶음입니다. 같은 폴더의 [논문 심사용 코드](../paper/README.md)는 별도로 정리했습니다.
+> 2026-10-27에 공유 Drive에서 가져온 발표·연구 흐름용 묶음입니다. 논문용 코드·결과는 심사 중이므로 공개를 보류합니다.
 
-폴더 안의 실험을 모두 최종 채택 방법으로 보지는 않습니다. 판독, 규칙, 실제 개입을 비교한 선행·후속 실험을 함께 보존합니다. 발표 E16의 20% 재현과 20%·80% 비교 코드는 중복 복사하지 않고 [논문 폴더의 E16_role_20_80.ipynb](../paper/E16_role_20_80.ipynb)에 연결합니다.
+폴더 안의 실험을 모두 최종 채택 방법으로 보지는 않습니다. 판독, 규칙, 실제 개입을 비교한 선행·후속 실험을 함께 보존합니다.
 
 ## 코드 읽는 순서
 
@@ -35,4 +35,4 @@
 - 파일별 Drive 원본·수정 시각은 [출처 목록](../drive_sources.json)에 있습니다. 저장 출력이 필요하면 해당 원본을 열어 확인합니다.
 - [E18A 결과 ZIP](https://drive.google.com/file/d/16gsGWwRrFwTs-vg_v7qRf28eEW6PhERy/view)과 [E18B 설계 HTML](https://drive.google.com/file/d/1fpdTrEISZiixrEHpDXRtAgBx6HpaEfRO/view)은 원본 링크로 제공합니다.
 
-[논문 심사용 코드](../paper/README.md) · [전체 실험 안내](../README.md)
+[전체 실험 안내](../README.md)

@@ -8,17 +8,16 @@
 |---|---|
 | [저장소 소개](../README.md) | 문제·두 연구 축·주요 결과·코드 안내 |
 | [Project Brief](project_brief.md) | 현재 연구의 목표와 산출물 요약 |
-| [연구 결과와 근거](research_status.md) | 논문·발표·10/27 보고·저장 산출물의 수치와 조건 |
+| [연구 결과와 근거](research_status.md) | 발표·10/27 보고·공개 산출물의 수치와 조건 |
 | [연구 계획](research_plan.md) | 관찰→방법 흐름, 다음 과제·평가 계획 |
 | [실험 안내](../experiments/README.md) | 노트북 목적·입력·공개 결과 |
 | [기말발표용 코드](../experiments/presentation/README.md) | 공유 Drive의 발표·선행 실험 8개와 현재 Routing·Packed 연결 |
-| [논문 심사용 코드](../experiments/paper/README.md) | 역할별 E16 재현·추가검증·보조 통제 실험, 논문 표와 CSV 대응 |
 | [SOTA 안내](../SOTA/README.md) | 비교 코드의 구현 상태와 실행 전제 |
 | [공용 규격](../prompt/p8s_prompt.py) | P8S 프롬프트·채점·생성 설정 |
 
 ## 회의와 원문 자료
 
-[교수님 미팅 자료 원문](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit)은 7월 탐색부터 10월 27일 보고까지 여러 탭으로 구성돼 있습니다. 최신 결과는 14회차 보고를 기준으로 읽고, 과거 설계·철회된 설정과 구분하세요. 제공된 PDF·심사용 논문의 제목과 사용 범위는 [근거 목록](research_status.md#출처와-읽는-순서)에 정리했습니다.
+[교수님 미팅 자료 원문](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit)은 7월 탐색부터 10월 27일 보고까지 여러 탭으로 구성돼 있습니다. 최신 결과는 14회차 보고를 기준으로 읽고, 과거 설계·철회된 설정과 구분하세요. 제공된 발표·미팅 PDF의 사용 범위는 [근거 목록](research_status.md#출처와-읽는-순서)에 정리했습니다.
 
 | 날짜 | 기록 |
 |---|---|

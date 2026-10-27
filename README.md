@@ -13,7 +13,7 @@
 
 ---
 
-> **업데이트: 2026-10-27.** 10월 15일의 Routing 중심 방향을 바탕으로, 10월 27일 서면 보고와 새로 등록된 실험 코드를 반영했습니다. 아래 수치는 제공된 논문·실험 보고 및 저장된 산출물 기준이며, 이번 문서 정리에서 모델 실험을 다시 수행한 결과는 아닙니다.
+> **업데이트: 2026-10-27.** 10월 15일의 Routing 중심 방향을 바탕으로, 10월 27일 서면 보고와 새로 등록된 실험 코드를 반영했습니다. 아래 수치는 실험 보고 및 저장된 산출물 기준이며, 이번 문서 정리에서 모델 실험을 다시 수행한 결과는 아닙니다.
 
 ## 우리가 풀려는 문제
 
@@ -32,15 +32,7 @@ K는 관측한 closed-book 응답의 정오입니다. K−가 관련 지식의 �
 
 답변 생성 전 Llama-3.1-8B-Instruct의 **attention head 표현**에서 K/C 상태를 읽습니다. 역할별로 헤드를 선택하고 그 벡터를 연결해 선형 판독기를 학습합니다.
 
-제공된 심사용 논문의 평가 A에서는 PopQA 기반 **612질문·1,224입력** 중 122질문으로 헤드 선택·판독기를 학습하고 490질문에서 평가했습니다.
-
-| 지표 | 보고값 |
-|---|---:|
-| 4-state Macro-F1, 5회 평균 ± 표준편차 | **0.6123 ± 0.0121** |
-| K / C AUROC | **0.8134 / 0.9200** |
-| 선택 헤드 / 전체 헤드 | **7–10 / 32** |
-
-이 수치는 **상태 판독 성능**이며 답변 정확도가 아닙니다. 20% 라벨은 고정된 설계 아래의 선별·학습 예산이고, 앞선 설계 탐색까지 포함한 총 라벨 사용량은 아닙니다. 논문은 10월 15일 기록 기준 **심사용 제출 완료**입니다. [평가 조건과 한계 →](docs/research_status.md#1-지식문맥-4-state-판독)
+상태 판독 성능과 실제 답변 정확도는 구분합니다. 관련 논문은 **심사 중**이며, 논문용 코드·결과·세부 수치는 공개를 보류합니다. 기존 [발표·선행 실험 코드](experiments/presentation/README.md)는 유지합니다.
 
 ### 2. 제어 — Always Steering → Routing / Packed
 
@@ -83,7 +75,6 @@ Router는 **ConFiQA train fold의 정답으로 학습**했고, packed는 대상 
 |---|---|
 | 현재 방법과 공개 범위 파악 | [실험 안내](experiments/README.md) |
 | 기말발표용 코드·선행 실험 | [발표 코드](experiments/presentation/README.md) — E13–E18 판독·개입 실험 8개 |
-| 논문 심사용 코드·결과 | [논문 코드](experiments/paper/README.md) — E16 재현·추가검증, 통제 실험과 집계 CSV |
 | 프롬프트 편향·라벨·레이어 신호 | [E0](experiments/E0/) · [E1](experiments/E1/) · [E2](experiments/E2/) · [P8S probe](experiments/p8s_probe/) |
 | Steering의 발전과 재현성 검증 | [P9](experiments/P9/) · [Steering_retain](experiments/Steering_retain/) · [E15](experiments/E15/) |
 | 행동별 이득과 조건부 Routing | [A0](experiments/A0/) · [A1](experiments/A1/) — CSV·Parquet 결과 포함 |
@@ -91,7 +82,7 @@ Router는 **ConFiQA train fold의 정답으로 학습**했고, packed는 대상 
 | C+ 손상 진단·Packed | [E17](experiments/E17/) |
 | 기존 방법 비교 코드 | [SOTA 안내](SOTA/README.md) — 하네스 초안·구현 상태 확인 |
 | 공용 프롬프트와 채점 | [p8s_prompt.py](prompt/p8s_prompt.py) |
-| 연구 근거·논문 결과·원문 위치 | [연구 결과 및 근거](docs/research_status.md) |
+| 연구 근거·공개 결과·원문 위치 | [연구 결과 및 근거](docs/research_status.md) |
 
 ## 재현 시작하기
 
@@ -123,7 +114,6 @@ cd Graduation-Project
 ```text
 experiments/   현재 연구 노트북과 일부 결과 (P6/P9/E0/E1/E2/E15/E17/A0/A1/A3 등)
   presentation/ 기말발표·선행 실험 코드
-  paper/        논문 심사용 코드·통제 실험·집계 결과
 SOTA/          기존 방법 비교 하네스 초안
 prompt/        공용 P8S 프롬프트·채점 규격
 docs/          최신 연구 문서, 결과 근거, 회의록, 초기 기록
