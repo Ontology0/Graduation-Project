@@ -1,0 +1,21 @@
+{
+ "verdict": "K×C를 완벽히 알아도 Always-retain과 유의차 없음 → 현재 행동 집합으로는 방향 A 이득 제한적",
+ "state_oracle_KxC_vs_always": [
+  0.0024509803921568627,
+  -0.005718954248366013,
+  0.010620915032679739
+ ],
+ "oracle_all_vs_always": 0.03676470588235294,
+ "stable": {
+  "base": true,
+  "late_ret_r0.06": true,
+  "late_acc_r0.03": true,
+  "late_acc_r0.06": true,
+  "early_ret_r0.03": true,
+  "early_ret_r0.06": true,
+  "early_acc_r0.03": true,
+  "early_acc_r0.06": true
+ },
+ "K_label": "kside_v3",
+ "setting": "p8s-v2, P9 all+decode, rho*median||h||"
+}

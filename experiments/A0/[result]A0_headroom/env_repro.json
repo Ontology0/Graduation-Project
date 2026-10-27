@@ -1,0 +1,9 @@
+{
+ "torch": "2.11.0+cu128",
+ "transformers": "5.17.0",
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "date": "2026-09-29T01:27:41.938758",
+ "repro_mismatch_base": 0,
+ "repro_mismatch_late_ret": 0,
+ "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659"
+}
