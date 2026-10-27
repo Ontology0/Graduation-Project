@@ -1,22 +1,30 @@
-# 문서 안내
+# 문서 길잡이
 
-> 업데이트: 2026-10-27. 최신 연구 방향과 이전 기록을 구분해 안내합니다.
+> 업데이트: 2026-10-27. 처음 이해할 자료, 활동을 검토할 자료, 연구를 이어갈 자료를 구분합니다.
 
-## 현재 연구
+## 목적에 맞게 시작하기
 
-| 문서 | 내용 |
+| 목적 | 첫 문서 | 이어서 볼 자료 |
+|---|---|---|
+| 프로젝트가 낯설다 | [처음 읽는 안내](getting_started.md) | [짧은 소개·강점](project_brief.md), [첫 결과 CSV](../experiments/A1/%5Bresult%5DA1_staged_routing/A1_policies.csv) |
+| 교수님·심사위원으로 검토한다 | [교수님 검토 안내](review_guide.md) | 아래 회의록, [팀원별 활동 근거](team_contributions.md) |
+| 실험을 이해하거나 참여한다 | [실험별 코드 지도](../experiments/README.md) | [평가 조건·결과](research_status.md), [다음 연구](research_plan.md), [기여 규칙](../CONTRIBUTING.md) |
+| 예전 자료가 필요하다 | [이전 연구 보관함](archive/README.md) | 초기 RAG·DPO/LoRA, 데모, 이전 발표·자체점검 |
+
+현재 설명의 중심은 **내부 신호를 이용한 선택적 개입과 답변 개선**입니다. 별도 4-state 논문은 심사 중이며, 논문용 코드·상세 결과는 공개 보류합니다.
+
+## 현재 연구 자료
+
+| 자료 | 내용 |
 |---|---|
-| [교수님 검토 안내](review_guide.md) | 10/13 공지 대응, 활동→결정→개발 산출물, 검증 사례·후속 일정 |
-| [저장소 소개](../README.md) | 문제·두 연구 축·주요 결과·코드 안내 |
-| [팀원별 활동 근거](team_contributions.md) | 현재 학기 협업·등록 근거와 Start 단계 기여 구분 |
-| [AI 활용 기록](ai_transparency_report.md) | 10/27 저장소 정리 범위와 초기 개발 보조 기록 구분 |
-| [Project Brief](project_brief.md) | 현재 연구의 목표와 산출물 요약 |
-| [연구 결과와 근거](research_status.md) | 발표·10/27 보고·공개 산출물의 수치와 조건 |
-| [연구 계획](research_plan.md) | 관찰→방법 흐름, 다음 과제·평가 계획 |
-| [실험 안내](../experiments/README.md) | 노트북 목적·입력·공개 결과 |
-| [기말발표용 코드](../experiments/presentation/README.md) | 공유 Drive의 발표·선행 실험 8개와 현재 Routing·Packed 연결 |
-| [SOTA 안내](../SOTA/README.md) | 비교 코드의 구현 상태와 실행 전제 |
-| [공용 규격](../prompt/p8s_prompt.py) | P8S 프롬프트·채점·생성 설정 |
+| [제출용 Project Brief](project_brief.md) | 트랙·한 줄 주제·키워드·강점 및 특징 8문장 |
+| [연구 결과와 근거](research_status.md) | 공개 결과·외부 보고의 표본, 라벨 사용, 수치·한계 |
+| [연구 계획](research_plan.md) | 관찰→설계, 다음 질문·평가 원칙·미완료 과제 |
+| [실험 안내](../experiments/README.md) | 질문별 시작 코드와 전체 노트북·입력 목록 |
+| [발표·선행 코드](../experiments/presentation/README.md) | 내부 신호·온라인 개입의 선행 실험; 최신 연구 전체와 구분 |
+| [SOTA 안내](../SOTA/README.md) | 비교 하네스의 구현·미구현·실행 전제 |
+| [공용 프롬프트·채점](../prompt/p8s_prompt.py) | P8S 실행 규격 |
+| [팀 활동 근거](team_contributions.md) · [AI 활용 기록](ai_transparency_report.md) | 협업·보고·등록과 문서 정리 범위 |
 
 ## 회의와 원문 자료
 
@@ -36,19 +44,8 @@
 
 전체 원문은 [meeting-log/](meeting-log/)에 보존합니다. 당시 제안과 후속 과제를 완료 결과로 바꾸어 읽지 않습니다.
 
-## 초기 PA-RAG·수업·데모 기록
+## 이전 연구와 별도 프로젝트
 
-아래는 주로 2026년 1학기 기록입니다. 현재 Routing·Packed의 방법·실행 상태를 설명하는 문서가 아니며, 당시 경로·외부 데모 운영 상태는 현재와 다를 수 있습니다.
-
-| 자료 | 당시 내용 |
-|---|---|
-| [Start 소개](archive/start-overview.md) · [Start Project Brief](archive/start-project-brief.md) | 초기 README·DPO/LoRA 구상·파일럿·데모 |
-| [실험 설계](experiment_design.md) · [RQ–구현 매핑](rq_to_implementation_map.md) | PA-RAG 5-arm 비교 계획 |
-| [Architecture](architecture.md) · [Demo](demo.md) · [검증 기록](verification_checklist.md) | 초기 RAG 파이프라인 |
-| [관련 연구](related_work.md) · [벤치마크 검토](benchmark_selection.md) · [Decision log](decision_log.md) | 초기 선행 연구·데이터 검토 |
-| [수업 AI 활용 기록](../course/transparency_report.md) | 초기 단계 활용·계획; 현재 연구 전체의 완료 내역이 아님 |
-| [발표 원고](presentation.md) · [발표 PDF](presentation/presentation.pdf) | 초기 발표; 이번에 제공된 58쪽 발표와 구분 |
-| [텔레그램 운영](telegram_bot_ops.md) · [Self-demo](../self_demo.md) | 초기 데모 안내 |
-| [이전 실험](../legacy/experiments/) · [이전 실행 결과](../legacy/outputs/) | 파일럿·이전 산출물 |
+초기 문서는 [이전 연구 보관함](archive/README.md)에서 찾을 수 있습니다. 초기 웹·봇 데모와 자체평가 자료를 현재 연구의 실행법이나 공식 채점 결과로 사용하지 않습니다.
 
 한이음 설계는 [hanium-design-v0.3.md](han_eum_docs/hanium-design-v0.3.md)에 별도 보관합니다.

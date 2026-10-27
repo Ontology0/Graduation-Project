@@ -1,4 +1,6 @@
-# self_demo 시연 가이드
+# 초기 Self-demo 시연 기록
+
+> **초기 RAG 단계 보관 문서입니다.** 현재 Routing·Packed의 실행 안내나 실시간 동작 보장이 아닙니다. 처음 방문했다면 [현재 연구 안내](../getting_started.md)를 먼저 보세요. 아래 외부 서비스의 현재 운영 상태는 확인하지 않았습니다.
 
 <div align="center">
 <img src="docs/assets/web_screenshot.png" alt="Alltology 연구 소개 사이트" width="780"/>
@@ -226,7 +228,7 @@ python scripts/run_pipeline.py \
 성공 시 콘솔에 `Experiment / Question / Answer / Sources` 출력 후  
 `outputs/runs/` 아래 `.json` / `.md` 결과 파일 자동 생성.
 
-실제 실행 결과물 예시: [`outputs/runs/smoke_test_base_rag.json`](outputs/runs/smoke_test_base_rag.json)
+당시 실행 결과물 예시: [`legacy/outputs/runs/smoke_test_base_rag.json`](../../legacy/outputs/runs/smoke_test_base_rag.json)
 
 ---
 

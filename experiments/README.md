@@ -4,17 +4,21 @@
 
 회의에서 정한 과제가 어떤 코드·결과로 이어졌는지는 [교수님 검토 안내](../docs/review_guide.md)에서 확인할 수 있습니다. GitHub 업로드 날짜와 실제 실험 수행일은 구분합니다.
 
-## 제출 목적별 코드
+## 먼저 볼 코드
 
-기말발표·선행 실험 노트북 8개를 공개합니다. 논문용 코드·결과는 심사 중이므로 공개를 보류하며, 기존 실험 경로는 옮기지 않았습니다.
+실험 번호를 외우기보다 **어떤 질문에 답하는 코드인지**를 기준으로 시작하세요. 처음 읽는 분은 [설치 없이 A1 결과 확인](../docs/getting_started.md#3-설치-없이-첫-결과-확인하기)부터 보면 됩니다.
 
-| 묶음 | 내용 |
-|---|---|
-| [기말발표용·선행 실험](presentation/README.md) | E13–E18 판독·개입 노트북 8개, 현재 Routing·Packed 실험 연결 |
+| 질문 | 시작점 | 결과·구현 상태 |
+|---|---|---|
+| 어떤 행동이 도움이 되고 언제 선택하는가? | [A0](A0/A0_headroom_check.ipynb) → [A1](A1/A1_staged_routing.ipynb) | 코드·P8S CSV·Parquet 포함; 저장 행동 결과를 이용한 정책 평가 |
+| 추론 도중 실제로 행동을 결정하는가? | [E15 온라인 Router](presentation/E15_Online_StrongRetain_UtilityRouter.ipynb) | 실제 generation 경로; A1과 입력 순서·실행 조건이 다름 |
+| 외부에서도 같은 방향이 통하는가? | [A3](A3/A3_Always_Steering_External_Eval.ipynb) · [ConFiQA Router 실행본](https://drive.google.com/file/d/1ghpS2MP4XSeBh8R8t_Ay7KSN-o4PZcAG/view) | 서로 다른 방법·표본 수; [조건별 결과](../docs/research_status.md)와 대조 |
+| 문맥/기억 분기는 어떻게 선택하는가? | [E17 Packed](E17/E17_packed.ipynb) · [C+ 진단](E17/E17-0_Cplus_diagnosis.ipynb) | 개발·분석 코드; 외부 손상 분석은 보고 문서와 연결 |
+| 왜 이런 신호와 개입을 쓰는가? | [P9](P9/) · [E2](E2/) · [발표·선행 실험](presentation/README.md) | 프롬프트·라벨·레이어·헤드·강도에 관한 근거 탐색 |
 
-원본 코드 셀은 유지하고 출력·실행자 메타데이터를 제거했습니다. [출처 목록](drive_sources.json)에 원본 URL과 수정 시각을 기록했습니다. 이번 가져오기에서 모델을 재실행하지 않았습니다.
+`presentation/`은 공유 Drive에서 가져온 선행·발표 코드 8개이며 전체 최신 연구를 대표하는 단일 실행 패키지가 아닙니다. 가져온 코드 셀은 유지하고 출력·실행자 메타데이터를 제거했으며, [원본 출처](drive_sources.json)를 연결했습니다. 논문용 코드·결과는 심사 중이므로 공개 보류합니다.
 
-## 현재 연구를 읽는 순서
+## 전체 실험 목록
 
 **프롬프트·라벨 검증 → 내부 신호 판독 → steering → 행동 선택 / 후보 선택 → 외부 평가** 순서로 읽으면 연구 흐름을 이해하기 쉽습니다. 모든 노트북을 순서대로 실행하는 하나의 파이프라인은 아닙니다.
 

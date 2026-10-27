@@ -12,6 +12,16 @@
 
 회의록 작성자와 GitHub 업로더가 다른 경우 두 역할을 구분합니다. 공동 연구의 설계·실행·해석 기여 전체를 이 표의 등록 내역만으로 환산하지 않습니다. 논문용 자료를 공개하지 않아도 기존 회의·발표·개발 기록으로 활동 경과를 확인할 수 있습니다.
 
+## 팀 보고에서 확인할 연구 내용
+
+| 자료 | 주요 분석 | 코드·결과 연결 |
+|---|---|---|
+| [다영 외부 Always·Router 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.ip6i2nm6wvrb) | 일괄 개입의 C+ 손상, 입력별 이득 예측의 효과, 강도 조절만으로 해결되지 않는 한계 | [A0/A1](../experiments/README.md#먼저-볼-코드), [ConFiQA Router 실행본](https://drive.google.com/file/d/1ghpS2MP4XSeBh8R8t_Ay7KSN-o4PZcAG/view) |
+| [현경 Packed 외부 분석](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.6grhiq4uqc72) | 두 분기 선택·온라인 방향 추정, X1이 잘못된 기억을 고르는 실패, 조건별 audit와 후속 검증 | [E17 개발·진단](../experiments/E17/), [보고 수치·조건](research_status.md) |
+| [발표·선행 내부 신호 실험](../experiments/presentation/README.md) | head·레이어 신호, 규칙과 판독기, 온라인 개입 경로의 구분 | [공유 원본 출처](../experiments/drive_sources.json); 가져오기와 연구 수행을 구분 |
+
+현재 소개는 어느 한 사람의 상태 판독 자료만이 아니라 위 보고와 팀 회의의 Routing 방향을 함께 반영합니다. 자료별 독립 조건을 합쳐 하나의 완성된 결합 모델이라고 표현하지 않습니다.
+
 ## 공동 작업과 후속 과제
 
 - [10/13 면담](meeting-log/2026-10-13_회의록.md) → [10/15 팀 회의](meeting-log/2026-10-15_회의록.md): Routing 중심 방향, 행동·강도·내부 신호·비용 비교 과제를 구체화했습니다.

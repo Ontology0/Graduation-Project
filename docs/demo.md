@@ -1,5 +1,7 @@
 # Demo / Quickstart
 
+> **초기 RAG 단계 보관 문서:** 현재 연구의 시작점은 [새 참여자 안내](getting_started.md)입니다. 아래 명령·데모는 최신 Routing·Packed의 실행법이 아닙니다.
+
 > 목적: 평가자/외부 방문자가 “이 레포에 **실제로 돌아가는 코드**가 있다”는 걸 빠르게 확인할 수 있게, **smoke test**와 **증빙(예시 로그/결과 형태)**를 한 곳에 모읍니다.  
 > Status: Start-stage 연구 산출물입니다. Arm 1·2 파일럿·로컬 smoke 결과는 존재하며, 5-arm 정량 벤치마크는 Growth 단계입니다.
 
@@ -71,7 +73,7 @@ Saved run:
   - MD:   outputs/runs/smoke_test_base_rag.md
 ```
 
-결과 파일: [`outputs/runs/smoke_test_base_rag.json`](../outputs/runs/smoke_test_base_rag.json) · [`outputs/runs/smoke_test_base_rag.md`](../outputs/runs/smoke_test_base_rag.md)
+당시 결과 파일: [`legacy/outputs/runs/smoke_test_base_rag.json`](../legacy/outputs/runs/smoke_test_base_rag.json) · [`legacy/outputs/runs/smoke_test_base_rag.md`](../legacy/outputs/runs/smoke_test_base_rag.md)
 
 ## Demo goal (final presentation)
 

@@ -180,9 +180,9 @@ flowchart LR
 
 ## 🚀 Quickstart
 
-> 설치 없이 바로 체험하려면 → **[📋 Self-Demo 가이드](../../self_demo.md)** 를 따라하세요.
+> 당시 데모 체험 기록 → **[📋 초기 Self-Demo 가이드](start-self-demo.md)**
 
-[![Quickstart Guide](https://img.shields.io/badge/📋_Quickstart_Guide-self__demo.md-2EA44F?style=for-the-badge)](../../self_demo.md)
+[![Quickstart Guide](https://img.shields.io/badge/📋_Quickstart_Guide-self__demo.md-2EA44F?style=for-the-badge)](start-self-demo.md)
 
 <div align="center">
 <img src="../../docs/assets/demo_screenshot.png" alt="HuggingFace Spaces 인터랙티브 데모" width="780"/>

@@ -1,145 +1,88 @@
-<div align="center">
-
 # Alltology
-## 기억과 문맥이 다를 때, 무엇을 믿어야 할까?
+## 기억과 문서가 다를 때, LLM은 무엇을 믿어야 할까?
 
-**LLM 내부 신호로 지식–문맥 상태를 읽고, 필요한 경우에만 응답에 개입하는 연구**
+**틀린 문서에 흔들리는 답은 줄이고, 맞는 문서로 답하던 능력은 지키는 선택적 개입 연구**
 
 2026 이화여자대학교 캡스톤디자인 · 03팀 · 연구 트랙 · 지도교수 황의원
 
-[교수님 검토 안내](docs/review_guide.md) · [실험 코드](experiments/README.md) · [연구 결과](docs/research_status.md) · [회의록](docs/README.md#회의와-원문-자료) · [팀 활동](docs/team_contributions.md)
+[처음 오셨나요?](docs/getting_started.md) · [교수님 검토 안내](docs/review_guide.md) · [제출용 프로젝트 소개](docs/project_brief.md) · [코드](experiments/README.md) · [결과와 한계](docs/research_status.md)
 
-</div>
+## 왜 필요한가?
 
----
+검색한 문서가 틀릴 수도 있고, 모델이 기억한 정보가 틀릴 수도 있습니다.
+책을 펼쳐 놓고 문제를 풀 때 **책만 믿는 것과 기억만 믿는 것 모두 위험한 상황**과 비슷합니다.
 
-> **업데이트: 2026-10-27.** 10월 15일의 Routing 중심 방향을 바탕으로, 10월 27일 서면 보고와 새로 등록된 실험 코드를 반영했습니다. 아래 수치는 실험 보고 및 저장된 산출물 기준이며, 이번 문서 정리에서 모델 실험을 다시 수행한 결과는 아닙니다.
-
-## 교수님 검토 안내
-
-**10/13 수업 공지에 맞춰, 지금까지의 회의록과 개발 산출물을 함께 확인할 수 있도록 구성했습니다.** [활동 경과·공지 대응·검증 근거 한눈에 보기 →](docs/review_guide.md)
-
-| 확인할 내용 | 바로가기 |
+| 상황 | 필요한 판단 |
 |---|---|
-| 무엇을 논의하고 방향을 바꿨는가? | [전체 회의록 목록](docs/README.md#회의와-원문-자료) · [수업 대체 기간 10/22 회의록](docs/meeting-log/2026-10-22_회의록.md) |
-| 무엇을 실제로 구현했는가? | [실험별 코드·입력·산출물](experiments/README.md) · [발표·선행 실험 코드](experiments/presentation/README.md) |
-| 무엇을 검증했고 무엇이 남았는가? | [공개 결과와 한계](docs/research_status.md) · [후속 연구 계획](docs/research_plan.md) |
-| 팀원들은 어떤 작업에 참여했는가? | [팀원별 활동 근거](docs/team_contributions.md) · [AI 활용 범위](docs/ai_transparency_report.md) |
+| 모델은 정답을 알지만 문서가 잘못된 답을 제시함 | 문서에 끌려가던 답변을 바로잡기 |
+| 모델은 답을 모르지만 문서에 올바른 답이 있음 | 문서로 맞히던 답변을 불필요한 개입으로 망치지 않기 |
 
-10/21–10/26 기간의 기록과 10/27 추가 정리는 [검토 안내](docs/review_guide.md)에 구분했습니다. 심사 중인 논문용 코드·결과는 공개하지 않으며, 기존 발표용 코드와 연구 활동 기록은 유지합니다.
+따라서 목표는 무조건 모델의 기억을 강화하는 것이 아니라, **입력마다 개입이 필요한지와 어떤 개입이 도움이 되는지 판단하는 것**입니다. 두 정보원 모두 틀린 경우에는 어느 하나를 고르는 것만으로 정답이 보장되지 않습니다.
 
-## 우리가 풀려는 문제
+## 무엇을 연구하는가?
 
-외부 문맥이 모델의 기존 지식과 다른 답을 제시할 때, 문맥을 항상 믿어도, 기억을 항상 고집해도 오답이 생깁니다. 우리는 **두 정보원의 상태를 내부 표현에서 읽을 수 있는지**, 그리고 **그 신호가 실제로 더 나은 답변 선택에 도움이 되는지**를 나누어 연구합니다.
-
-| | C+: 정답을 포함한 문맥 | C−: 답을 잘못 치환한 문맥 |
-|---|---|---|
-| **K+: 문맥 없는 응답이 정답** | 두 정보원 모두 정답 | 기존 지식을 유지할 필요 |
-| **K−: 문맥 없는 응답이 오답** | 올바른 문맥을 활용할 필요 | 두 정보원 모두 오답; 어느 쪽도 정답을 보장하지 않음 |
-
-K는 관측한 closed-book 응답의 정오입니다. K−가 관련 지식의 완전한 부재를 뜻하지는 않습니다.
-
-## 두 연구 축
-
-### 1. 판독 — 지식–문맥 4-state
-
-답변 생성 전 Llama-3.1-8B-Instruct의 **attention head 표현**에서 K/C 상태를 읽습니다. 역할별로 헤드를 선택하고 그 벡터를 연결해 선형 판독기를 학습합니다.
-
-상태 판독 성능과 실제 답변 정확도는 구분합니다. 지식–문맥 4-state 판독 연구는 **[2026 한국소프트웨어종합학술대회(KSC 2026)](https://www.kiise.or.kr/conference/KSC/2026/)에 논문을 투고하여 심사 중**이며, 게재·발표가 확정된 상태는 아닙니다. 논문용 코드·결과·세부 수치는 공개를 보류하고 기존 [발표·선행 실험 코드](experiments/presentation/README.md)는 유지합니다.
-
-### 2. 제어 — Always Steering → Routing / Packed
-
-관찰에서 방법으로 이어지는 흐름입니다.
+현재 중심은 **Routing: 내부 신호를 보고 개입 여부·방향·강도를 선택하는 방법**입니다.
+어텐션 헤드 등에서 내부 신호를 분석하고, 모델 가중치를 고정한 채 내부 활성값을 조절하는 Steering과 연결합니다.
 
 ```mermaid
 flowchart LR
-    A["내부 표현에서 K/C 신호 관찰"] --> B["판독과 행동 개선을 구분"]
-    B --> C["Always Steering의 C− 이득과 C+ 손상"]
-    C --> D["Router: 개입 행동·강도 선택"]
-    C --> E["Packed: 문맥·closed-book 분기 선택"]
-    D --> F["답변 성능·문맥 손상·추론 비용 평가"]
-    E --> F
+    A["질문 + 외부 문서"] --> B["모델 내부 신호 읽기"]
+    B --> C{"어떤 개입이 도움이 될까?"}
+    C --> D["개입하지 않기"]
+    C --> E["기존 지식을 유지하도록 조절"]
+    C --> F["문맥을 활용하도록 조절"]
+    D --> G["답변"]
+    E --> G
+    F --> G
 ```
 
-| 방법 | 선택하는 것 | 학습·추론 조건 | 현재 관찰 |
-|---|---|---|---|
-| **Always Steering** | 모든 입력에 같은 retain 방향·강도 | P8S에서 추정한 방향을 고정 | C− 개선이 외부로 전이되지만 C+ 손상 발생 |
-| **Routing** | `no-op`, `retain`, `accept`와 강도 | L13 내부 신호로 행동별 이득 예측; 학습 라벨 사용 | ConFiQA에서 전체 개선과 C+ 비열등을 함께 충족 |
-| **Packed** | 문맥 A / closed-book B 중 답변 분기 | 격리된 두 구간을 한 prefill 호출로 처리; X1 선택·온라인 방향 추정 | 외부 EM 개선, 하지만 K−C+ 손상과 선택 규칙의 한계 |
+그림은 행동 선택의 개념도입니다. 평가용 정답을 추론 중 직접 제공한다는 뜻은 아닙니다.
 
-**Router의 행동 선택과 packed의 분기 선택은 서로 다른 구성 요소입니다.** 결합 모델의 성능은 아직 확인하지 않았습니다. Packed의 호출 1회는 단일 문맥 입력과 동일 계산량을 뜻하지 않습니다.
+| 구성 | 쉬운 설명 | 현재 위치 |
+|---|---|---|
+| **Steering** | 답변 생성 과정에 방향을 주는 조절 수단 | 모든 입력에 같은 조절을 하는 Always 방식이 비교 기준 |
+| **Routing** | 조절할지, 어느 방향·강도로 조절할지 선택 | 행동별 이득 예측·외부 평가, 온라인 선택 고도화 |
+| **Packed** | 문서를 본 경우와 보지 않은 경우의 답변 분기를 비교 | 두 구간을 한 입력 처리 호출에 담는 별도 경로·선택 규칙 분석 |
 
-### 외부 평가: ConFiQA-QA
+**Routing과 Packed를 합친 최종 방법은 아직 검증하지 않았습니다.** 상태를 잘 분류하는 것과 실제 답을 개선하는 것도 다릅니다. 용어·구현 구분은 [처음 읽는 안내](docs/getting_started.md)에 정리했습니다.
 
-1,000질문·2,000입력, C± 모두 **원래 사실 정답**으로 채점한 10월 27일 보고입니다. EM은 %, 변화는 %p입니다.
+## 어디부터 보면 되나요?
 
-| 방법 | 전체 EM | Base 대비 ΔEM [95% CI] | C+ ΔEM | C− ΔEM | C+ 비열등 |
-|---|---:|---:|---:|---:|---|
-| Base | 51.65 | — | — | — | — |
-| Always, ρ=0.06 | 54.30 | +2.65 [1.35, 3.90] | −2.90 | +8.20 | 미충족 |
-| Router | 55.45 | +3.80 [2.70, 5.05] | +0.80 | +6.80 | 충족 |
-| Packed | 55.80 | +4.15 [2.52, 5.90] | −7.60 | +15.90 | 미충족 |
-
-Router는 **ConFiQA train fold의 정답으로 학습**했고, packed는 대상 데이터 라벨을 사용하지 않았습니다. Packed의 Router 대비 +0.35%p는 신뢰구간이 0을 포함해 우위가 확인되지 않았습니다. 비열등은 C+ ΔEM의 95% 신뢰구간 하한 > −2%p 기준입니다. [출처·NQ-Swap·P8S 결과와 비교 범위 →](docs/research_status.md)
-
-## 코드와 결과 찾아보기
-
-| 목적 | 시작할 곳 |
+| 방문 목적 | 읽는 순서 |
 |---|---|
-| 현재 방법과 공개 범위 파악 | [실험 안내](experiments/README.md) |
-| 기말발표용 코드·선행 실험 | [발표 코드](experiments/presentation/README.md) — E13–E18 판독·개입 실험 8개 |
-| 프롬프트 편향·라벨·레이어 신호 | [E0](experiments/E0/) · [E1](experiments/E1/) · [E2](experiments/E2/) · [P8S probe](experiments/p8s_probe/) |
-| Steering의 발전과 재현성 검증 | [P9](experiments/P9/) · [Steering_retain](experiments/Steering_retain/) · [E15](experiments/E15/) |
-| 행동별 이득과 조건부 Routing | [A0](experiments/A0/) · [A1](experiments/A1/) — CSV·Parquet 결과 포함 |
-| 외부 전이·강도·문맥 오류 비율 | [A3](experiments/A3/) |
-| C+ 손상 진단·Packed | [E17](experiments/E17/) |
-| 기존 방법 비교 코드 | [SOTA 안내](SOTA/README.md) — 하네스 초안·구현 상태 확인 |
-| 공용 프롬프트와 채점 | [p8s_prompt.py](prompt/p8s_prompt.py) |
-| 연구 근거·공개 결과·원문 위치 | [연구 결과 및 근거](docs/research_status.md) |
+| 처음 프로젝트를 이해하기 | [짧은 소개](docs/project_brief.md) → [방법·용어·첫 결과](docs/getting_started.md) |
+| 교수님·심사위원이 활동 확인하기 | [활동→결정→산출물](docs/review_guide.md) → [회의록](docs/README.md#회의와-원문-자료) → [팀원별 근거](docs/team_contributions.md) |
+| 코드와 결과 확인하기 | [실험별 코드 지도](experiments/README.md) → [A1 저장 결과](experiments/A1/%5Bresult%5DA1_staged_routing/A1_policies.csv) → [평가 조건과 한계](docs/research_status.md) |
+| 팀에 새로 참여하기 | [참여·재현 시작](docs/getting_started.md#새-참여자의-작업-순서) → [다음 연구](docs/research_plan.md) → [기여 규칙](CONTRIBUTING.md) |
 
-## 재현 시작하기
+## 무엇을 확인했는가?
 
-```bash
-git clone https://github.com/Ontology0/Graduation-Project.git
-cd Graduation-Project
-```
+아래는 기존 산출물·팀 보고 기준이며, 이번 저장소 정리에서 모델을 재실행하지 않았습니다.
 
-현재 연구는 Colab/Jupyter 노트북과 저장된 산출물을 중심으로 구성됩니다. **실험 안내에서 입력 데이터·선행 산출물·환경을 확인한 뒤 해당 노트북을 실행하세요.**
+| 근거 | 관찰 | 해석 범위 |
+|---|---|---|
+| P8S의 [A1 저장 결과](experiments/A1/%5Bresult%5DA1_staged_routing/A1_summary.json) | Router가 Always보다 높은 점수지만 유의한 차이는 미검출 | 저장 행동 결과를 이용한 정책 평가; 온라인 속도 측정이 아님 |
+| ConFiQA 외부 [Router 보고](docs/research_status.md#3-외부-평가-routing과-packed) | 개입 전 정답률 51.65% → Router 55.45%; 올바른 문맥의 성능 저하가 사전 허용 범위를 넘지 않는 기준 충족 | 1,000질문; 대상 데이터 학습 fold의 정답으로 Router 학습 |
+| ConFiQA·NQ-Swap의 [Packed 보고](docs/research_status.md#3-외부-평가-routing과-packed) | 전체 정답률은 개선됐지만 올바른 문맥을 버리는 손상 발생 | 대상 라벨 없이 평가; Router보다 우수하다는 결론은 미확인 |
 
-- P8S 원본·hidden cache·P9 manifest 등 일부 입력은 별도 공유 자료입니다.
-- 모델 추론·steering에는 모델 접근 권한과 GPU가 필요합니다. E2·A1 등은 선행 산출물이 준비되면 CPU 분석이 가능합니다.
-- 공용 규격은 `p8s-v2`, 생성 길이는 192입니다. 과거 노트북의 설정·라벨 버전·레이어 번호와 섞어 비교하지 않습니다.
-- `SOTA/dayoung/`은 비교 코드 초안입니다. 현재 파일 배치와 `common/`·`methods/` import 구조가 일치하지 않아 바로 실행 가능한 패키지는 아닙니다.
-- 루트 `requirements.txt`·`Makefile`·`src/`는 초기 RAG 구현용이며 최신 실험 전체의 통합 실행 환경이 아닙니다.
+다음 과제는 **선택 근거와 실패 원인 분석, 외부 검증 확대, 구성 요소 비교, 추론 비용 확인**입니다. [구체적인 연구 질문 →](docs/research_plan.md)
 
-## 다음 연구
+## 코드와 공개 범위
 
-1. **Router 고도화:** NQ-Swap 평가 확대, 내부 신호·행동 집합·강도 선택 근거 분석
-2. **Packed 선택 규칙 개선:** X1이 K−C+에서 잘못된 기억을 고르는 원인 검증
-3. **구성 요소 비교:** Always / Router / Packed를 분리하고 결합 효과는 별도 실험
-4. **공정한 비교:** 동일 질문·프롬프트·채점의 기준선, 개발·평가 분리, 성능과 비용 보고
-5. **재현성 정리:** 외부 평가 실행본·원시 결과·환경 manifest 연결
+- [현재 실험](experiments/README.md): A0/A1 행동 선택, A3 외부 평가, E17 Packed, P9 Steering 등
+- [발표·선행 실험](experiments/presentation/README.md): 내부 신호 분석과 온라인 개입의 연구 경과
+- [기존 방법 비교](SOTA/README.md): 비교 하네스 개발 초안; 실행 구조·미구현 방법 확인 필요
+- [공용 프롬프트·채점](prompt/p8s_prompt.py): 실험 간 비교 조건
+- [이전 연구 보관함](docs/archive/README.md): 초기 RAG·DPO/LoRA 구상·데모·자체점검 기록
 
-상세 계획과 미확정 사항은 [연구 계획](docs/research_plan.md)에 정리했습니다.
+현재 연구는 노트북과 저장 결과 중심입니다. 루트 `requirements.txt`·`Makefile`·`src/`는 **초기 RAG 구현용**이며, 최신 연구 전체를 한 번에 실행하는 환경은 아닙니다. 설치보다 먼저 [실행 전제](experiments/README.md#실행에-필요한-입력)를 확인하세요.
 
-## 저장소 구성
+## 별도 학술 성과와 팀
 
-```text
-experiments/   현재 연구 노트북과 일부 결과 (P6/P9/E0/E1/E2/E15/E17/A0/A1/A3 등)
-  presentation/ 기말발표·선행 실험 코드
-SOTA/          기존 방법 비교 하네스 초안
-prompt/        공용 P8S 프롬프트·채점 규격
-docs/          최신 연구 문서, 결과 근거, 회의록, 초기 기록
-legacy/        이전 파일럿·실험·실행 결과
-src/, configs/ 초기 RAG·DPO/LoRA·평가·챗봇 구현
-course/        수업 제출 자료
-hanium-arbiter/ 별도 한이음 프로젝트 참조
-```
-
-## 팀과 연구 이력
+내부 신호 분석에서 도출한 **지식–문맥 4-state 판독 연구는 [2026 한국소프트웨어종합학술대회(KSC 2026)](https://www.kiise.or.kr/conference/KSC/2026/)에 투고하여 심사 중**입니다. 현재 Routing·Packed 연구 전체의 채택을 뜻하지 않으며, 논문용 코드·상세 결과는 공개 보류 상태입니다.
 
 박세령 ([@ryeong03](https://github.com/ryeong03)) · 손현경 ([@bbberylll](https://github.com/bbberylll)) · 이다영 ([@dev-ldy03](https://github.com/dev-ldy03))
 
-초기 Conflict-Aware PA-RAG·DPO/LoRA 구상에서 내부 표현 판독, steering, 선택적 응답 제어로 확장했습니다. [초기 소개·파일럿·데모 기록](docs/archive/start-overview.md)과 [전체 문서 안내](docs/README.md)에서 연구 이력을 확인할 수 있습니다.
+[팀 활동 근거](docs/team_contributions.md) · [전체 문서](docs/README.md) · [AI 활용 범위](docs/ai_transparency_report.md) · [기여 안내](CONTRIBUTING.md) · [MIT License](LICENSE)
 
-일상 작업은 `dev`로 PR을 보내고, 제출·배포 스냅샷은 `dev → main` PR로 반영합니다. [기여 규칙](CONTRIBUTING.md) · [MIT License](LICENSE)
+> 업데이트: 2026-10-27. 10/21–10/26 활동과 이후 자료 정리는 [검토 안내](docs/review_guide.md)에 구분했습니다.

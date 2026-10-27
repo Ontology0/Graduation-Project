@@ -1,6 +1,6 @@
 ## 2026-05-28 기준 개선점 (capstone-final-eval 루브릭 기반)
 
-본 문서는 이화여대 캡스톤디자인 기말 평가 루브릭(`docs/eval_check/capstone-final-eval-SKILL.md`) 관점에서, 현재 GitHub 레포/문서/데모 구성의 **부족한 점과 개선 방향**을 기록한다.  
+본 문서는 2026-05-28 당시 내부 점검 템플릿(`capstone-final-eval-SKILL.md`) 관점에서, 당시 GitHub 레포/문서/데모 구성의 **부족한 점과 개선 방향**을 기록한다. 공식 채점 결과나 현재 상태가 아니다.
 전제: 본 저장소는 연구 스캐폴드이며 최종 실험 결과는 아직 없음(README에 명시).
 
 ---
@@ -92,4 +92,3 @@
 3. **RQ↔구현 매핑 문서(`docs/rq_to_implementation_map.md`) 추가**  
 4. 원커맨드 실행 스크립트(`make demo` 또는 `scripts/quickstart_demo.sh`)  
 5. 검증 체크리스트 문서화(투명성/재현성 강화)
-
