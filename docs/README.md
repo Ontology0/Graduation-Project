@@ -11,6 +11,8 @@
 | [연구 결과와 근거](research_status.md) | 논문·발표·10/27 보고·저장 산출물의 수치와 조건 |
 | [연구 계획](research_plan.md) | 관찰→방법 흐름, 다음 과제·평가 계획 |
 | [실험 안내](../experiments/README.md) | 노트북 목적·입력·공개 결과 |
+| [기말발표용 코드](../experiments/presentation/README.md) | 공유 Drive의 발표·선행 실험 8개와 현재 Routing·Packed 연결 |
+| [논문 심사용 코드](../experiments/paper/README.md) | 역할별 E16 재현·추가검증·보조 통제 실험, 논문 표와 CSV 대응 |
 | [SOTA 안내](../SOTA/README.md) | 비교 코드의 구현 상태와 실행 전제 |
 | [공용 규격](../prompt/p8s_prompt.py) | P8S 프롬프트·채점·생성 설정 |
 

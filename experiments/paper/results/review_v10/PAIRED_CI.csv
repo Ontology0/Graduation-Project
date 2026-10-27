@@ -1,0 +1,14 @@
+panel,budget,A,B,delta,ci95_low,ci95_high,bootstrap,scope
+A,0.2,role_fixed,all32_fixed,-0.0005896055495404617,-0.011967290398975525,0.010762083733482362,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+A,0.2,role_tuned,all32_tuned,-0.00033673383524734923,-0.011608924854385833,0.01100214300493539,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+A,0.2,role_tuned,random_union_tuned,0.015483933787709514,0.005869626247124274,0.024700590839863996,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+A,0.2,role_fixed,ablate_memory+context,0.007276447363408267,-0.0004676018673733875,0.014598665880167012,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.2,role_fixed,all32_fixed,-0.006106624406359229,-0.026242742417321163,0.013394657824114408,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.2,role_tuned,all32_tuned,-0.0038200145503293204,-0.0240237445291195,0.015764248453320428,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.2,role_tuned,random_union_tuned,0.015812536671544586,-0.0013263033881933583,0.0326305237362347,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.2,role_fixed,ablate_memory+context,0.00982901665918734,-0.004799188163568757,0.024621129343707988,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.8,role_fixed,all32_fixed,0.0045710777234097,-0.018622015344377456,0.028205565420610788,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.8,role_tuned,all32_tuned,0.013518467834334413,-0.010525663512632191,0.03801341584892748,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.8,role_tuned,random_union_tuned,0.00522282069236335,-0.014750127120585686,0.024696536736853545,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.8,role_fixed,ablate_memory+context,0.0029759440071213117,-0.01648101761977997,0.022154026676091,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment
+B,0.2,role_fixed20,role_fixed80,-0.007087503811858187,-0.04121994007623902,0.026873595559134694,5000,paired common-question; fixed fitted models; exploratory; no multiplicity adjustment

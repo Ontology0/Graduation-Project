@@ -82,6 +82,8 @@ Router는 **ConFiQA train fold의 정답으로 학습**했고, packed는 대상 
 | 목적 | 시작할 곳 |
 |---|---|
 | 현재 방법과 공개 범위 파악 | [실험 안내](experiments/README.md) |
+| 기말발표용 코드·선행 실험 | [발표 코드](experiments/presentation/README.md) — E13–E18 판독·개입 실험 8개 |
+| 논문 심사용 코드·결과 | [논문 코드](experiments/paper/README.md) — E16 재현·추가검증, 통제 실험과 집계 CSV |
 | 프롬프트 편향·라벨·레이어 신호 | [E0](experiments/E0/) · [E1](experiments/E1/) · [E2](experiments/E2/) · [P8S probe](experiments/p8s_probe/) |
 | Steering의 발전과 재현성 검증 | [P9](experiments/P9/) · [Steering_retain](experiments/Steering_retain/) · [E15](experiments/E15/) |
 | 행동별 이득과 조건부 Routing | [A0](experiments/A0/) · [A1](experiments/A1/) — CSV·Parquet 결과 포함 |
@@ -120,6 +122,8 @@ cd Graduation-Project
 
 ```text
 experiments/   현재 연구 노트북과 일부 결과 (P6/P9/E0/E1/E2/E15/E17/A0/A1/A3 등)
+  presentation/ 기말발표·선행 실험 코드
+  paper/        논문 심사용 코드·통제 실험·집계 결과
 SOTA/          기존 방법 비교 하네스 초안
 prompt/        공용 P8S 프롬프트·채점 규격
 docs/          최신 연구 문서, 결과 근거, 회의록, 초기 기록

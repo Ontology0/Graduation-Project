@@ -11,6 +11,7 @@
 | `alltology_presentation (2).pdf` | 사용자 제공 58쪽, 특히 39·40·47·53쪽 | 판독과 응답 개선의 구분, 이전 E14/E16 평가 설명 |
 | 심사용 논문 | 「대규모 언어모델의 어텐션 헤드를 이용한 지식–문맥 4-state 판독과 소량 라벨 조건에서의 성능 평가」, 사용자 제공 3쪽 | 현재 논문 표 2·3의 판독 수치·평가 설계·한계 |
 | A0/A1 저장 산출물 | [A0 summary](../experiments/A0/%5Bresult%5DA0_headroom/A0_summary.json), [A1 policies](../experiments/A1/%5Bresult%5DA1_staged_routing/A1_policies.csv), [A1 summary](../experiments/A1/%5Bresult%5DA1_staged_routing/A1_summary.json) | P8S 행동·정책 결과와 oracle/실행 가능한 정책 구분 |
+| 공유 Drive 코드·E16 결과 | [발표 코드](../experiments/presentation/README.md), [논문 코드·표 대응](../experiments/paper/README.md), [원본 목록](../experiments/drive_sources.json) | 10/27에 가져온 노트북 12개, ROLE/REVIEW 집계 CSV·환경 기록 |
 | 날짜별 회의록 | [10/15](meeting-log/2026-10-15_회의록.md), [10/22](meeting-log/2026-10-22_회의록.md) | Routing 중심 연구 방향과 후속 작업 |
 
 PDF 원본은 이 저장소에 추가하지 않았습니다. Google Docs 원문은 접근 권한이 필요할 수 있으며, 위 제목·쪽수와 아래 요약으로 자료 버전을 구분합니다.
@@ -58,7 +59,7 @@ PDF 원본은 이 저장소에 추가하지 않았습니다. Google Docs 원문�
 
 발표 자료의 E16 **0.6120 ± 0.0123**과 논문 평가 A의 **0.6123 ± 0.0121**은 서로 다른 보고 버전입니다. 발표의 E14 5-fold 평균 **0.6301**과 E16 반복 평균을 동일 평가셋의 직접 비교처럼 합치지 않습니다. 논문 평가 B는 공통 122질문에서 20%·80% 학습을 비교하며, Macro-F1 0.6338 / 0.6409의 대응 차이 신뢰구간이 0을 포함합니다.
 
-4-state 논문은 [10/15 회의록](meeting-log/2026-10-15_회의록.md) 기준 심사용 제출 완료입니다. 제공된 자료만으로 게재 확정은 확인되지 않습니다. 논문의 최종 표를 재생성하는 전용 E16 실행본은 현재 저장소에서 식별되지 않았습니다.
+4-state 논문은 [10/15 회의록](meeting-log/2026-10-15_회의록.md) 기준 심사용 제출 완료입니다. 제공된 자료만으로 게재 확정은 확인되지 않습니다. 공유 Drive의 E16 실행본과 저장 CSV를 [논문 코드](../experiments/paper/README.md)에 추가했습니다. REVIEW의 `role_fixed`가 0.6123, ROLE의 `diagnostic_same_roleheads_LR`가 0.6120에 대응합니다. scikit-learn 환경은 각각 1.8.0/1.6.1이며, 고정 정규화 무작위 대조는 ROLE 실행에서 가져온 값입니다. 이번 정리에서는 재학습 없이 파일과 보고값을 대조했습니다.
 
 ## 2. P8S: Always Steering과 Routing
 
@@ -142,8 +143,9 @@ P8S의 지연 1.09배·prefill 토큰 약 39% 증가는 기존 E17 측정값입�
 | P8S probe | 노트북·CSV | 선행 원본·hidden 생성 환경 준비 |
 | A0/A1 | 노트북·행동별 Parquet·정책 CSV | P9 공유 입력과 연결, 온라인 실행 비용 검증 |
 | A3 | 외부 평가·강도 분석 노트북, 문서 보고값 | 보고값과 연결된 원시 결과 공개 |
+| 외부 ConFiQA Router | [Drive 실행본](https://drive.google.com/file/d/1ghpS2MP4XSeBh8R8t_Ay7KSN-o4PZcAG/view), 문서 보고값 | 실행 입력·행별 결과·manifest와 보고 표의 대응 정리 |
 | E17 | packed 개발·진단 노트북, 외부 보고값 | 외부 실행본·결과 manifest 연결 |
-| 4-state 논문 | 제공된 심사용 원고와 결과 요약 | 논문 표 재생성용 최종 실행본 연결 |
+| 4-state 논문 | [E16 실행본·집계 CSV·환경](../experiments/paper/README.md), 원고와 표 대응 | 대형 입력·전체 예측은 Drive 사용; 새 환경 재실행 검증 별도 |
 | SOTA 하네스 | CAD/AdaCAD 코드·여러 방법의 stub | 패키지 구조 정리, 미구현 방법·외부 평가 연결 |
 
 현재 핵심 결론은 **상태를 읽을 수 있다는 것과 좋은 답을 선택할 수 있다는 것은 다르다**는 점입니다. Router는 라벨 학습 조건에서 C+ 손상을 줄였고, packed는 대상 라벨 없이 큰 C− 이득을 얻었지만 외부 C+ 보호에 실패했습니다. 최종 방법·결합 방식·SOTA 우위는 아직 확정하지 않습니다.
