@@ -1,5 +1,7 @@
 # RQ ↔ Implementation Map
 
+> **초기 PA-RAG 단계 기록:** 현재 연구의 구조·평가·구현은 [연구 계획](research_plan.md), [연구 결과](research_status.md), [실험 안내](../experiments/README.md)를 참고하세요. 아래 5-arm·DPO/LoRA·RAG 설명은 당시 범위입니다.
+
 > 목적: `README.md`(문제/가설) ↔ `docs/*`(설계) ↔ `configs/*`(실험 설정) ↔ `src/*`/`scripts/*`(구현) 간 **정합성(Alignment)**을 평가자 관점에서 빠르게 점검할 수 있도록 연결합니다.  
 > Status: 본 레포는 **Start-stage** 연구 산출물입니다. Arm 1·2(Base RAG, Conflict-Aware Prompting)의 API-model 파일럿 결과와 로컬 smoke test 결과는 존재합니다. 다만 Llama 3.1-8B 기반 DPO+LoRA 학습, Arm 3·4·5 adapter inference, 5-arm 정량 benchmark는 **Growth** 단계 범위입니다.
 

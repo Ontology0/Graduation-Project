@@ -1,54 +1,66 @@
-# Research Plan (Draft)
+# 연구 계획 — 판독에서 선택적 응답 제어로
 
-> **Status:** research scaffold — content will be refined as benchmarks and protocols are decided.
+> 업데이트: 2026-10-27. 10/15의 Routing 중심 방향, 10/22 후속 회의, 공유 문서의 10/27 외부 평가를 반영했습니다. 수치와 출처는 [연구 결과](research_status.md)에 모았습니다.
 
-## Project title
+## 문제와 두 연구 축
 
-**LLM Knowledge Conflict Mitigation via RAG–Fine-tuning Fusion**  
-(Working title: Conflict-Aware PA-RAG — preference learning for context–memory conflict in RAG)
+기존 지식과 외부 문맥이 다른 답을 제시할 때, 모델은 맞는 정보원을 선택해야 합니다. 본 연구는 Llama-3.1-8B-Instruct의 가중치를 고정한 채 **내부 상태 판독**과 **추론 시점 개입**을 연구합니다. 판독기·Router의 별도 학습이 있으므로 전체 연구를 training-free 또는 완전한 label-free 방식으로 부르지 않습니다.
 
-## Problem definition
+1. **4-state 판독:** attention head 벡터에서 K±/C±를 판독하고, 제한된 라벨·헤드 수에서 성능과 한계를 분석합니다. 별도 심사용 논문으로 정리했습니다.
+2. **응답 제어:** Always Steering을 기준으로 Router의 행동 선택과 packed의 문맥/closed-book 분기 선택을 비교합니다. 두 구성 요소의 결합 방법은 미확정입니다.
 
-In retrieval-augmented generation (RAG), the generator may receive **external evidence** from retrieval while still relying on **internal (parametric) knowledge** learned during pre-training. When these sources imply different answers, the system must decide which evidence to follow, under what conditions (time, scope, source quality), or whether to abstain.
+## 관찰에서 방법으로
 
-Retrieval quality alone does not guarantee correct answers: the model can ignore retrieved context and answer from memory, or blindly follow low-quality context.
+| 관찰 | 설계에 미친 영향 | 연결 자료 |
+|---|---|---|
+| 내부 신호의 유형 클러스터와 원하는 응답 행동은 같지 않음 | conflict 유형 분류보다 K/C 상태·행동별 이득을 분석 | P6·P8S probe·E2 |
+| 상태 판별력이 높아도 runtime 규칙과 답변은 개선되지 않을 수 있음 | 판독 성능과 응답 제어 성능을 따로 평가 | 4-state 논문·E15 |
+| 동일 retain 개입은 C−를 회복하면서 C+를 손상시킴 | no-op·retain·accept와 강도를 선택하는 Router | P9·A0·A1·A3 |
+| 강도 조절만으로 회복되지 않는 사례가 있음 | closed-book 후보를 직접 비교하는 packed 경로 | E17 |
+| 외부 packed의 K−C+ 손실이 X1에서도 발생 | 분기 선택 근거·확신도·내부 차이를 분석 | 10/27 외부 보고 |
 
-## Target conflict type: context–memory conflict
+## 현재 방법과 학습 조건
 
-This project focuses on **context–memory conflict**:
+| 구성 | 개발·학습 | 실제 추론 | 상태 |
+|---|---|---|---|
+| 4-state 판독 | 역할별 헤드 선별·LR 학습에 K/C 라벨 사용 | 질문·문맥 prefill의 헤드 벡터 판독 | 논문 심사용 제출 완료 |
+| Always Steering | P8S 행동 집단 차이로 방향 추정, 강도 고정 | 모든 입력에 동일 retain 개입 | 기준선·외부 전이 실험 |
+| Router | 행동별 EM 이득을 학습; 외부 ConFiQA에서는 train fold 라벨 사용 | 내부 표현으로 행동·강도 선택 | ConFiQA 전체 개선·C+ 비열등, NQ-Swap 미실시 |
+| Packed | P8S에서 ρ·사양 선택; 대상 데이터 라벨 없이 온라인 방향 추정 | 격리된 A/B prefill, X1으로 분기 선택 | 외부 EM 개선, C+ 비열등 실패 |
+| Router + Packed | 미확정 | 미구현 결합안 | 단독 방식 결과를 결합 성능으로 제시하지 않음 |
 
-- **Definition:** Retrieved external context and the LLM’s internal/parametric knowledge point to **different answers** for the same question.
-- **In scope:** Designing data, prompts, preference pairs, and LoRA/DPO training to learn **resolution rules** (e.g., prefer external when it is authoritative and current; prefer internal when external is unreliable).
+ConFiQA Router의 다섯 행동은 `no-op`, `retain ρ=0.03/0.06/0.09`, `accept ρ=0.06`입니다. P8S A1의 early/late·강도 확장 집합과 동일한 집합으로 취급하지 않습니다.
 
-**Out of scope (not main research targets):**
+Packed는 두 입력 구간을 한 호출에 담습니다. “한 호출”과 “한 문맥의 계산량”을 구분하고 prefill 토큰·latency·메모리를 함께 보고합니다.
 
-- **Inter-context conflict:** Contradictions among multiple retrieved passages (may appear in benchmarks but not as the primary problem formulation).
-- **Intra-memory conflict:** Contradictions within parametric knowledge alone without a retrieved external alternative.
+## 다음 연구 질문
 
-## Research questions
+- **Router:** NQ-Swap에서도 C+ 손상을 줄일 수 있는가? 판독층·hidden·entropy와 행동 집합이 개입 이득 예측을 어떻게 바꾸는가?
+- **Packed:** X1이 충돌을 감지하면서도 잘못된 closed-book 답을 선택하는 이유는 무엇인가? 첫 토큰·교차 로그 확률·hidden 차이가 올바른 분기 선택에 도움이 되는가?
+- **결합:** 행동 선택과 분기 선택을 결합하면 상호 보완되는가? 추가 라벨·연산 비용은 얼마인가?
+- **판독 일반화:** 논문 설계를 고정하고 탐색에 사용하지 않은 데이터에서 head 선택과 판독을 다시 검증할 수 있는가?
 
-1. Can **preference learning (DPO + LoRA)** internalize conflict resolution better than **prompting-only** baselines under resource constraints?
-2. Which **conflict patterns** (e.g., recency, source trust, factual swap) are learnable vs. remain brittle?
-3. How do **PA-RAG-style multi-criterion alignment** and **conflict-only** alignment compare when conflict labels are available?
-4. Does conflict-aware training harm other alignment goals (informativeness, robustness, citation behavior) — to be measured once eval protocol exists?
+## 평가 계획
 
-## Proposed approach
+| 구분 | 원칙 |
+|---|---|
+| 상태 판독 | Macro-F1·K/C AUROC, 라벨 예산·선행 설계 탐색 범위 명시 |
+| 답변 성능 | 전체 EM/F1, C±·K×C별 회복과 손상; 판독 지표와 분리 |
+| 방법 비교 | 동일 질문·prompt·scorer·생성 조건과 공통 기준선 사용 |
+| 표본 | A3 1,200질문 / 외부 Router 1,000질문 / NQ 짝 비교 300질문 구분 |
+| 학습·평가 | 질문의 C±를 같은 fold에 두고, 학습·임계값 선택은 train 내부에서 수행 |
+| 계산 비용 | 호출 수·입력 토큰·latency·메모리; lookup 정책 평가는 실측 추론 비용과 분리 |
+| 기존 방법 | 사실 정답과 문맥 충실도 채점 목적을 구분하고 원 논문 숫자와 직접 우위 주장 금지 |
+| 채점 audit | 별칭·시점·모호성 문제는 모든 방법에 동일 기준 적용 |
 
-1. **Annotation schema** for conflict instances (`data/schema/`) with resolution rules and chosen/rejected answers.
-2. **Base RAG** pipeline (first draft: `src/rag/pipeline.py`).
-3. **Conflict-aware prompting** (`configs/prompts/conflict_aware.md`).
-4. **DPO + LoRA** variants: PA-RAG-style LoRA, conflict-only LoRA, and combined conflict-aware PA-RAG LoRA (`src/training/`, configs under `configs/experiments/`).
-5. **Evaluation** on selected benchmarks (TBD) plus optional natural case studies (`data/natural/`).
+10/27 보고에서 X1 수정용 미사용 질문을 개발셋으로 쓰는 안과 제3 데이터셋 holdout 안이 제안됐습니다. **평가 프로토콜은 아직 미확정**입니다. 기존 1,000질문 결과는 이미 실패 분석에 사용됐으므로, 같은 질문을 다시 평가해도 완전히 새로운 독립 확증 실험이라고 부르지 않습니다. 개발용과 최종 평가용 데이터를 동결하고 결과 확인·방법 수정 이력을 남겨야 합니다.
 
-## Expected contribution
+## 재현성 작업
 
-- Extend PA-RAG-style preference alignment with an explicit **knowledge conflict** criterion for **context–memory** settings.
-- Compare **prompting vs. preference internalization** under **LoRA** (not full fine-tuning) for reproducibility on limited compute.
-- Document **limitations** where synthetic training does not transfer to ambiguous natural conflicts.
+- 외부 Router·Packed의 실행 노트북과 원시 결과를 보고 표에 연결
+- 논문 최종 표를 재생성하는 코드·데이터 버전·환경 연결
+- `SOTA/dayoung/`의 flat 파일 배치를 import 구조와 맞추고, 미구현 비교 방법을 구분
+- P9 공유 자료의 manifest·라벨·프롬프트 hash·모델 revision을 실행 안내에 연결
+- 노트북 중간 탐색, oracle 상한, 동결 결과를 구분하고 기존 기록 보존
 
-## Current limitations
-
-- No final benchmark or metric selection.
-- RAG code is a first draft only; training/eval entrypoints remain scaffolds. No reported experimental results.
-- Full fine-tuning (as in original PA-RAG) is not planned as a primary arm; paper numbers may be cited for reference only.
-- Heavy retrieval backends and production indexes are not committed yet.
+연구 이력은 [초기 PA-RAG 소개](archive/start-overview.md), 구현 현황은 [실험 안내](../experiments/README.md), 최신 결정은 [10/15](meeting-log/2026-10-15_회의록.md)·[10/22](meeting-log/2026-10-22_회의록.md) 회의록을 참고하세요.

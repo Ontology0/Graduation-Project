@@ -1,102 +1,44 @@
-# Project Brief — Conflict-Aware PA-RAG
+# Project Brief — Alltology
 
-> **팀:** 03팀 Alltology · **트랙:** 연구 · **지도교수:** 황의원 교수님  
-> **팀원:** 박세령 · 손현경 · 이다영 · **작성일:** 2026-06-02
+> 2026 이화여자대학교 캡스톤디자인 · 03팀 · 연구 트랙 · 지도교수 황의원
+>
+> 팀원: 박세령 · 손현경 · 이다영 · 업데이트: 2026-10-27
 
----
+## 문제
 
-## 문제 정의
+모델이 문맥 없이 답할 때의 지식과 외부 문맥이 서로 다른 답을 가리킬 수 있습니다. 문맥을 무조건 따르거나 기억을 고집하는 방식으로는 두 정보원의 정오에 맞춰 행동하기 어렵습니다.
 
-RAG(Retrieval-Augmented Generation)는 외부 문서를 검색해 LLM 답변의 정확성을 높이는 방식이다. 그런데 **검색된 문서와 모델의 파라미터 지식이 서로 다른 답을 가리킬 때**, 모델은 어느 쪽을 따라야 할지 판단하지 못한다.
+## 연구 목표
 
-| 충돌 상황 | 바람직한 행동 | 현재 RAG의 문제 |
+**LLM 내부 신호로 지식–문맥 상태를 읽고, 그 정보를 실제 답변 선택에 활용할 수 있는지 검증합니다.**
+
+- **판독:** 답변 생성 전 attention head 표현으로 K±(closed-book 응답 정오)와 C±(문맥 정오)의 네 상태를 구분
+- **제어:** 가중치를 고정한 모델에서 activation steering, 행동별 이득 기반 Routing, 문맥/closed-book 후보 선택을 비교
+
+K−는 관측 응답이 오답이라는 뜻이며 지식의 완전한 부재를 뜻하지 않습니다.
+
+## 확인된 결과
+
+| 연구 | 결과 | 해석 범위 |
 |---|---|---|
-| 외부 문서가 최신·권위 정보 | 외부 근거 우선 | 내부 지식 고집 |
-| 외부 문서가 부정확·모호 | 내부 지식 or 불확실성 표현 | 외부 문서 맹신 |
-| 둘 다 불확실 | abstention / 한계 명시 | 확신 있는 오답 |
+| 4-state 판독 | 논문 평가 A Macro-F1 0.6123 ± 0.0121, K/C AUROC 0.8134/0.9200 | 612질문 중 122질문 선별·학습 / 490질문 평가, 5회 평균; QA 정확도가 아님 |
+| Router | ConFiQA EM 51.65 → 55.45%, C+ 비열등 충족 | 대상 데이터 train fold 라벨로 학습; 완전한 zero-shot 전이가 아님 |
+| Packed | ConFiQA EM 55.80%, NQ-Swap EM 51.97% | 각 1,000질문, 대상 데이터 라벨 미사용; 두 데이터 모두 C+ 비열등 미충족 |
 
-기존 PA-RAG는 informativeness·robustness·citation quality를 정렬 축으로 다루지만, **context–memory conflict를 명시적 학습 목표로 다루지 않는다.** 이것이 본 연구의 출발점이다.
+20% 라벨 조건은 선행 설계 탐색을 제외한 선별·학습 예산입니다. Packed가 Router보다 우수하다는 결론은 확인되지 않았으며, 두 방법의 결합 효과도 아직 측정하지 않았습니다. [수치·신뢰구간·출처](research_status.md)
 
----
+## 현재 산출물
 
-## 고객 및 가치 제안
+- P6/P9·P8S probe·E0/E1/E2/E15/E17·A0/A1/A3 노트북
+- P8S probe CSV, A0 행동별 생성 Parquet, A1 정책·선택 결과
+- 공용 P8S 프롬프트와 채점 모듈
+- 기존 방법 비교용 SOTA 하네스 초안
+- 4-state 심사용 논문과 연구 회의·보고 기록
 
-**고객 세그먼트**
+[실험 안내](../experiments/README.md)에서 실제 공개 파일과 별도 입력을 확인할 수 있습니다.
 
-- 기업 내부 문서 RAG 운영팀 (정책·매뉴얼 — 버전 충돌 빈번)
-- 법률·의료·금융 도메인 RAG 개발자 (오답의 위험이 높은 영역)
-- LLM 신뢰성 연구자 (conflict resolution 측정 및 개선)
+## 다음 단계
 
-**가치 제안**
+Router의 외부 검증 확대, packed X1의 K−C+ 손상 개선, 공정한 기존 방법 비교, 구성 요소 결합·비용 분석, 재현 산출물 통합을 진행합니다. [연구 계획](research_plan.md)
 
-프롬프트 수준의 conflict-aware 지시는 강한 API 모델에서는 효과가 있으나, 소형 오픈소스 모델(Llama 3.1-8B)에서는 gap이 존재할 것으로 예상된다. DPO + LoRA로 conflict resolution 능력을 모델에 **학습으로 내재화**하면, 프롬프트 의존 없이 강건하고 일반화 가능한 처리가 가능하다는 것이 본 연구의 핵심 주장이다.
-
----
-
-## 솔루션 및 차별성
-
-5개 arm을 비교해 "프롬프트 지시"와 "학습 내재화"의 효과를 분리 측정한다.
-
-| # | 방법 | 학습 | 역할 |
-|---|------|:----:|------|
-| 1 | Base RAG | — | 하한선 |
-| 2 | Conflict-Aware Prompting | — | 프롬프트만으로 충돌 처리 (비학습 상한선) |
-| 3 | PA-RAG-style LoRA | DPO + LoRA | conflict 없이 PA-RAG식 정렬 |
-| 4 | Conflict-Aware RAG LoRA | DPO + LoRA | conflict preference만 학습 |
-| 5 | **Conflict-Aware PA-RAG LoRA** ⭐ | DPO + LoRA | PA-RAG + conflict 통합 (제안 방법) |
-
-**기존 연구 대비 차별점**
-
-| 비교 | 차이 |
-|------|------|
-| 기존 PA-RAG | conflict resolution 축 없음 |
-| Prompting 접근 | 소형 모델에서 효과 불안정, 프롬프트 의존 |
-| RAG-Fusion / HyDE | 검색 품질 개선 — conflict *판단 학습* 아님 |
-| **본 연구** | DPO + LoRA로 conflict resolution을 **학습 목표로 명시**, 5-arm 분리 측정 |
-
----
-
-## 파일럿 실험 결과
-
-> 파일럿 대상: gpt-4o-mini, claude-haiku (강한 API 모델). 본 연구 타겟인 Llama 3.1-8B 탐색의 사전 검증 단계.  
-> 상세: [`experiments/2026-05-31/`](experiments/2026-05-31/)
-
-**exp1 — 거짓 문서 거부율** (gpt-4o-mini)
-
-| 구분 | 규모 |
-|------|------|
-| **데이터 설계** | 24케이스 (doc_correct 12 + doc_false 12) — `build_dataset.py --expand 12` |
-| **실제 채점** | **12케이스** (doc_correct 6 + doc_false 6, `clash_conflicts.jsonl`) |
-
-> **Note.** exp1은 doc_correct 12개와 doc_false 12개로 총 24케이스를 설계했으며, 아래 수치는 초기 12케이스(doc_correct 6 + doc_false 6)를 채점한 파일럿 결과이다. 전체 24케이스 확장 채점은 **Growth** 단계에서 수행한다.
-
-| Arm | 전체 정확도 | 거짓 문서 거부 |
-|-----|:---------:|:------------:|
-| Base RAG | 75% (9/12) | 3 / 6 |
-| Conflict-Aware Prompting | **100%** (12/12) | **6 / 6** |
-
-**exp2 — 문서 구성별 분해** (claude-haiku, 36케이스)
-
-| 문서 구성 | Base RAG | Conflict-Aware |
-|----------|:--------:|:--------------:|
-| A: 거짓만 (정답 없음) | 50% | **83%** |
-| B: 거짓 + 정답 공존 | 100% | 100% |
-
-**핵심 발견:** 강한 API 모델에서는 conflict-aware prompting이 유효하나 천장 효과 존재.  
-→ **Llama 3.1-8B에서 Base RAG와 Conflict-Aware 간 gap이 클 것으로 예상** — 학습 내재화의 필요성을 측정하는 본 연구의 핵심 구간.
-
----
-
-## 연구 범위 및 단계
-
-| 단계 | 내용 | 상태 |
-|------|------|:----:|
-| **Start** (이번 학기) | 문제 정의 · RAG 파이프라인 구현 · 파일럿 실험 (Arm 1·2) · 개선 가능성 검증 | ✅ 완료 |
-| **Growth** (확장) | Llama 3.1-8B 대규모 DPO+LoRA 학습 · ClashEval / WikiContradict 5-arm 정량 벤치마크 · exp1 24케이스 확장 채점 | 🔄 예정 |
-
-> DPO+LoRA 코드(`src/training/train.py`)는 dry-run 수준에서 동작 확인 완료 (train_loss=0.693, epoch=0.5).  
-> 대규모 학습 및 정량 비교는 Growth 단계 범위.
-
----
-
-*AI 도구 활용 내역: [docs/ai_transparency_report.md](ai_transparency_report.md)*
+초기 DPO·LoRA 기반 구상은 [Start 단계 Project Brief](archive/start-project-brief.md)에 연구 이력으로 보존했습니다.

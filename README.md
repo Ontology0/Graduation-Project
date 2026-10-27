@@ -1,363 +1,138 @@
 <div align="center">
 
-# AI가 "알고 있는 것" 과 "검색한 것"이 다를 때 어느 쪽을 믿어야 하는가
-## Conflict-Aware PA-RAG
+# Alltology
+## 기억과 문맥이 다를 때, 무엇을 믿어야 할까?
 
-*RAG의 Knowledge Conflict 상황에서 Preference Learning이 소형 모델의 지식 선택 행동을 어떻게 바꾸는가*
+**LLM 내부 신호로 지식–문맥 상태를 읽고, 필요한 경우에만 응답에 개입하는 연구**
 
-<br/>
+2026 이화여자대학교 캡스톤디자인 · 03팀 · 연구 트랙 · 지도교수 황의원
 
-[![YouTube Demo](https://img.shields.io/badge/YouTube-데모_영상-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/qc0GkgJoBBk)
-[![HuggingFace](https://img.shields.io/badge/🤗_HuggingFace-인터랙티브_데모-FFD21E?style=for-the-badge)](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo)
-[![Demo Site](https://img.shields.io/badge/🌐_연구_사이트-alltology.zapto.org-4A90D9?style=for-the-badge)](http://alltology.zapto.org)
-[![Telegram](https://img.shields.io/badge/✈️_Telegram_RAG봇-@alltology__rag__bot-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/alltology_rag_bot)
-
-[![tests](https://github.com/Ontology0/Graduation-Project/actions/workflows/test.yml/badge.svg)](https://github.com/Ontology0/Graduation-Project/actions/workflows/test.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
-[![Contributing](https://img.shields.io/badge/Contributing-Guide-4CAF50?style=flat-square)](CONTRIBUTING.md)
-
-<br/>
-
-**2026 이화여자대학교 캡스톤디자인 · 03팀 Alltology · 연구 트랙 · 지도교수: 황의원 교수님**
+[연구 결과](docs/research_status.md) · [실험 코드](experiments/README.md) · [연구 계획](docs/research_plan.md) · [회의록](docs/meeting-log/) · [기여 안내](CONTRIBUTING.md)
 
 </div>
 
 ---
 
-## Background
+> **업데이트: 2026-10-27.** 10월 15일의 Routing 중심 방향을 바탕으로, 10월 27일 서면 보고와 새로 등록된 실험 코드를 반영했습니다. 아래 수치는 제공된 논문·실험 보고 및 저장된 산출물 기준이며, 이번 문서 정리에서 모델 실험을 다시 수행한 결과는 아닙니다.
 
-> AI가 검색한 문서와 자신이 학습한 지식이 다른 말을 할 때, 어느 쪽을 믿어야 할까?
+## 우리가 풀려는 문제
 
-기업 내부 문서 검색 시스템, 법률 정보 RAG, 의료 가이드라인 챗봇 — 이런 시스템에서 AI가 **오래된 내부 지식을 고집하거나**, 반대로 **신뢰할 수 없는 검색 결과를 맹신**하면 치명적인 오답이 나온다.
+외부 문맥이 모델의 기존 지식과 다른 답을 제시할 때, 문맥을 항상 믿어도, 기억을 항상 고집해도 오답이 생깁니다. 우리는 **두 정보원의 상태를 내부 표현에서 읽을 수 있는지**, 그리고 **그 신호가 실제로 더 나은 답변 선택에 도움이 되는지**를 나누어 연구합니다.
 
-이 문제는 단순히 "더 좋은 모델"로 해결되지 않는다. **충돌 상황에서 어떤 근거를 우선할지** 모델이 학습으로 내재화해야 한다.
-
-<br/>
-
-## Research Gap
-
-RAG(Retrieval-Augmented Generation)는 외부 문서를 검색해 LLM 답변의 정확성을 높이는 방식이다. 그러나 **검색된 문서와 LLM 내부 지식이 서로 다른 답을 가리킬 때** 문제가 생긴다.
-
-| 충돌 상황 | 바람직한 행동 | 현재 RAG의 문제 |
+| | C+: 정답을 포함한 문맥 | C−: 답을 잘못 치환한 문맥 |
 |---|---|---|
-| 외부 문서가 최신·권위 정보 | 외부 근거 우선 | 모델이 내부 지식 고집 |
-| 외부 문서가 부정확·모호 | 내부 지식 또는 불확실성 표현 | 외부 문서 맹신 |
-| 둘 다 불확실 | abstention / 한계 명시 | 확신 있는 오답 |
+| **K+: 문맥 없는 응답이 정답** | 두 정보원 모두 정답 | 기존 지식을 유지할 필요 |
+| **K−: 문맥 없는 응답이 오답** | 올바른 문맥을 활용할 필요 | 두 정보원 모두 오답; 어느 쪽도 정답을 보장하지 않음 |
 
-**실제 사례:** 사내 RAG 시스템에서 직원이 재택근무 정책을 질문할 때, AI가 2024년 개정 문서 대신 학습 당시의 구버전 정책을 답하는 상황이 대표적이다.
+K는 관측한 closed-book 응답의 정오입니다. K−가 관련 지식의 완전한 부재를 뜻하지는 않습니다.
 
-기존 PA-RAG(Preference-Aligned RAG)는 informativeness·robustness·citation quality를 다루지만, **context–memory conflict를 명시적 정렬 축으로 다루지 않는다** — 본 연구의 출발점.
+## 두 연구 축
 
-<br/>
+### 1. 판독 — 지식–문맥 4-state
 
-## Hypothesis
+답변 생성 전 Llama-3.1-8B-Instruct의 **attention head 표현**에서 K/C 상태를 읽습니다. 역할별로 헤드를 선택하고 그 벡터를 연결해 선형 판독기를 학습합니다.
 
-DPO(Direct Preference Optimization) + LoRA로 **Knowledge Conflict 처리 능력을 모델에 학습으로 내재화**한다.
+제공된 심사용 논문의 평가 A에서는 PopQA 기반 **612질문·1,224입력** 중 122질문으로 헤드 선택·판독기를 학습하고 490질문에서 평가했습니다.
 
-| # | 방법 | 학습 | 역할 |
-|---|-----|:----:|------|
-| 1 | Base RAG | — | 하한선 |
-| 2 | **Conflict-Aware Prompting** | — | 프롬프트만으로 충돌 처리 |
-| 3 | PA-RAG-style LoRA | DPO + LoRA | conflict 없이 PA-RAG식 정렬 |
-| 4 | Conflict-Aware RAG LoRA | DPO + LoRA | conflict preference만 학습 |
-| 5 | **Conflict-Aware PA-RAG LoRA** ⭐ | DPO + LoRA | PA-RAG + conflict 통합 (제안 방법) |
+| 지표 | 보고값 |
+|---|---:|
+| 4-state Macro-F1, 5회 평균 ± 표준편차 | **0.6123 ± 0.0121** |
+| K / C AUROC | **0.8134 / 0.9200** |
+| 선택 헤드 / 전체 헤드 | **7–10 / 32** |
 
-**핵심 주장:** 프롬프트 수준의 conflict-aware 지시는 효과가 있으나(파일럿 결과 참조), preference learning으로 내재화하면 더 강건하고 일반화 가능한 conflict 처리가 가능할 것으로 가설 설정.
+이 수치는 **상태 판독 성능**이며 답변 정확도가 아닙니다. 20% 라벨은 고정된 설계 아래의 선별·학습 예산이고, 앞선 설계 탐색까지 포함한 총 라벨 사용량은 아닙니다. 논문은 10월 15일 기록 기준 **심사용 제출 완료**입니다. [평가 조건과 한계 →](docs/research_status.md#1-지식문맥-4-state-판독)
 
-### 연구 단계
+### 2. 제어 — Always Steering → Routing / Packed
 
-> 본 프로젝트는 **Start 트랙**으로 진행 중입니다.
-
-| 단계 | 내용 | 상태 |
-|------|------|:----:|
-| **Start** (이번 학기) | Knowledge Conflict 문제 정의 · Base RAG vs Conflict-Aware Prompting 파일럿 실험 · 문제 존재 및 개선 가능성 검증 | ✅ 완료 |
-| **Growth** (확장 방향) | Llama 3.1-8B 기반 DPO + LoRA 내재화 · 정량 벤치마크 (ClashEval, WikiContradict) | 🔄 진행 예정 |
-
-> **이번 학기 평가 대상 범위:** 본 프로젝트는 Start 트랙으로, DPO+LoRA 최종 학습 성능 검증이 아니라 Knowledge Conflict 문제 정의, RAG 파이프라인 구현, Base RAG vs Conflict-Aware Prompting 파일럿 실험, 데모 검증을 완료 범위로 한다. DPO+LoRA 코드는 dry-run 수준에서 동작 확인이 완료되었으며, 대규모 학습 및 정량 벤치마크는 Growth 방향이다.
-
-<br/>
-
-## 🔬 RAG Pipeline
-
-<p align="center">
-  <img src="docs/assets/rag_diagram.png" alt="RAG Pipeline 다이어그램" width="600"/>
-</p>
+관찰에서 방법으로 이어지는 흐름입니다.
 
 ```mermaid
 flowchart LR
-    subgraph Input
-        D[📄 문서]
-        Q[❓ 질문]
-    end
-
-    subgraph Pipeline["RAG Pipeline (src/rag/)"]
-        L[Load] --> C[Chunk] --> E[Embed] --> V[(Vector\nStore)]
-        V --> R[Retrieve]
-        Q --> R
-        R --> P[Prompt\nBuilder]
-        P --> G[Generator\nLLM]
-    end
-
-    subgraph Conflict["Conflict Handling"]
-        CA[Conflict-Aware\nPrompt]
-        DPO[DPO + LoRA\nFine-tuning]
-    end
-
-    D --> L
-    P -.->|Base| G
-    CA -.->|Prompting Arm| G
-    DPO -.->|Learning Arm| G
-    G --> O[💬 Answer +\nSources]
+    A["내부 표현에서 K/C 신호 관찰"] --> B["판독과 행동 개선을 구분"]
+    B --> C["Always Steering의 C− 이득과 C+ 손상"]
+    C --> D["Router: 개입 행동·강도 선택"]
+    C --> E["Packed: 문맥·closed-book 분기 선택"]
+    D --> F["답변 성능·문맥 손상·추론 비용 평가"]
+    E --> F
 ```
 
-<br/>
+| 방법 | 선택하는 것 | 학습·추론 조건 | 현재 관찰 |
+|---|---|---|---|
+| **Always Steering** | 모든 입력에 같은 retain 방향·강도 | P8S에서 추정한 방향을 고정 | C− 개선이 외부로 전이되지만 C+ 손상 발생 |
+| **Routing** | `no-op`, `retain`, `accept`와 강도 | L13 내부 신호로 행동별 이득 예측; 학습 라벨 사용 | ConFiQA에서 전체 개선과 C+ 비열등을 함께 충족 |
+| **Packed** | 문맥 A / closed-book B 중 답변 분기 | 격리된 두 구간을 한 prefill 호출로 처리; X1 선택·온라인 방향 추정 | 외부 EM 개선, 하지만 K−C+ 손상과 선택 규칙의 한계 |
 
-## Pilot Results
+**Router의 행동 선택과 packed의 분기 선택은 서로 다른 구성 요소입니다.** 결합 모델의 성능은 아직 확인하지 않았습니다. Packed의 호출 1회는 단일 문맥 입력과 동일 계산량을 뜻하지 않습니다.
 
-> API 모델(gpt-4o-mini, claude-haiku) 기반 파일럿. 본 연구 타겟인 **Llama 3.1-8B** 실험의 사전 탐색 단계. 상세: [`experiments/2026-05-31/`](experiments/2026-05-31/)
+### 외부 평가: ConFiQA-QA
 
-**exp1 — 거짓 문서 거부율** (gpt-4o-mini)
+1,000질문·2,000입력, C± 모두 **원래 사실 정답**으로 채점한 10월 27일 보고입니다. EM은 %, 변화는 %p입니다.
 
-| 구분 | 규모 |
-|------|------|
-| **데이터 설계** | 24케이스 (doc_correct 12 + doc_false 12) — `build_dataset.py --expand 12` |
-| **실제 채점** | **12케이스** (doc_correct 6 + doc_false 6, `clash_conflicts.jsonl`) |
+| 방법 | 전체 EM | Base 대비 ΔEM [95% CI] | C+ ΔEM | C− ΔEM | C+ 비열등 |
+|---|---:|---:|---:|---:|---|
+| Base | 51.65 | — | — | — | — |
+| Always, ρ=0.06 | 54.30 | +2.65 [1.35, 3.90] | −2.90 | +8.20 | 미충족 |
+| Router | 55.45 | +3.80 [2.70, 5.05] | +0.80 | +6.80 | 충족 |
+| Packed | 55.80 | +4.15 [2.52, 5.90] | −7.60 | +15.90 | 미충족 |
 
-> **Note.** exp1은 doc_correct 12개와 doc_false 12개로 총 24케이스를 설계했으며, 아래 수치는 초기 12케이스(doc_correct 6 + doc_false 6)를 채점한 파일럿 결과이다. 전체 24케이스 확장 채점은 **Growth** 단계에서 수행한다.
+Router는 **ConFiQA train fold의 정답으로 학습**했고, packed는 대상 데이터 라벨을 사용하지 않았습니다. Packed의 Router 대비 +0.35%p는 신뢰구간이 0을 포함해 우위가 확인되지 않았습니다. 비열등은 C+ ΔEM의 95% 신뢰구간 하한 > −2%p 기준입니다. [출처·NQ-Swap·P8S 결과와 비교 범위 →](docs/research_status.md)
 
-| Arm | 전체 | 거짓 문서 거부 |
-|-----|:----:|:------------:|
-| Base RAG | 75% (9/12) | 3 / 6 |
-| Conflict-Aware Prompting | **100%** (12/12) | **6 / 6** |
+## 코드와 결과 찾아보기
 
-**exp2 — 문서 구성별 분해** (claude-haiku, 36케이스)
+| 목적 | 시작할 곳 |
+|---|---|
+| 현재 방법과 공개 범위 파악 | [실험 안내](experiments/README.md) |
+| 프롬프트 편향·라벨·레이어 신호 | [E0](experiments/E0/) · [E1](experiments/E1/) · [E2](experiments/E2/) · [P8S probe](experiments/p8s_probe/) |
+| Steering의 발전과 재현성 검증 | [P9](experiments/P9/) · [Steering_retain](experiments/Steering_retain/) · [E15](experiments/E15/) |
+| 행동별 이득과 조건부 Routing | [A0](experiments/A0/) · [A1](experiments/A1/) — CSV·Parquet 결과 포함 |
+| 외부 전이·강도·문맥 오류 비율 | [A3](experiments/A3/) |
+| C+ 손상 진단·Packed | [E17](experiments/E17/) |
+| 기존 방법 비교 코드 | [SOTA 안내](SOTA/README.md) — 하네스 초안·구현 상태 확인 |
+| 공용 프롬프트와 채점 | [p8s_prompt.py](prompt/p8s_prompt.py) |
+| 연구 근거·논문 결과·원문 위치 | [연구 결과 및 근거](docs/research_status.md) |
 
-| 문서 구성 | Base RAG | Conflict-Aware |
-|----------|:--------:|:--------------:|
-| A: 거짓만 (정답 없음) | 50% | **83%** |
-| B: 거짓 + 정답 공존 | 100% | 100% |
-
-**핵심 발견:** 강한 API 모델은 temporal conflict를 프롬프트 없이도 ~100% 처리 (천장 효과). → **Llama 3.1-8B에서 gap이 존재할 것으로 예상** — 본 연구의 핵심 측정 구간.
-
-파이프라인 실행 결과물 (직접 확인 가능):
-
-| 파일 | 내용 |
-|------|------|
-| [smoke_test_conflict_base.json](outputs/runs/smoke_test_conflict_base.json) | Base RAG 실행 결과 |
-| [smoke_test_conflict_aware.json](outputs/runs/smoke_test_conflict_aware.json) | Conflict-Aware RAG 실행 결과 |
-| [smoke_test_base_rag.json](outputs/runs/smoke_test_base_rag.json) | 단독 Base RAG smoke test |
-| [20260531T104426Z.json](outputs/runs/20260531T104426Z.json) | ClashEval 파일럿 배치 실행 결과 |
-
-<br/>
-
-## 🛠 Tech Stack
-
-**AI / 학습**
-
-![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
-![HuggingFace](https://img.shields.io/badge/🤗_Transformers-FFD21E?style=flat-square)
-![LoRA](https://img.shields.io/badge/LoRA_PEFT_(dry--run)-8A2BE2?style=flat-square)
-![DPO](https://img.shields.io/badge/DPO_TRL_(dry--run)-412991?style=flat-square)
-![Llama](https://img.shields.io/badge/Llama_3.1--8B_(dry--run)-0467DF?style=flat-square)
-
-**RAG / 검색**
-
-![FAISS](https://img.shields.io/badge/FAISS-Vector_Store-00AAFF?style=flat-square)
-![SentenceTransformers](https://img.shields.io/badge/Sentence_Transformers-Embedding-FF6B35?style=flat-square)
-![Anthropic](https://img.shields.io/badge/Claude-Generator-CC785C?style=flat-square)
-
-**데모 / 배포**
-
-![Gradio](https://img.shields.io/badge/Gradio-HuggingFace_Spaces-FF7C00?style=flat-square)
-![Telegram](https://img.shields.io/badge/Telegram_Bot-Railway-26A5E4?style=flat-square&logo=telegram&logoColor=white)
-![Python](https://img.shields.io/badge/Python_3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
-
-<br/>
-
-## 🚀 Quickstart
-
-> 설치 없이 바로 체험하려면 → **[📋 Self-Demo 가이드](self_demo.md)** 를 따라하세요.
-
-[![Quickstart Guide](https://img.shields.io/badge/📋_Quickstart_Guide-self__demo.md-2EA44F?style=for-the-badge)](self_demo.md)
-
-<div align="center">
-<img src="docs/assets/demo_screenshot.png" alt="HuggingFace Spaces 인터랙티브 데모" width="780"/>
-<br/><sub>🤗 HuggingFace Spaces — Base RAG vs Conflict-Aware Prompting 실시간 비교</sub>
-</div>
-
-<br/>
-
-<div align="center">
-<img src="docs/assets/bot_screenshot.png" alt="텔레그램 RAG 봇" width="340"/>
-&nbsp;&nbsp;&nbsp;
-<img src="docs/assets/web_screenshot.png" alt="연구 사이트 alltology.zapto.org" width="420"/>
-<br/><sub>✈️ 텔레그램 RAG 봇 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🌐 연구 사이트 alltology.zapto.org</sub>
-</div>
-
-<br/>
-
-| 방법 | 링크 | 설명 |
-|------|------|------|
-| 🌐 연구 사이트 | [alltology.zapto.org](http://alltology.zapto.org) | 연구 소개 · 팀 정보 |
-| 🤗 인터랙티브 데모 | [HuggingFace Spaces](https://huggingface.co/spaces/ponyo03/conflict-aware-rag-demo) | Base RAG vs Conflict-Aware 실시간 비교 |
-| ✈️ 텔레그램 봇 | [@alltology_rag_bot](https://t.me/alltology_rag_bot) | 저장소 문서 기반 RAG 챗봇 |
-| 🎬 데모 영상 | [YouTube 시연 영상](https://youtu.be/qc0GkgJoBBk) | 전체 시연 영상 |
-| 📊 발표 슬라이드 | [Google Slides](https://docs.google.com/presentation/d/1WYRi1R0Cs9c9ENMSW5hxTgeqclXKywSfk7IJl1dhgvQ/edit?usp=sharing) · [PDF](docs/presentation/presentation.pdf) · [Marp 원본](docs/presentation.md) | 기말 발표 자료 |
-
-**로컬 실행:**
-
-> **Step 1** — 레포 클론 및 의존성 설치
+## 재현 시작하기
 
 ```bash
 git clone https://github.com/Ontology0/Graduation-Project.git
 cd Graduation-Project
-pip install -r requirements.txt
 ```
 
-> **Step 2** — 환경변수 설정 (HuggingFace 모델 사용 시 API 키 불필요)
+현재 연구는 Colab/Jupyter 노트북과 저장된 산출물을 중심으로 구성됩니다. **실험 안내에서 입력 데이터·선행 산출물·환경을 확인한 뒤 해당 노트북을 실행하세요.**
 
-```bash
-cp .env.example .env   # 필요 시 ANTHROPIC_API_KEY 등 입력
-```
+- P8S 원본·hidden cache·P9 manifest 등 일부 입력은 별도 공유 자료입니다.
+- 모델 추론·steering에는 모델 접근 권한과 GPU가 필요합니다. E2·A1 등은 선행 산출물이 준비되면 CPU 분석이 가능합니다.
+- 공용 규격은 `p8s-v2`, 생성 길이는 192입니다. 과거 노트북의 설정·라벨 버전·레이어 번호와 섞어 비교하지 않습니다.
+- `SOTA/dayoung/`은 비교 코드 초안입니다. 현재 파일 배치와 `common/`·`methods/` import 구조가 일치하지 않아 바로 실행 가능한 패키지는 아닙니다.
+- 루트 `requirements.txt`·`Makefile`·`src/`는 초기 RAG 구현용이며 최신 실험 전체의 통합 실행 환경이 아닙니다.
 
-> **Step 3** — 파이프라인 실행
+## 다음 연구
 
-```bash
-make demo          # Base RAG smoke test
-make demo-conflict # Base RAG vs Conflict-Aware 비교
-```
+1. **Router 고도화:** NQ-Swap 평가 확대, 내부 신호·행동 집합·강도 선택 근거 분석
+2. **Packed 선택 규칙 개선:** X1이 K−C+에서 잘못된 기억을 고르는 원인 검증
+3. **구성 요소 비교:** Always / Router / Packed를 분리하고 결합 효과는 별도 실험
+4. **공정한 비교:** 동일 질문·프롬프트·채점의 기준선, 개발·평가 분리, 성능과 비용 보고
+5. **재현성 정리:** 외부 평가 실행본·원시 결과·환경 manifest 연결
 
-<br/>
+상세 계획과 미확정 사항은 [연구 계획](docs/research_plan.md)에 정리했습니다.
 
-## 📖 Deep into Research
-
-연구 설계와 구현의 상세 내용을 담은 문서입니다.
-
-| 문서 | 내용 |
-|------|------|
-| [📋 Project Brief](docs/project_brief.md) | 연구 동기 · 고객 · 솔루션 · 파일럿 결과 요약 |
-| [🏗 Architecture](docs/architecture.md) | 시스템 구조 · 데이터 흐름 · 핵심 엔트리포인트 1페이지 요약 |
-| [🎬 Demo & Evidence](docs/demo.md) | CLI smoke test · 실제 실행 결과 · 파이프라인 동작 증빙 |
-| [✅ Verification Checklist](docs/verification_checklist.md) | 재현성 · 보안 · 운영 항목별 검증 기록 |
-| [🤖 AI 투명성 리포트](docs/ai_transparency_report.md) | AI 도구 활용 내역 · 인간 판단 영역 명시 |
-| [🗺 RQ ↔ 구현 매핑](docs/rq_to_implementation_map.md) | 연구 질문과 실제 코드의 1:1 대응 관계 |
-| [🔬 실험 설계](docs/experiment_design.md) | 5개 arm 비교 설계 · 데이터셋 · 평가 메트릭 |
-| [📚 관련 연구](docs/related_work.md) | PA-RAG · DPO · Knowledge Conflict 선행 연구 |
-| [📊 Benchmark selection](docs/benchmark_selection.md) | 벤치마크 후보 검토 및 train/eval split (**#55 반영**) |
-| [📝 Decision log](docs/decision_log.md) | 확정·보류·제외 결정 |
-
-벤치마크·데이터셋 전략 요약: **train** = 명확 라벨(버전·시간, true_doc/false_doc, context–memory); **eval** = held-out + 논쟁적(false-only, model_knows) + 자연/토론(WikiContradict 등). 상세는 `docs/benchmark_selection.md`, 근거는 `docs/decision_log.md`.
-
-<br/>
-
-## 🗺 Future Work
-
-| 방향 | 내용 | 상태 |
-|------|------|:----:|
-| **DPO+LoRA 코드** | `src/training/train.py` dry-run 구현 · [1-step 체크포인트](outputs/checkpoints/lora_conflict_only/training_log.jsonl) 확인 (`train_loss=0.693`, epoch=0.5) | ✅ dry-run 완료 |
-| **Llama 3.1-8B 대규모 학습** | 파일럿에서 확인한 gap을 타겟 모델에서 측정 · conflict 처리 lower bound 확보 | 🔄 Growth |
-| **DPO 학습 데이터 확장** | synthetic conflict JSONL 확장 + ClashEval 활용 · preference pair 품질 개선 | 🔄 Growth |
-| **정량 벤치마크** | WikiContradict · ClashEval 5-arm 비교 평가 | 🔄 Growth |
-
-<br/>
-
-## 📁 저장소 구조
+## 저장소 구성
 
 ```text
-Graduation-Project/
-├── src/
-│   ├── rag/                      # RAG 파이프라인 (핵심 구현)
-│   │   ├── pipeline.py           #   전체 파이프라인 오케스트레이터
-│   │   ├── document_loader.py    #   문서 로딩
-│   │   ├── github_kb.py          #   GitHub repo KB ingest (Telegram 봇)
-│   │   ├── pilot_dataset.py      #   파일럿/배치용 데이터셋 헬퍼
-│   │   ├── chunker.py            #   텍스트 청킹
-│   │   ├── embedder.py           #   임베딩 생성
-│   │   ├── vector_store.py       #   FAISS 벡터 스토어
-│   │   ├── retriever.py          #   검색 모듈
-│   │   ├── prompt_builder.py     #   프롬프트 빌더
-│   │   ├── generator.py          #   LLM 생성 (HF / Anthropic)
-│   │   ├── reporting.py          #   실행 결과 JSON/MD 저장 (outputs/runs/)
-│   │   └── config.py             #   설정 로더
-│   ├── chatbot/
-│   │   └── telegram_bot.py       #   텔레그램 RAG 봇 (Railway 배포)
-│   ├── training/
-│   │   └── train.py              #   DPO+LoRA dry-run 구현 완료 · 정식 대규모 학습은 Growth 범위
-│   └── evaluation/
-│       └── evaluate.py           #   5-arm 평가 결과 저장 및 metric aggregation scaffold. 정식 모델 추론은 Growth 단계이며, Arm 1·2 파일럿 결과는 experiments/와 outputs/runs/에서 확인 가능
-├── scripts/
-│   ├── run_pipeline.py           # RAG 파이프라인 실행 CLI
-│   ├── run_batch.py              # 배치 실행
-│   └── telegram_bot.py           # 텔레그램 봇 엔트리포인트
-├── configs/
-│   ├── experiments/              # 실험 설정 YAML (rag_base, prompting, lora_*, rag_github_bot)
-│   └── prompts/                  # 프롬프트 템플릿 (base_rag, conflict_aware, judge, github_bot)
-├── data/
-│   ├── schema/                   # conflict·preference JSON Schema
-│   ├── sample_docs/              # smoke test용 샘플 문서
-│   ├── synthetic_conflicts/      # DPO 학습용 합성 conflict 데이터
-│   ├── synthetic/                # 합성 데이터 (예정)
-│   └── natural/                  # 자연 conflict 케이스 (예정)
-├── experiments/                  # 파일럿 실험 (날짜별 폴더)
-│   ├── pilot_2026-05-26/        #   로컬 sanity-check (config·prompt·batch 배선)
-│   ├── api_pilot_2026-05-28/    #   GPT-4o-mini API 파일럿
-│   └── 2026-05-31/              #   ClashEval 기반 exp1~4
-├── outputs/
-│   ├── runs/                     # 파이프라인 실행 결과물 (JSON / MD)
-│   └── checkpoints/              # DPO+LoRA dry-run 체크포인트
-├── docs/                         # 연구·운영 문서 (architecture, demo, verification 등)
-├── course/                       # 수업 제출물 (Project Brief, PMF, 팀 규칙 등)
-├── tests/                        # pytest 테스트 스위트
-├── app.py                        # HuggingFace Spaces Gradio 데모
-├── self_demo.md                  # 방문자용 5분 체험 가이드
-├── Makefile                      # make demo / make demo-conflict
-├── requirements.txt              # RAG 파이프라인 패키지
-├── requirements_bot.txt          # 텔레그램 봇 배포 전용 패키지
-├── Procfile                      # Railway 봇 배포 설정
-└── railway.json                  # Railway 배포 구성
+experiments/   현재 연구 노트북과 일부 결과 (P6/P9/E0/E1/E2/E15/E17/A0/A1/A3 등)
+SOTA/          기존 방법 비교 하네스 초안
+prompt/        공용 P8S 프롬프트·채점 규격
+docs/          최신 연구 문서, 결과 근거, 회의록, 초기 기록
+legacy/        이전 파일럿·실험·실행 결과
+src/, configs/ 초기 RAG·DPO/LoRA·평가·챗봇 구현
+course/        수업 제출 자료
+hanium-arbiter/ 별도 한이음 프로젝트 참조
 ```
 
-<br/>
+## 팀과 연구 이력
 
-## 🤝 기여하기
+박세령 ([@ryeong03](https://github.com/ryeong03)) · 손현경 ([@bbberylll](https://github.com/bbberylll)) · 이다영 ([@dev-ldy03](https://github.com/dev-ldy03))
 
-버그 리포트, 실험 아이디어, 코드 기여 모두 환영합니다.
+초기 Conflict-Aware PA-RAG·DPO/LoRA 구상에서 내부 표현 판독, steering, 선택적 응답 제어로 확장했습니다. [초기 소개·파일럿·데모 기록](docs/archive/start-overview.md)과 [전체 문서 안내](docs/README.md)에서 연구 이력을 확인할 수 있습니다.
 
-1. `dev` 브랜치에서 작업 브랜치를 생성합니다 (`feat/`, `fix/`, `docs/` 등)
-2. 변경 후 `dev`로 Pull Request를 올립니다
-3. 커밋 메시지 형식 · 브랜치 전략 · PR 절차는 [CONTRIBUTING.md](CONTRIBUTING.md) 참고
-
-<br/>
-
-## 🌿 브랜치 전략
-
-```
-main  ← 제출 / 배포 스냅샷
-  └── dev  ← 일상 개발 · PR 통합
-        ├── feat/ · docs/ · chore/ · fix/
-```
-
-상세 규칙: [CONTRIBUTING.md](CONTRIBUTING.md)
-
-<br/>
-
-## 👥 팀
-
-| <img src="https://github.com/ryeong03.png" width="100"/> | <img src="https://github.com/bbberylll.png" width="100"/> | <img src="https://github.com/dev-ldy03.png" width="100"/> |
-|:---:|:---:|:---:|
-| **박세령** | **손현경** | **이다영** |
-| [@ryeong03](https://github.com/ryeong03) | [@bbberylll](https://github.com/bbberylll) | [@dev-ldy03](https://github.com/dev-ldy03) |
-| Conflict 설계 · RAG 파이프라인 | DPO 학습 · LoRA fine-tuning | 데이터 파이프라인 · 평가 |
-
-**팀명:** Alltology · **팀 번호:** 03 · **트랙:** 연구 · **지도교수:** 황의원 교수님
-
-**AI 투명성 리포트:** [docs/ai_transparency_report.md](docs/ai_transparency_report.md)
-
----
-
-<div align="center">
-
-*2026 이화여자대학교 캡스톤디자인*
-
-</div>
-
+일상 작업은 `dev`로 PR을 보내고, 제출·배포 스냅샷은 `dev → main` PR로 반영합니다. [기여 규칙](CONTRIBUTING.md) · [MIT License](LICENSE)

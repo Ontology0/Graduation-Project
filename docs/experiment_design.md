@@ -1,5 +1,7 @@
 # Experiment Design (Draft)
 
+> **초기 PA-RAG 단계 기록:** 현재 연구의 구조·평가·구현은 [연구 계획](research_plan.md), [연구 결과](research_status.md), [실험 안내](../experiments/README.md)를 참고하세요. 아래 5-arm·DPO/LoRA·RAG 설명은 당시 범위입니다.
+
 > **Status:** All arms are **planned** or **scaffolded** unless noted. No results are reported in this repository yet.
 
 ## Comparison arms

@@ -1,5 +1,7 @@
 # Architecture (1-page)
 
+> **초기 PA-RAG 단계 기록:** 현재 연구의 구조·평가·구현은 [연구 계획](research_plan.md), [연구 결과](research_status.md), [실험 안내](../experiments/README.md)를 참고하세요. 아래 5-arm·DPO/LoRA·RAG 설명은 당시 범위입니다.
+
 > Goal: 외부 방문자가 “무엇이 어디서 어떻게 동작하는지”를 1분 내 파악할 수 있게 하는 요약 문서입니다.  
 > Status: **Start-stage implementation.**  
 > - `src/rag/`: implemented RAG pipeline for smoke tests and Arm 1·2 pilot comparison  
