@@ -7,13 +7,26 @@
 
 2026 이화여자대학교 캡스톤디자인 · 03팀 · 연구 트랙 · 지도교수 황의원
 
-[연구 결과](docs/research_status.md) · [실험 코드](experiments/README.md) · [연구 계획](docs/research_plan.md) · [회의록](docs/meeting-log/) · [기여 안내](CONTRIBUTING.md)
+[교수님 검토 안내](docs/review_guide.md) · [실험 코드](experiments/README.md) · [연구 결과](docs/research_status.md) · [회의록](docs/README.md#회의와-원문-자료) · [팀 활동](docs/team_contributions.md)
 
 </div>
 
 ---
 
 > **업데이트: 2026-10-27.** 10월 15일의 Routing 중심 방향을 바탕으로, 10월 27일 서면 보고와 새로 등록된 실험 코드를 반영했습니다. 아래 수치는 실험 보고 및 저장된 산출물 기준이며, 이번 문서 정리에서 모델 실험을 다시 수행한 결과는 아닙니다.
+
+## 교수님 검토 안내
+
+**10/13 수업 공지에 맞춰, 지금까지의 회의록과 개발 산출물을 함께 확인할 수 있도록 구성했습니다.** [활동 경과·공지 대응·검증 근거 한눈에 보기 →](docs/review_guide.md)
+
+| 확인할 내용 | 바로가기 |
+|---|---|
+| 무엇을 논의하고 방향을 바꿨는가? | [전체 회의록 목록](docs/README.md#회의와-원문-자료) · [수업 대체 기간 10/22 회의록](docs/meeting-log/2026-10-22_회의록.md) |
+| 무엇을 실제로 구현했는가? | [실험별 코드·입력·산출물](experiments/README.md) · [발표·선행 실험 코드](experiments/presentation/README.md) |
+| 무엇을 검증했고 무엇이 남았는가? | [공개 결과와 한계](docs/research_status.md) · [후속 연구 계획](docs/research_plan.md) |
+| 팀원들은 어떤 작업에 참여했는가? | [팀원별 활동 근거](docs/team_contributions.md) · [AI 활용 범위](docs/ai_transparency_report.md) |
+
+10/21–10/26 기간의 기록과 10/27 추가 정리는 [검토 안내](docs/review_guide.md)에 구분했습니다. 심사 중인 논문용 코드·결과는 공개하지 않으며, 기존 발표용 코드와 연구 활동 기록은 유지합니다.
 
 ## 우리가 풀려는 문제
 
@@ -32,7 +45,7 @@ K는 관측한 closed-book 응답의 정오입니다. K−가 관련 지식의 �
 
 답변 생성 전 Llama-3.1-8B-Instruct의 **attention head 표현**에서 K/C 상태를 읽습니다. 역할별로 헤드를 선택하고 그 벡터를 연결해 선형 판독기를 학습합니다.
 
-상태 판독 성능과 실제 답변 정확도는 구분합니다. 관련 논문은 **심사 중**이며, 논문용 코드·결과·세부 수치는 공개를 보류합니다. 기존 [발표·선행 실험 코드](experiments/presentation/README.md)는 유지합니다.
+상태 판독 성능과 실제 답변 정확도는 구분합니다. 지식–문맥 4-state 판독 연구는 **[2026 한국소프트웨어종합학술대회(KSC 2026)](https://www.kiise.or.kr/conference/KSC/2026/)에 논문을 투고하여 심사 중**이며, 게재·발표가 확정된 상태는 아닙니다. 논문용 코드·결과·세부 수치는 공개를 보류하고 기존 [발표·선행 실험 코드](experiments/presentation/README.md)는 유지합니다.
 
 ### 2. 제어 — Always Steering → Routing / Packed
 

@@ -6,7 +6,10 @@
 
 | 문서 | 내용 |
 |---|---|
+| [교수님 검토 안내](review_guide.md) | 10/13 공지 대응, 활동→결정→개발 산출물, 검증 사례·후속 일정 |
 | [저장소 소개](../README.md) | 문제·두 연구 축·주요 결과·코드 안내 |
+| [팀원별 활동 근거](team_contributions.md) | 현재 학기 협업·등록 근거와 Start 단계 기여 구분 |
+| [AI 활용 기록](ai_transparency_report.md) | 10/27 저장소 정리 범위와 초기 개발 보조 기록 구분 |
 | [Project Brief](project_brief.md) | 현재 연구의 목표와 산출물 요약 |
 | [연구 결과와 근거](research_status.md) | 발표·10/27 보고·공개 산출물의 수치와 조건 |
 | [연구 계획](research_plan.md) | 관찰→방법 흐름, 다음 과제·평가 계획 |
@@ -43,7 +46,7 @@
 | [실험 설계](experiment_design.md) · [RQ–구현 매핑](rq_to_implementation_map.md) | PA-RAG 5-arm 비교 계획 |
 | [Architecture](architecture.md) · [Demo](demo.md) · [검증 기록](verification_checklist.md) | 초기 RAG 파이프라인 |
 | [관련 연구](related_work.md) · [벤치마크 검토](benchmark_selection.md) · [Decision log](decision_log.md) | 초기 선행 연구·데이터 검토 |
-| [AI 투명성](ai_transparency_report.md) · [팀 기여](team_contributions.md) | 당시 도구 활용·담당 기록 |
+| [수업 AI 활용 기록](../course/transparency_report.md) | 초기 단계 활용·계획; 현재 연구 전체의 완료 내역이 아님 |
 | [발표 원고](presentation.md) · [발표 PDF](presentation/presentation.pdf) | 초기 발표; 이번에 제공된 58쪽 발표와 구분 |
 | [텔레그램 운영](telegram_bot_ops.md) · [Self-demo](../self_demo.md) | 초기 데모 안내 |
 | [이전 실험](../legacy/experiments/) · [이전 실행 결과](../legacy/outputs/) | 파일럿·이전 산출물 |

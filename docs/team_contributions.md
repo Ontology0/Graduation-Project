@@ -1,7 +1,27 @@
-# Team Contributions
+# 팀원별 활동과 근거
 
-> 평가자가 GitHub 레포 안에서 **팀원별 실제 기여**를 빠르게 확인할 수 있도록 정리한 문서입니다.  
-> AI 도구는 초안·리팩토링·문서 정리 보조에 활용되었으며, **연구 방향·실험 설계·결과 해석·최종 판단은 팀**이 수행했습니다. 상세: [`docs/ai_transparency_report.md`](ai_transparency_report.md).
+> 업데이트: 2026-10-27. 회의록의 작성·담당 기록과 GitHub 등록 이력을 연결합니다. 커밋 수나 업로더만으로 연구 기여율·단독 저작을 판단하지 않습니다.
+
+## 현재 학기 활동 근거
+
+| 팀원 | 기록으로 확인할 수 있는 활동 | 근거 |
+|---|---|---|
+| **박세령** (@ryeong03) | 팀 회의록 작성, 면담 결과 보고, 발표 코드 공유·저장소 안내 정리 | [10/15 작성 회의록](meeting-log/2026-10-15_회의록.md), [9/15 면담 후 보고 기록](meeting-log/2026-09-15_회의록.md), [9/10 등록 커밋](https://github.com/Ontology0/Graduation-Project/commit/700737c), [발표 코드·출처 안내](../experiments/presentation/README.md) |
+| **손현경** (@bbberylll) | Steering 개발본, P6/P9·E0/E1/E15/E17 등 실험 코드와 10/22 회의록 등록 | [9/22 Steering 등록](https://github.com/Ontology0/Graduation-Project/commit/f90e3d1), [10/22 실험 묶음 등록](https://github.com/Ontology0/Graduation-Project/commit/0660cb6), [10/22 회의록 등록](https://github.com/Ontology0/Graduation-Project/commit/1f06c1a) |
+| **이다영** (@dev-ldy03) | 면담 회의록 작성, E2·A3 및 A0/A1 코드·결과, 비교 하네스 등록 | [10/13 작성 회의록](meeting-log/2026-10-13_회의록.md), [E2 분석 등록](https://github.com/Ontology0/Graduation-Project/commit/c137228), [A3 등록](https://github.com/Ontology0/Graduation-Project/commit/c7a1b0f), [A0/A1 결과·SOTA 정리](https://github.com/Ontology0/Graduation-Project/commit/5988255) |
+
+회의록 작성자와 GitHub 업로더가 다른 경우 두 역할을 구분합니다. 공동 연구의 설계·실행·해석 기여 전체를 이 표의 등록 내역만으로 환산하지 않습니다. 논문용 자료를 공개하지 않아도 기존 회의·발표·개발 기록으로 활동 경과를 확인할 수 있습니다.
+
+## 공동 작업과 후속 과제
+
+- [10/13 면담](meeting-log/2026-10-13_회의록.md) → [10/15 팀 회의](meeting-log/2026-10-15_회의록.md): Routing 중심 방향, 행동·강도·내부 신호·비용 비교 과제를 구체화했습니다.
+- [10/22 팀 회의](meeting-log/2026-10-22_회의록.md): Steering 관련 논문을 팀원별 2편씩 리뷰하기로 계획했습니다. 이 계획만으로 리뷰 완료를 표시하지 않습니다.
+- 기존 Router, 온라인 Router, Packed의 구현·조건을 구분하고 교차 확인하는 과제는 [연구 계획](research_plan.md)에 연결합니다.
+- 10/27 문서 정리·링크 검증에는 AI 보조를 사용했으며, 새 모델 실험을 수행한 것으로 표시하지 않습니다. [AI 활용 기록](ai_transparency_report.md)
+
+## Start 단계 기여 기록
+
+아래는 초기 RAG·DPO/LoRA 단계의 기존 기록입니다. 현재 학기 Routing·Packed의 담당표와 구분합니다.
 
 | 팀원 | 주요 담당 | GitHub evidence |
 |------|-----------|-------------------|
@@ -17,6 +37,7 @@
 
 ## 관련 문서
 
-- [`docs/rq_to_implementation_map.md`](rq_to_implementation_map.md) — RQ ↔ 코드 정합성
-- [`docs/verification_checklist.md`](verification_checklist.md) — 재현·운영 검증 기록
+- [교수님 검토 안내](review_guide.md) — 전체 활동과 개발·검증 근거
+- [`docs/rq_to_implementation_map.md`](rq_to_implementation_map.md) — 초기 RAG 단계 RQ ↔ 코드 정합성
+- [`docs/verification_checklist.md`](verification_checklist.md) — 초기 구현의 재현·운영 검증 기록
 - [`docs/ai_transparency_report.md`](ai_transparency_report.md) — AI 활용 투명성
