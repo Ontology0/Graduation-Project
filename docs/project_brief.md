@@ -33,4 +33,4 @@
 
 모델 가중치 고정은 Router·판독기의 별도 학습까지 없다는 뜻이 아닙니다. 개입 위치와 신호를 읽는 위치도 실험마다 다르므로, 모든 방법을 어텐션 헤드 직접 조작으로 묶지 않습니다.
 
-[처음 읽는 안내](getting_started.md) · [교수님 검토 안내](review_guide.md) · [결과·조건·한계](research_status.md)
+[처음 읽는 안내](getting_started.md) · [연구 활동과 주요 산출물](review_guide.md) · [결과·조건·한계](research_status.md)

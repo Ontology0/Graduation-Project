@@ -79,4 +79,4 @@ One-pass Routing은 실제 추론 중에 신호를 읽고 행동을 선택하는
 
 [SOTA 비교 코드](../SOTA/README.md)는 import 배치와 미구현 방법 정리가 남아 있습니다. 현재는 완성된 통합 패키지나 서비스 데모가 아니라 **진행 중인 연구 코드 저장소**입니다.
 
-[교수님 검토 안내](review_guide.md) · [제출용 소개](project_brief.md) · [이전 연구 보관함](archive/README.md)
+[연구 활동과 주요 산출물](review_guide.md) · [제출용 소개](project_brief.md) · [이전 연구 보관함](archive/README.md)

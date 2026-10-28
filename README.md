@@ -5,7 +5,7 @@
 
 2026 이화여자대학교 캡스톤디자인 · 03팀 · 연구 트랙 · 지도교수 황의원
 
-[처음 오셨나요?](docs/getting_started.md) · [교수님 검토 안내](docs/review_guide.md) · [제출용 프로젝트 소개](docs/project_brief.md) · [코드](experiments/README.md) · [결과와 한계](docs/research_status.md)
+[처음 오셨나요?](docs/getting_started.md) · [연구 활동과 산출물](docs/review_guide.md) · [프로젝트 소개](docs/project_brief.md) · [코드](experiments/README.md) · [결과와 한계](docs/research_status.md)
 
 ## 왜 필요한가?
 
@@ -85,4 +85,4 @@ flowchart LR
 
 [팀 활동 근거](docs/team_contributions.md) · [전체 문서](docs/README.md) · [AI 활용 범위](docs/ai_transparency_report.md) · [기여 안내](CONTRIBUTING.md) · [MIT License](LICENSE)
 
-> 업데이트: 2026-10-27. 10/21–10/26 활동과 이후 자료 정리는 [검토 안내](docs/review_guide.md)에 구분했습니다.
+> 문서 업데이트: 2026-10-29 · 연구 기록: 10/27 서면 보고까지. [연구 활동과 주요 산출물](docs/review_guide.md)에서 전체 흐름을 볼 수 있습니다.

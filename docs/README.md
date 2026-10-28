@@ -1,13 +1,13 @@
 # 문서 길잡이
 
-> 업데이트: 2026-10-27. 처음 이해할 자료, 활동을 검토할 자료, 연구를 이어갈 자료를 구분합니다.
+> 문서 업데이트: 2026-10-29. 연구 소개, 활동 기록, 코드·결과를 목적에 맞게 찾아볼 수 있습니다.
 
 ## 목적에 맞게 시작하기
 
 | 목적 | 첫 문서 | 이어서 볼 자료 |
 |---|---|---|
 | 프로젝트가 낯설다 | [처음 읽는 안내](getting_started.md) | [짧은 소개·강점](project_brief.md), [첫 결과 CSV](../experiments/A1/%5Bresult%5DA1_staged_routing/A1_policies.csv) |
-| 교수님·심사위원으로 검토한다 | [교수님 검토 안내](review_guide.md) | 아래 회의록, [팀원별 활동 근거](team_contributions.md) |
+| 연구 진행과 팀 활동을 살펴본다 | [연구 활동과 주요 산출물](review_guide.md) | 아래 회의록, [팀원별 활동](team_contributions.md) |
 | 실험을 이해하거나 참여한다 | [실험별 코드 지도](../experiments/README.md) | [평가 조건·결과](research_status.md), [다음 연구](research_plan.md), [기여 규칙](../CONTRIBUTING.md) |
 | 예전 자료가 필요하다 | [이전 연구 보관함](archive/README.md) | 초기 RAG·DPO/LoRA, 데모, 이전 발표·자체점검 |
 

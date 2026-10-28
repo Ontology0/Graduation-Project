@@ -47,7 +47,7 @@
 
 ## 관련 문서
 
-- [교수님 검토 안내](review_guide.md) — 전체 활동과 개발·검증 근거
+- [연구 활동과 주요 산출물](review_guide.md) — 전체 활동과 개발·검증 근거
 - [`docs/rq_to_implementation_map.md`](rq_to_implementation_map.md) — 초기 RAG 단계 RQ ↔ 코드 정합성
 - [`docs/verification_checklist.md`](verification_checklist.md) — 초기 구현의 재현·운영 검증 기록
 - [`docs/ai_transparency_report.md`](ai_transparency_report.md) — AI 활용 투명성
