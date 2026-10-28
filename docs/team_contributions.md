@@ -1,26 +1,35 @@
-# 팀원별 활동과 근거
+# 팀원별 역할과 수행 내용
 
-> 업데이트: 2026-10-27. 회의록의 작성·담당 기록과 GitHub 등록 이력을 연결합니다. 커밋 수나 업로더만으로 연구 기여율·단독 저작을 판단하지 않습니다.
+> 업데이트: 2026-10-29. 팀원의 수행 내용과 연구 보고를 바탕으로 실험, 분석, 작성·발표, 자료 공유 역할을 정리했습니다.
 
-## 현재 학기 활동 근거
+## 현재 학기 연구·작성·발표
 
-| 팀원 | 기록으로 확인할 수 있는 활동 | 근거 |
+| 팀원 | 수행 내용 | 관련 자료 |
 |---|---|---|
-| **박세령** (@ryeong03) | 팀 회의록 작성, 면담 결과 보고, 발표 코드 공유·저장소 안내 정리 | [10/15 작성 회의록](meeting-log/2026-10-15_회의록.md), [9/15 면담 후 보고 기록](meeting-log/2026-09-15_회의록.md), [9/10 등록 커밋](https://github.com/Ontology0/Graduation-Project/commit/700737c), [발표 코드·출처 안내](../experiments/presentation/README.md) |
-| **손현경** (@bbberylll) | Steering 개발본, P6/P9·E0/E1/E15/E17 등 실험 코드와 10/22 회의록 등록 | [9/22 Steering 등록](https://github.com/Ontology0/Graduation-Project/commit/f90e3d1), [10/22 실험 묶음 등록](https://github.com/Ontology0/Graduation-Project/commit/0660cb6), [10/22 회의록 등록](https://github.com/Ontology0/Graduation-Project/commit/1f06c1a) |
-| **이다영** (@dev-ldy03) | 면담 회의록 작성, E2·A3 및 A0/A1 코드·결과, 비교 하네스 등록 | [10/13 작성 회의록](meeting-log/2026-10-13_회의록.md), [E2 분석 등록](https://github.com/Ontology0/Graduation-Project/commit/c137228), [A3 등록](https://github.com/Ontology0/Graduation-Project/commit/c7a1b0f), [A0/A1 결과·SOTA 정리](https://github.com/Ontology0/Graduation-Project/commit/5988255) |
+| 박세령 (@ryeong03) | E14 이후 대부분의 실험 수행, 지식–문맥 4-state 논문 실험 수행, 프로젝트 발표, 보고서·논문 초안 작성. 팀 회의록 작성과 면담 결과 보고, 실험 코드 공유·저장소 정리도 담당 | [E14 이후 발표·선행 실험](../experiments/presentation/README.md), [10/15 회의록·논문 제출 기록](meeting-log/2026-10-15_회의록.md), [9/15 면담 후 보고](meeting-log/2026-09-15_회의록.md) |
+| 손현경 (@bbberylll) | Packed 외부 평가 결과, 분기 선택·온라인 방향 추정, 올바른 문맥(C+)의 답변 손상과 실패 원인 분석·보고. Steering 및 P6/P9·E0/E1/E15/E17 실험 코드 공유 | [Packed 외부 분석](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.6grhiq4uqc72), [E17 개발·진단](../experiments/E17/) |
+| 이다영 (@dev-ldy03) | 외부 Always·Router 비교, 입력별 개입 이득과 강도 조절의 한계 분석·보고. E2·A3 및 A0/A1 코드·결과와 비교 하네스 공유, 면담 회의록 작성 | [Always·Router 외부 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.ip6i2nm6wvrb), [A0/A1 코드](../experiments/README.md#먼저-볼-코드), [10/13 면담 회의록](meeting-log/2026-10-13_회의록.md) |
 
-회의록 작성자와 GitHub 업로더가 다른 경우 두 역할을 구분합니다. 공동 연구의 설계·실행·해석 기여 전체를 이 표의 등록 내역만으로 환산하지 않습니다. 논문용 자료를 공개하지 않아도 기존 회의·발표·개발 기록으로 활동 경과를 확인할 수 있습니다.
+실험 수행·분석·작성·발표 역할과 GitHub에 파일을 등록한 역할을 구분합니다. 논문용 코드·상세 결과는 심사 중 비공개 방침을 유지합니다.
 
-## 팀 보고에서 확인할 연구 내용
+## 연구 내용별 산출물
 
-| 자료 | 주요 분석 | 코드·결과 연결 |
+| 연구 내용 | 주요 활동 | 코드·보고 연결 |
 |---|---|---|
-| [다영 외부 Always·Router 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.ip6i2nm6wvrb) | 일괄 개입의 C+ 손상, 입력별 이득 예측의 효과, 강도 조절만으로 해결되지 않는 한계 | [A0/A1](../experiments/README.md#먼저-볼-코드), [ConFiQA Router 실행본](https://drive.google.com/file/d/1ghpS2MP4XSeBh8R8t_Ay7KSN-o4PZcAG/view) |
-| [현경 Packed 외부 분석](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.6grhiq4uqc72) | 두 분기 선택·온라인 방향 추정, X1이 잘못된 기억을 고르는 실패, 조건별 audit와 후속 검증 | [E17 개발·진단](../experiments/E17/), [보고 수치·조건](research_status.md) |
-| [발표·선행 내부 신호 실험](../experiments/presentation/README.md) | head·레이어 신호, 규칙과 판독기, 온라인 개입 경로의 구분 | [공유 원본 출처](../experiments/drive_sources.json); 가져오기와 연구 수행을 구분 |
+| 내부 신호 분석·온라인 개입 | 헤드·레이어 신호, 규칙과 판독기, 온라인 개입을 비교한 실험. 박세령이 E14 이후 대부분의 실험 수행 | [발표·선행 실험 코드](../experiments/presentation/README.md) · [공유 원본 출처](../experiments/drive_sources.json) |
+| 4-state 논문·프로젝트 발표 및 보고서 | 박세령이 논문 실험 수행, 보고서·논문 초안 작성, 프로젝트 발표 담당 | [논문 투고 현황](review_guide.md#5-논문-투고-현황) · [프로젝트 소개](project_brief.md) |
+| Always·Router 외부 비교 | 이다영의 일괄 개입에 따른 C+ 손상, 입력별 이득 예측 효과, 강도 조절의 한계 분석·보고 | [외부 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.ip6i2nm6wvrb) · [ConFiQA Router 실행본](https://drive.google.com/file/d/1ghpS2MP4XSeBh8R8t_Ay7KSN-o4PZcAG/view) |
+| Packed 외부 분석 | 손현경의 두 분기 선택·온라인 방향 추정, X1이 잘못된 기억을 고르는 실패와 후속 검증 분석·보고 | [외부 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.6grhiq4uqc72) · [E17 개발·진단](../experiments/E17/) |
 
-현재 소개는 어느 한 사람의 상태 판독 자료만이 아니라 위 보고와 팀 회의의 Routing 방향을 함께 반영합니다. 자료별 독립 조건을 합쳐 하나의 완성된 결합 모델이라고 표현하지 않습니다.
+발표·선행 실험 폴더와 기존 실험 폴더에는 번호가 같아도 다른 실험이 있습니다. 예를 들어 `E17_FixedGeometry`와 `E17 Packed`는 서로 다른 방법입니다. 파일별 내용은 [실험 안내](../experiments/README.md)에서 확인할 수 있습니다.
+
+## 코드 공유와 회의 기록
+
+| 팀원 | 자료 정리·등록 내역 | 관련 기록 |
+|---|---|---|
+| 박세령 | 회의록 작성·등록, 발표 코드 공유와 저장소 안내 정리 | [9/10 회의록 등록](https://github.com/Ontology0/Graduation-Project/commit/700737c), [10/15 작성 회의록](meeting-log/2026-10-15_회의록.md), [발표 코드](../experiments/presentation/README.md) |
+| 손현경 | Steering 개발본, P6/P9·E0/E1/E15/E17 실험 파일과 10/22 회의록 등록 | [9/22 Steering 등록](https://github.com/Ontology0/Graduation-Project/commit/f90e3d1), [10/22 실험 묶음 등록](https://github.com/Ontology0/Graduation-Project/commit/0660cb6), [10/22 회의록 등록](https://github.com/Ontology0/Graduation-Project/commit/1f06c1a) |
+| 이다영 | E2·A3 및 A0/A1 코드·결과, 비교 하네스 등록 | [E2 분석 등록](https://github.com/Ontology0/Graduation-Project/commit/c137228), [A3 등록](https://github.com/Ontology0/Graduation-Project/commit/c7a1b0f), [A0/A1 결과·SOTA 정리](https://github.com/Ontology0/Graduation-Project/commit/5988255) |
 
 ## 공동 작업과 후속 과제
 
