@@ -21,7 +21,7 @@
 
 | 단계·기록 | 수행한 활동과 관찰 | 결정·다음 단계 | 연결된 개발 산출물 |
 |---|---|---|---|
-| Start 단계 | 지식–문맥 충돌 문제 정의, RAG 파이프라인·파일럿·데모 구성 | 초기 DPO/LoRA 구상과 이후 내부 신호 연구를 구분 | [초기 기록](archive/start-overview.md) · [이전 실험](../legacy/experiments/) · [RAG 구현](../src/) |
+| Start 단계 | 지식–문맥 충돌 문제 정의, RAG 파이프라인·파일럿·데모 구성 | 초기 DPO/LoRA 구상과 이후 내부 신호 연구를 구분 | [초기 기록](archive/start-overview.md) · [이전 실험](../legacy/experiments/) · [RAG 구현](../legacy/src/) |
 | 7월 실험 기록 | closed-book 응답과 entropy·confidence 등 기초 특성 분석 | 내부 표현에서 지식·문맥 신호를 읽는 방향으로 탐색 확장 | [exp5–7](../experiments/exp5-7/) · [7/11 결과 등록](https://github.com/Ontology0/Graduation-Project/commit/8f737e4) |
 | [9/3](meeting-log/2026-09-03) · [9/8](meeting-log/2026-09-08_회의록.md) · [9/10](meeting-log/2026-09-10_회의록.md) | 학기 초 연구 계획·실험 진행과 팀 작업 논의 | 면담·팀 회의 기록을 이어가며 실험 구체화 | [P6](../experiments/P6/) · [P9](../experiments/P9/) · [P8S probe](../experiments/p8s_probe/) |
 | [9/15](meeting-log/2026-09-15_회의록.md) · [9/22](meeting-log/2026-09-22_회의록.md) | 내부 표현 판독과 개입 이득 기반 선택 논의 | 상태 판독과 실제 행동 개선을 별도 평가 | [E2 층별·표면 정보 분석](../experiments/E2/) · [Steering 실험](../experiments/Steering_retain/) |

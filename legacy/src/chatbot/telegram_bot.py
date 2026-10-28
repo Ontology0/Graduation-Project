@@ -1,7 +1,7 @@
 """Telegram chatbot for the GitHub-as-KB RAG system.
 
 This module contains the bot implementation. The CLI entrypoint lives in
-`scripts/telegram_bot.py` (thin wrapper).
+`python -m src.chatbot.telegram_bot` from the legacy directory.
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ from src.rag.reporting import format_result_markdown, save_result
 
 logger = logging.getLogger(__name__)
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 
 _MAX_MESSAGE_CHARS = int(os.getenv("TELEGRAM_MAX_MESSAGE_CHARS", "3800"))
 
@@ -281,7 +281,7 @@ async def cmd_run(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "로컬 실행 요약:\n"
         "1) `.env`에 `TELEGRAM_BOT_TOKEN`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` 설정\n"
         "2) `pip install -r requirements.txt`\n"
-        "3) `python scripts/telegram_bot.py --verbose`\n"
+        "3) `python -m src.chatbot.telegram_bot --verbose`\n"
     )
     await _reply_html(update, text)
 
@@ -591,3 +591,6 @@ def main(argv: list[str] | None = None) -> None:
     logger.info("Telegram bot running...")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
+
+if __name__ == "__main__":
+    main()

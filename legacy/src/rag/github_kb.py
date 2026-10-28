@@ -118,4 +118,3 @@ def grep_repo(repo_root: str | Path, query: str, *, limit: int = 12) -> list[dic
                 if len(hits) >= limit:
                     return hits
     return hits
-

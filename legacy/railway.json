@@ -5,7 +5,7 @@
     "buildCommand": "pip install -r requirements_bot.txt"
   },
   "deploy": {
-    "startCommand": "python scripts/telegram_bot.py --config configs/experiments/rag_github_bot.yaml --docs __repo__",
+    "startCommand": "python -m src.chatbot.telegram_bot --config configs/experiments/rag_github_bot.yaml --docs __repo__",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3
   }

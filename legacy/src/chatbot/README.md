@@ -1,6 +1,6 @@
 # src/chatbot/
 
-**Telegram RAG 봇** 구현 모듈입니다. repo를 지식베이스로 `src/rag` 파이프라인에 연결해 질의·명령을 처리합니다. CLI 진입점은 `scripts/telegram_bot.py`(thin wrapper)입니다.
+**초기 Telegram RAG 봇** 구현 모듈입니다. repo를 지식베이스로 `src/rag` 파이프라인에 연결해 질의·명령을 처리합니다. 작업 디렉터리는 `legacy/`이며, 모듈 진입점으로 실행합니다.
 
 ## 파일별 역할
 
@@ -12,7 +12,7 @@
 ## 실행
 
 ```bash
-python scripts/telegram_bot.py --config configs/experiments/rag_github_bot.yaml
+python -m src.chatbot.telegram_bot --config configs/experiments/rag_github_bot.yaml
 ```
 
 `.env`에 `TELEGRAM_BOT_TOKEN` 등 필요. 설정 예: `configs/experiments/rag_github_bot.yaml`

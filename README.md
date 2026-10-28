@@ -75,7 +75,21 @@ flowchart LR
 - [공용 프롬프트·채점](prompt/p8s_prompt.py): 실험 간 비교 조건
 - [이전 연구 보관함](docs/archive/README.md): 초기 RAG·DPO/LoRA 구상·데모·자체점검 기록
 
-현재 연구는 노트북과 저장 결과 중심입니다. 루트 `requirements.txt`·`Makefile`·`src/`는 **초기 RAG 구현용**이며, 최신 연구 전체를 한 번에 실행하는 환경은 아닙니다. 설치보다 먼저 [실행 전제](experiments/README.md#실행에-필요한-입력)를 확인하세요.
+현재 연구는 노트북과 저장 결과 중심이며, 실행 환경은 실험별로 준비합니다. 설치보다 먼저 [실행 전제](experiments/README.md#실행에-필요한-입력)를 확인하세요.
+
+### 저장소 구성
+
+| 경로 | 내용 |
+|---|---|
+| [experiments/](experiments/README.md) | 현재 실험 노트북과 공개 결과 |
+| [SOTA/](SOTA/README.md) · [prompt/](prompt/) | 기존 방법 비교 코드와 공용 프롬프트·채점 |
+| [data/](data/) | 현재 실험의 공개 입력 자료 |
+| [docs/](docs/README.md) | 연구 소개·결과·팀 활동·전체 회의록 |
+| [legacy/](legacy/README.md) | 초기 RAG·앱·봇 구현, 설치·배포 설정, 이전 수업 자료·파일럿 |
+
+초기 구현은 활동 이력으로 보존하되 현재 실험과 분리했습니다. 한이음 자료는 [별도 설계 문서](docs/han_eum_docs/hanium-design-v0.3.md)에 연결돼 있습니다.
+
+[저장소 검사](.github/workflows/repository.yml)는 문서 링크·Python 문법·노트북 구조를 확인합니다. 모델 실행이나 성능 재현 평가는 포함하지 않습니다.
 
 ## 별도 학술 성과와 팀
 

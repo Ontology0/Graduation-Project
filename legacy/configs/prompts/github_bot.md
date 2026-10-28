@@ -26,4 +26,3 @@ Instructions:
 - Answer directly and succinctly (3–5 sentences).
 - Never reproduce large blocks from the context. No long code blocks.
 ```
-

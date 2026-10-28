@@ -1,0 +1,1 @@
+worker: python -m src.chatbot.telegram_bot --config configs/experiments/rag_github_bot.yaml --docs __repo__

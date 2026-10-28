@@ -13,7 +13,9 @@
 | [초기 발표 원고](../presentation.md) · [PDF](../presentation/presentation.pdf) | 이전 학기 발표 자료 | 현재 발표용 소개는 [Project Brief](../project_brief.md) |
 | [관련 연구 초안](../related_work.md) · [벤치마크 검토](../benchmark_selection.md) · [결정 이력](../decision_log.md) | 초기 조사·설계 | 미완성 인용·당시 제안 포함; 최신 문헌 검토나 비교 완료를 뜻하지 않음 |
 | [초기 자체점검](start-eval-check/README.md) | 2026-05-28 기준 내부 평가 메모·AI 점검 템플릿 | 교수님 공식 채점·수업 공식 기준이 아님 |
-| [수업 자료](../../course/) | 초기 소개·팀 규칙·도구 활용 기록 | 시기와 계획/실행 여부를 구분 |
+| [수업 자료](../../legacy/course/) | 초기 소개·팀 규칙·도구 활용 기록 | 시기와 계획/실행 여부를 구분 |
+| [초기 코드·설정](../../legacy/README.md) | RAG·앱·봇과 설치·배포 설정 | 작업 디렉터리는 `legacy/`; 현재 Routing 실험과 분리 |
+| [초기 AI 작업 안내](start-agent-guide.md) | 당시 RAG 중심 개발 지침 | 현재 작업 안내는 루트 [CLAUDE.md](../../CLAUDE.md) |
 | [이전 실험](../../legacy/experiments/) · [이전 실행 결과](../../legacy/outputs/) | 파일럿 원본·결과 | 현재 외부 Router·Packed 점수와 합치지 않음 |
 
-`src/`, `configs/`, `app.py`와 배포·테스트 설정은 초기 구현의 의존 관계가 있으므로 이번 안내 정리에서 삭제하거나 이동하지 않았습니다. 발표용 노트북·회의록·공개 결과도 유지합니다.
+2026-10-29에 초기 `src/`, `configs/`, `course/`, `app.py`와 설치·배포·편집 설정을 `legacy/`로 모았습니다. 기존 문서 속 실행 예시와 트리는 당시 구조를 기록한 것이며, 현재 경로는 [보관 자료 안내](../../legacy/README.md)를 따릅니다. 발표용 노트북·회의록·공개 결과는 유지합니다.

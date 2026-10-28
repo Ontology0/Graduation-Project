@@ -61,4 +61,3 @@ def save_result(
     json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     md_path.write_text(format_result_markdown(result), encoding="utf-8")
     return json_path, md_path
-

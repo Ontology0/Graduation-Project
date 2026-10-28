@@ -14,20 +14,20 @@ install:
 	pip install -r requirements.txt
 
 demo:
-	python scripts/run_pipeline.py \
+	python -m src.rag.pipeline \
 		--config configs/experiments/rag_base.yaml \
 		--docs $(DOCS) \
 		--question $(Q_GENERAL)
 
 demo-conflict:
 	@echo "=== Base RAG ==="
-	python scripts/run_pipeline.py \
+	python -m src.rag.pipeline \
 		--config configs/experiments/rag_base.yaml \
 		--docs $(DOCS) \
 		--question $(Q_CONFLICT)
 	@echo ""
 	@echo "=== Conflict-Aware Prompting ==="
-	python scripts/run_pipeline.py \
+	python -m src.rag.pipeline \
 		--config configs/experiments/prompting_conflict_aware.yaml \
 		--docs $(DOCS) \
 		--question $(Q_CONFLICT)
