@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alltology — 지식–문맥 충돌과 선택적 응답 제어 · A1</title>
+  <style>
+    @page { size: 594mm 841mm; margin: 0; }
+    * { box-sizing: border-box; }
+    :root {
+      --black: #080b10;
+      --panel: #10171e;
+      --white: #f2f5f5;
+      --muted: #a9b7c2;
+      --line: #35434d;
+      --lime: #cdff5f;
+      --cyan: #5de5ff;
+      --pink: #ff7aa9;
+      --gray: #9aaaba;
+    }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .poster {
+      width: 594mm;
+      height: 841mm;
+      padding: 22mm;
+      display: grid;
+      grid-template-rows: 120mm 118mm 220mm 213mm 65mm 31mm;
+      gap: 6mm;
+      overflow: hidden;
+    }
+    h1, h2, h3, p { margin: 0; }
+    header { position: relative; }
+    svg { display: block; }
+    svg text { font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+    .masthead { display: flex; align-items: center; justify-content: space-between; height: 10mm; }
+    .wordmark { display: flex; align-items: center; gap: 4mm; font-size: 27pt; font-weight: 800; letter-spacing: 3pt; }
+    .wordmark svg { width: 12mm; height: 10mm; }
+    .masthead-note { font-size: 14pt; letter-spacing: 1.5pt; color: var(--muted); }
+    h1 { margin-top: 10mm; font-size: 63pt; font-weight: 800; letter-spacing: -2pt; line-height: 1.13; }
+    h1 span { color: var(--lime); }
+    .subtitle { font-size: 25pt; line-height: 1.25; margin-top: 5mm; letter-spacing: -.3pt; }
+    .authors { margin-top: 4mm; color: var(--muted); font-size: 18pt; line-height: 1.35; }
+    .research-goal { display: flex; align-items: center; gap: 6mm; margin-top: 6mm; padding-top: 4mm; border-top: .5mm solid var(--lime); font-size: 24pt; line-height: 1.25; }
+    .goal-label { color: var(--lime); font-size: 16pt; font-weight: 700; letter-spacing: 1pt; }
+    .headline-result { position: absolute; top: 24mm; right: 0; width: 180mm; padding-left: 8mm; border-left: .5mm solid var(--lime); }
+    .headline-result .label { color: var(--muted); font-size: 16pt; line-height: 1.35; }
+    .headline-result .value { color: var(--lime); font-size: 87pt; font-weight: 750; letter-spacing: -2pt; line-height: 1.1; margin: 2mm 0; }
+    .headline-result .value span { font-size: 32pt; font-weight: 500; letter-spacing: 0; margin-left: 2mm; }
+    .headline-result .detail { color: var(--white); font-size: 18pt; line-height: 1.35; }
+    .section-title { display: flex; align-items: baseline; gap: 5mm; margin-bottom: 3mm; }
+    .section-number { color: var(--lime); font-size: 22pt; font-weight: 700; font-variant-numeric: tabular-nums; }
+    h2 { font-size: 30pt; letter-spacing: -.6pt; line-height: 1.2; font-weight: 750; }
+    .section-tag { margin-left: auto; font-size: 13pt; letter-spacing: 1.6pt; color: var(--muted); }
+    .lead { font-size: 20pt; line-height: 1.4; color: var(--muted); }
+    .examples { display: grid; grid-template-columns: 1fr 1fr; gap: 14mm; margin-top: 5mm; }
+    .example { padding: 5mm 6mm; background: var(--panel); border-top: .5mm solid var(--line); }
+    .example-label { font-size: 16pt; color: var(--muted); margin-bottom: 2mm; }
+    .example h3 { font-size: 24pt; font-weight: 650; margin-bottom: 4mm; }
+    .beliefs { display: grid; grid-template-columns: 1fr 10mm 1fr; align-items: center; }
+    .belief-label { color: var(--muted); font-size: 16pt; margin-bottom: 1mm; }
+    .belief-answer { font-size: 29pt; line-height: 1.2; font-weight: 700; }
+    .belief-answer small { font-size: 16pt; font-weight: 500; margin-left: 2mm; }
+    .versus { font-size: 25pt; color: var(--muted); }
+    .good { color: var(--lime); }
+    .bad { color: var(--pink); }
+    .example-outcome { font-size: 20pt; line-height: 1.35; margin-top: 4mm; }
+    .example-note { font-size: 14pt; color: var(--muted); margin-top: 3mm; }
+    .method { border-top: .35mm solid var(--line); padding-top: 5mm; }
+    .method-intro { display: flex; justify-content: space-between; gap: 8mm; align-items: baseline; }
+    .method-intro p { font-size: 21pt; line-height: 1.35; }
+    .method-intro span { color: var(--lime); }
+    .method-intro .method-name { font-size: 15pt; white-space: nowrap; color: var(--lime); letter-spacing: .6pt; }
+    .routing-diagram { width: 550mm; height: 134mm; margin-top: 3mm; }
+    .diagram-caption { font-size: 15pt; color: var(--muted); line-height: 1.4; margin-top: 1mm; }
+    .packed { display: grid; grid-template-columns: 118mm 1fr; gap: 8mm; align-items: center; border-top: .35mm solid var(--line); padding-top: 5mm; margin-top: 4mm; }
+    .packed-label { font-size: 14pt; color: var(--cyan); letter-spacing: 1pt; margin-bottom: 1mm; }
+    .packed h3 { font-size: 27pt; line-height: 1.15; color: var(--cyan); }
+    .packed-flow { font-size: 24pt; line-height: 1.3; margin-bottom: 2mm; }
+    .packed-flow span { color: var(--cyan); }
+    .packed-note { font-size: 17pt; line-height: 1.35; color: var(--muted); }
+    .results { border-top: .35mm solid var(--line); padding-top: 5mm; }
+    .results-top { display: flex; align-items: center; justify-content: space-between; gap: 7mm; }
+    .dataset { font-size: 17pt; line-height: 1.4; color: var(--muted); }
+    .base { font-size: 17pt; line-height: 1.3; white-space: nowrap; }
+    .base strong { font-size: 27pt; font-weight: 650; }
+    .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 14mm; margin-top: 6mm; }
+    .chart h3 { font-size: 24pt; line-height: 1.25; font-weight: 700; }
+    .chart-subtitle { font-size: 16pt; color: var(--muted); margin-top: 2mm; }
+    .chart svg { width: 100%; height: 96mm; margin-top: 2mm; }
+    .result-reading { display: grid; grid-template-columns: 1fr 1fr; gap: 14mm; margin-top: 2mm; }
+    .result-reading p { font-size: 21pt; line-height: 1.35; border-left: 1mm solid var(--lime); padding-left: 4mm; }
+    .result-reading .risk { border-left-color: var(--pink); }
+    .result-reading span { display: block; font-size: 17pt; color: var(--muted); margin-top: 2mm; }
+    .conditions { margin-top: 5mm; color: var(--muted); font-size: 15pt; line-height: 1.5; }
+    .closing { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14mm; padding-top: 5mm; border-top: .5mm solid var(--lime); }
+    .closing-label { font-size: 15pt; color: var(--lime); letter-spacing: 1pt; margin-bottom: 3mm; }
+    .takeaway h2 { font-size: 28pt; line-height: 1.25; }
+    .takeaway p { font-size: 18pt; color: var(--muted); line-height: 1.4; margin-top: 3mm; }
+    .research-status { border-left: .35mm solid var(--line); padding-left: 8mm; }
+    .research-status h3 { font-size: 21pt; line-height: 1.3; margin-bottom: 3mm; }
+    .research-status p { font-size: 18pt; line-height: 1.45; }
+    .research-status .status { color: var(--cyan); }
+    .research-status .next { color: var(--muted); font-size: 17pt; margin-top: 3mm; }
+    footer { display: flex; justify-content: space-between; align-items: center; border-top: .35mm solid var(--line); padding-top: 3mm; }
+    .source { font-size: 13.5pt; line-height: 1.5; color: var(--muted); }
+    .source .source-title { color: var(--white); font-size: 15pt; margin-bottom: 1mm; }
+    a { color: inherit; text-decoration: none; }
+    .qr { display: flex; align-items: center; gap: 4mm; }
+    .qr img { width: 27mm; height: 27mm; background: white; }
+    .qr-label { font-size: 16pt; line-height: 1.4; }
+    .qr-label span { color: var(--muted); font-size: 13pt; }
+  </style>
+</head>
+<body>
+<main class="poster" data-fit="page">
+  <header data-fit="header">
+    <div class="masthead">
+      <div class="wordmark">
+        <svg viewBox="0 0 60 50" aria-hidden="true"><path d="M7 39 28 7 51 39H7 M18 24H40" fill="none" stroke="#cdff5f" stroke-width="3"/><circle cx="28" cy="7" r="5" fill="#cdff5f"/><circle cx="7" cy="39" r="5" fill="#5de5ff"/><circle cx="51" cy="39" r="5" fill="#cdff5f"/></svg>
+        ALLTOLOGY
+      </div>
+      <div class="masthead-note">EWHA · CAPSTONE DESIGN 2026 · RESEARCH</div>
+    </div>
+    <h1>LLM의 지식–문맥 충돌,<br><span>내부 신호로 답변을 조절하다</span></h1>
+    <p class="subtitle">대규모 언어모델의 어텐션 헤드 분석에서 Routing·Steering 기반 선택적 개입까지</p>
+    <p class="authors">이화여자대학교 &nbsp; 박세령 · 손현경 · 이다영 &nbsp;&nbsp; | &nbsp;&nbsp; 지도교수 황의원</p>
+    <div class="research-goal"><span class="goal-label">연구 목표</span><span>틀린 문서에 덜 흔들리고, 맞는 문서로 답하던 능력은 지키기.</span></div>
+    <aside class="headline-result" aria-label="ConFiQA-QA에서 Routing의 전체 정확도 변화는 Base 대비 플러스 3.80%p"><p class="label">ConFiQA-QA · Routing vs Base</p><p class="value">+3.80<span>%p</span></p><p class="detail">외부 평가 전체 정답률 변화</p></aside>
+  </header>
+
+  <section class="problem" data-fit="problem">
+    <div class="section-title"><span class="section-number">01</span><h2>검색한 문서도, 모델의 기억도 틀릴 수 있다</h2><span class="section-tag">WHY</span></div>
+    <p class="lead">문서를 무조건 따르거나 기억을 무조건 강화하는 대신, 상황에 맞게 답변 방식을 바꿔야 한다.</p>
+    <div class="examples">
+      <article class="example">
+        <p class="example-label">상황 A · 문서에 오류가 있을 때</p>
+        <h3>“호주의 수도는?”</h3>
+        <div class="beliefs">
+          <div><p class="belief-label">모델의 기억</p><p class="belief-answer good">캔버라 <small>정답</small></p></div>
+          <div class="versus">≠</div>
+          <div><p class="belief-label">오류가 있는 문서</p><p class="belief-answer bad">시드니 <small>오답</small></p></div>
+        </div>
+        <p class="example-outcome">문서보다 <span class="good">기존 지식을 유지</span>하는 것이 유리하다.</p>
+      </article>
+      <article class="example">
+        <p class="example-label">상황 B · 기억한 정보가 오래됐을 때</p>
+        <h3>“오늘 도서관은 몇 시에 닫나요?”</h3>
+        <div class="beliefs">
+          <div><p class="belief-label">모델의 기억</p><p class="belief-answer bad">18시 <small>오답</small></p></div>
+          <div class="versus">≠</div>
+          <div><p class="belief-label">최신 운영 공지</p><p class="belief-answer good">20시 <small>정답</small></p></div>
+        </div>
+        <p class="example-outcome">기억보다 <span class="good">올바른 문서를 수용</span>하는 것이 유리하다.</p>
+      </article>
+    </div>
+    <p class="example-note">이해를 돕기 위한 가상 입력 예시이며 실제 평가 문항이 아니다. 추론 시에는 정답 여부를 알려주지 않는다.</p>
+  </section>
+
+  <section class="method" data-fit="method">
+    <div class="section-title"><span class="section-number">02</span><h2>내부 신호를 읽고, 필요한 개입만 선택한다</h2><span class="section-tag">HOW</span></div>
+    <div class="method-intro"><p><span>Routing</span>은 개입을 고르고, <span>Steering</span>은 내부 활성값을 조절한다.</p><p class="method-name">ONE-PASS ROUTING</p></div>
+    <svg class="routing-diagram" viewBox="0 0 1650 402" role="img" aria-label="질문과 문서를 LLM에 입력한다. 앞쪽 내부 표현을 읽은 Router가 행동별 이득을 예측하고 뒤쪽 활성값을 조절할지 선택한다. 선택한 경로로 생성을 이어가며 모델 가중치는 고정한다.">
+      <defs>
+        <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#a9b7c2"/></marker>
+        <marker id="arrow-lime" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#cdff5f"/></marker>
+        <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#5de5ff"/></marker>
+      </defs>
+      <path d="M239 44V18H1239V44 M239 235V250H1239V235" fill="none" stroke="#35434d" stroke-width="2"/>
+      <rect x="570" y="1" width="350" height="35" fill="#080b10"/>
+      <text x="745" y="27" font-size="26" text-anchor="middle" fill="#a9b7c2">LLM · 모델 가중치는 고정</text>
+      <rect x="0" y="82" width="185" height="116" fill="#10171e" stroke="#35434d" stroke-width="2"/>
+      <text x="92" y="128" text-anchor="middle" font-size="31" fill="#f2f5f5">질문</text>
+      <text x="92" y="168" text-anchor="middle" font-size="29" fill="#a9b7c2">+ 외부 문서</text>
+      <path d="M191 141H266" fill="none" stroke="#a9b7c2" stroke-width="3" marker-end="url(#arrow-muted)"/>
+      <rect x="284" y="78" width="185" height="138" fill="#10171e" stroke="#35434d" stroke-width="2"/>
+      <rect x="275" y="69" width="185" height="138" fill="#10171e" stroke="#53616c" stroke-width="2"/>
+      <text x="367" y="128" text-anchor="middle" font-size="30" fill="#f2f5f5">앞쪽 레이어</text>
+      <text x="367" y="170" text-anchor="middle" font-size="25" fill="#a9b7c2">입력을 처리</text>
+      <path d="M478 141H540" fill="none" stroke="#a9b7c2" stroke-width="3" marker-end="url(#arrow-muted)"/>
+      <rect x="551" y="69" width="266" height="138" fill="#102226" stroke="#5de5ff" stroke-width="2.5"/>
+      <circle cx="582" cy="98" r="5" fill="#5de5ff"/><circle cx="603" cy="98" r="5" fill="#5de5ff"/><circle cx="624" cy="98" r="5" fill="#5de5ff"/><circle cx="645" cy="98" r="5" fill="#35434d"/>
+      <text x="684" y="145" text-anchor="middle" font-size="31" fill="#f2f5f5">내부 표현</text>
+      <text x="684" y="182" text-anchor="middle" font-size="24" fill="#a9b7c2">어텐션 헤드 등 분석</text>
+      <path d="M827 141H895" fill="none" stroke="#a9b7c2" stroke-width="3" marker-end="url(#arrow-muted)"/>
+      <rect x="907" y="69" width="297" height="138" fill="#182218" stroke="#cdff5f" stroke-width="2.5"/>
+      <text x="1055" y="110" text-anchor="middle" font-size="24" fill="#cdff5f">STEERING</text>
+      <text x="1055" y="152" text-anchor="middle" font-size="31" fill="#f2f5f5">뒤쪽 활성값 조절</text>
+      <text x="1055" y="186" text-anchor="middle" font-size="24" fill="#a9b7c2">또는 개입 없이 통과</text>
+      <path d="M1215 141H1294" fill="none" stroke="#a9b7c2" stroke-width="3" marker-end="url(#arrow-muted)"/>
+      <rect x="1305" y="82" width="345" height="116" fill="#cdff5f"/>
+      <text x="1477" y="127" text-anchor="middle" font-size="32" fill="#080b10" font-weight="700">답변 생성</text>
+      <text x="1477" y="168" text-anchor="middle" font-size="25" fill="#25321a">선택한 경로로 추론을 이어감</text>
+      <path d="M684 211V288" stroke="#5de5ff" stroke-width="3" fill="none" marker-end="url(#arrow-cyan)"/>
+      <text x="665" y="279" text-anchor="end" font-size="25" fill="#5de5ff">신호 읽기</text>
+      <rect x="553" y="302" width="390" height="96" fill="#182218" stroke="#cdff5f" stroke-width="2.5"/>
+      <text x="748" y="341" text-anchor="middle" font-size="31" fill="#cdff5f" font-weight="700">ROUTING · 행동 선택</text>
+      <text x="748" y="377" text-anchor="middle" font-size="26" fill="#f2f5f5">어느 개입이 더 이득인가?</text>
+      <path d="M946 349H1055V216" fill="none" stroke="#cdff5f" stroke-width="3" marker-end="url(#arrow-lime)"/>
+      <text x="1080" y="298" font-size="25" fill="#cdff5f">개입 여부·강도 결정</text>
+      <text x="273" y="334" font-size="25" fill="#a9b7c2">읽는 위치와</text>
+      <text x="273" y="370" font-size="25" fill="#a9b7c2">개입하는 위치를 분리</text>
+    </svg>
+    <p class="diagram-caption">One-pass는 추론 중간에 신호를 읽고 이후 개입을 결정한다. 구현 예: L13 읽기 → L14–18 개입. 선택기(Router)는 별도로 학습한다.</p>
+    <div class="packed">
+      <div><p class="packed-label">별도로 구현·분석한 접근</p><h3>답변 비교 · Packed</h3></div>
+      <div><p class="packed-flow">문서를 본 답 A <span>↔</span> 문서 없이 낸 답 B <span>→</span> 분기 선택</p><p class="packed-note">두 경로를 한 입력 처리에 담아 비교한다. Routing과는 별도로 구현·평가한 접근이다.</p></div>
+    </div>
+  </section>
+
+  <section class="results" data-fit="results">
+    <div class="section-title"><span class="section-number">03</span><h2>정답률 개선과 ‘맞히던 답 보호’를 함께 검증했다</h2><span class="section-tag">EVIDENCE</span></div>
+    <div class="results-top"><p class="dataset">ConFiQA-QA · 1,000질문 / 2,000입력<br>사실 정답과의 정확 일치율(EM)로 평가 · 변화량 단위: %p</p><p class="base">개입 전 정답률 &nbsp;<strong>51.65%</strong></p></div>
+    <div class="charts">
+      <div class="chart">
+        <h3>① 전체 정답률은 얼마나 좋아졌나?</h3>
+        <p class="chart-subtitle">개입 전 대비 변화 · 점: 평균, 선: 95% 신뢰구간</p>
+        <svg viewBox="0 0 804 288" role="img" aria-label="전체 정답률 변화: Always +2.65, Routing +3.80, Packed +4.15%p. 95% 신뢰구간은 각각 1.35에서 3.90, 2.70에서 5.05, 2.52에서 5.90%p.">
+          <g stroke="#35434d" stroke-width="1.3"><path d="M175 20V238 M335 20V238 M495 20V238 M655 20V238"/></g>
+          <text x="0" y="65" font-size="29" fill="#9aaaba">Always</text><text x="0" y="135" font-size="29" fill="#cdff5f" font-weight="700">Routing</text><text x="0" y="205" font-size="29" fill="#5de5ff">Packed</text>
+          <g stroke="#9aaaba" stroke-width="4"><path d="M283 56H487 M283 47V65 M487 47V65"/></g><circle cx="387" cy="56" r="10" fill="#9aaaba"/><text x="796" y="67" text-anchor="end" font-size="34" fill="#f2f5f5">+2.65</text>
+          <g stroke="#cdff5f" stroke-width="4"><path d="M391 126H579 M391 117V135 M579 117V135"/></g><circle cx="479" cy="126" r="11" fill="#cdff5f"/><text x="796" y="137" text-anchor="end" font-size="36" fill="#cdff5f" font-weight="700">+3.80</text>
+          <g stroke="#5de5ff" stroke-width="4"><path d="M376.6 196H647 M376.6 187V205 M647 187V205"/></g><circle cx="507" cy="196" r="10" fill="#5de5ff"/><text x="796" y="207" text-anchor="end" font-size="34" fill="#5de5ff">+4.15</text>
+          <g fill="#a9b7c2" font-size="24" text-anchor="middle"><text x="175" y="267">0</text><text x="335" y="267">+2</text><text x="495" y="267">+4</text><text x="655" y="267">+6</text></g>
+        </svg>
+      </div>
+      <div class="chart">
+        <h3>② 맞는 문서를 줬을 때는 괜찮을까?</h3>
+        <p class="chart-subtitle">올바른 문맥(C+)에서의 변화 · 왼쪽은 성능 손실</p>
+        <svg viewBox="0 0 804 288" role="img" aria-label="올바른 문맥에서 정답률 변화: Always 마이너스 2.90, Routing 플러스 0.80, Packed 마이너스 7.60%p.">
+          <g stroke="#35434d" stroke-width="1.3"><path d="M175 20V238 M375 20V238 M655 20V238"/></g><path d="M575 15V238" stroke="#a9b7c2" stroke-width="2"/>
+          <text x="0" y="65" font-size="29" fill="#9aaaba">Always</text><text x="0" y="135" font-size="29" fill="#cdff5f" font-weight="700">Routing</text><text x="0" y="205" font-size="29" fill="#5de5ff">Packed</text>
+          <rect x="459" y="42" width="116" height="28" fill="#ff7aa9"/><text x="796" y="67" text-anchor="end" font-size="34" fill="#ff7aa9">−2.90</text>
+          <rect x="575" y="112" width="32" height="28" fill="#cdff5f"/><text x="796" y="137" text-anchor="end" font-size="36" fill="#cdff5f" font-weight="700">+0.80</text>
+          <rect x="271" y="182" width="304" height="28" fill="#ff7aa9"/><text x="796" y="207" text-anchor="end" font-size="34" fill="#ff7aa9">−7.60</text>
+          <g fill="#a9b7c2" font-size="24" text-anchor="middle"><text x="175" y="267">−10</text><text x="375" y="267">−5</text><text x="575" y="267">0</text><text x="655" y="267">+2</text></g>
+        </svg>
+      </div>
+    </div>
+    <div class="result-reading"><p>Routing은 전체 성능 개선과 C+ 허용 손실 기준을 충족.<span>다만 C+ 개선이 입증됐거나 손상이 전혀 없다는 뜻은 아니다.</span></p><p class="risk">Packed는 전체 성능이 올라도 C+ 손상이 컸다.<span>잘못된 문서에 강한 것과 올바른 문서를 지키는 것은 다르다.</span></p></div>
+    <p class="conditions">Always: 모든 입력에 같은 Steering 적용. Routing: 개입을 선택. Packed: 두 답변 분기를 비교.<br>Routing은 대상 데이터의 학습 라벨을 사용하고, Packed는 대상 라벨 없이 평가했다. 서로 다른 조건이므로 최종 우열로 해석하지 않는다.<br>C+ 비열등 기준: 변화량의 95% CI 하한 &gt; −2%p. Routing의 하한은 −0.60%p. 신뢰구간은 질문 단위 bootstrap 2,000회.</p>
+  </section>
+
+  <section class="closing" data-fit="closing">
+    <div class="takeaway"><div class="closing-label">04 / TAKE-HOME MESSAGE</div><h2>상태를 읽는 데서 끝내지 않고,<br>실제 답변의 이득과 손상까지 검증한다.</h2><p>내부 신호 분석 → 선택적 응답 제어 구현 → 외부 평가·실패 분석.<br>다음 과제는 개입 선택의 일반화와 실제 추론 비용 검증이다.</p></div>
+    <div class="research-status"><h3>관련 학술 성과 · 지식–문맥 4-state 판독</h3><p>2026 한국소프트웨어종합학술대회(KSC 2026)<br><span class="status">논문 투고 · 현재 심사 중</span></p><p class="next">지식과 문맥의 정오 상태를 읽는 분석을<br>답변 제어와 구분되는 학술 연구로 발전시켰다.</p></div>
+  </section>
+
+  <footer data-fit="footer">
+    <div class="source"><p class="source-title">공개 실험·연구 기록 &nbsp; github.com/Ontology0/Graduation-Project</p><p>결과 출처: 교수님 미팅 10/13·10/27 보고 및 저장소 docs/research_status.md</p><p>공개 연구 현황 · 2026.10 &nbsp; | &nbsp; 모델: Llama-3.1-8B-Instruct</p></div>
+    <a class="qr" href="https://github.com/Ontology0/Graduation-Project"><p class="qr-label">코드와 연구 과정<br><span>GitHub 저장소 보기 →</span></p><img src="repository-qr.svg" alt="공개 GitHub 저장소 QR 코드"></a>
+  </footer>
+</main>
+<script>
+document.fonts.ready.then(() => {
+  const errors = [...document.querySelectorAll('[data-fit]')].filter(element =>
+    element.scrollHeight > element.clientHeight + 1 || element.scrollWidth > element.clientWidth + 1
+  ).map(element => ({
+    section: element.dataset.fit,
+    height: element.clientHeight,
+    contentHeight: element.scrollHeight,
+    width: element.clientWidth,
+    contentWidth: element.scrollWidth
+  }));
+  document.body.dataset.layoutErrors = JSON.stringify(errors);
+});
+</script>
+</body>
+</html>

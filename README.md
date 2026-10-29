@@ -5,7 +5,7 @@
 
 2026 이화여자대학교 캡스톤디자인 · 03팀 · 연구 트랙 · 지도교수 황의원
 
-[처음 오셨나요?](docs/getting_started.md) · [연구 활동과 산출물](docs/review_guide.md) · [프로젝트 소개](docs/project_brief.md) · [코드](experiments/README.md) · [결과와 한계](docs/research_status.md)
+[처음 오셨나요?](docs/getting_started.md) · [A1 포스터](docs/poster/README.md) · [연구 활동과 산출물](docs/review_guide.md) · [프로젝트 소개](docs/project_brief.md) · [코드](experiments/README.md) · [결과와 한계](docs/research_status.md)
 
 ## 왜 필요한가?
 
@@ -51,6 +51,7 @@ flowchart LR
 | 방문 목적 | 읽는 순서 |
 |---|---|
 | 처음 프로젝트를 이해하기 | [짧은 소개](docs/project_brief.md) → [방법·용어·첫 결과](docs/getting_started.md) |
+| 포스터로 연구 흐름 보기 | [A1 PDF](docs/poster/v2/Alltology_A1_draft.pdf) → [고해상도 이미지·편집 원본](docs/poster/README.md) |
 | 교수님·심사위원이 활동 확인하기 | [활동→결정→산출물](docs/review_guide.md) → [회의록](docs/README.md#회의와-원문-자료) → [팀원별 근거](docs/team_contributions.md) |
 | 코드와 결과 확인하기 | [실험별 코드 지도](experiments/README.md) → [A1 저장 결과](experiments/A1/%5Bresult%5DA1_staged_routing/A1_policies.csv) → [평가 조건과 한계](docs/research_status.md) |
 | 팀에 새로 참여하기 | [참여·재현 시작](docs/getting_started.md#새-참여자의-작업-순서) → [다음 연구](docs/research_plan.md) → [기여 규칙](CONTRIBUTING.md) |
