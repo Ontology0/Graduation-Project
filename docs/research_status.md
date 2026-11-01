@@ -8,14 +8,14 @@
 
 | 출처 | 버전·위치 | 이 문서에서 사용하는 범위 |
 |---|---|---|
-| 교수님 미팅 자료, Google Docs | [13회차 10/13](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.5k7e1omlwoie), [14회차 10/27](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.xhbic2nnwq8w) | 방법별 조건, 외부 평가와 후속 과제 |
+| 교수님 미팅 자료 (팀 내부 문서) | 13회차 10/13, 14회차 10/27 | 방법별 조건, 외부 평가와 후속 과제 |
 | `졸업프로젝트 교수님 미팅 자료 (6).pdf` | 사용자 제공 289쪽 스냅샷 | A3·Routing·Packed 보고와 연구 흐름 대조 |
 | `alltology_presentation (2).pdf` | 사용자 제공 58쪽, 특히 39·40·47·53쪽 | 판독과 응답 개선의 구분, 이전 E14/E16 평가 설명 |
 | A0/A1 저장 산출물 | [A0 summary](../experiments/A0/%5Bresult%5DA0_headroom/A0_summary.json), [A1 policies](../experiments/A1/%5Bresult%5DA1_staged_routing/A1_policies.csv), [A1 summary](../experiments/A1/%5Bresult%5DA1_staged_routing/A1_summary.json) | P8S 행동·정책 결과와 oracle/실행 가능한 정책 구분 |
 | 공유 Drive 발표 코드 | [발표 코드](../experiments/presentation/README.md), [원본 목록](../experiments/drive_sources.json) | 공개된 발표·선행 실험 노트북 8개 |
 | 날짜별 회의록 | [10/15](meeting-log/2026-10-15_회의록.md), [10/22](meeting-log/2026-10-22_회의록.md) | Routing 중심 연구 방향과 후속 작업 |
 
-PDF 원본은 이 저장소에 추가하지 않았습니다. Google Docs 원문은 접근 권한이 필요할 수 있으며, 위 제목·쪽수와 아래 요약으로 자료 버전을 구분합니다.
+교수님 미팅 자료와 PDF 원본은 팀 내부 자료로 관리하며, 이 저장소에 원문 링크를 공개하지 않습니다. 위 제목·쪽수와 아래 요약으로 자료 버전을 구분합니다.
 
 ## 1. 지식–문맥 4-state 판독
 
@@ -40,7 +40,7 @@ PDF 원본은 이 저장소에 추가하지 않았습니다. Google Docs 원문�
 
 ## 3. 외부 평가: Routing과 Packed
 
-원문: [10/13 Always·Routing 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.ip6i2nm6wvrb), [10/27 통합 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.xhbic2nnwq8w), [Packed 상세](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.6grhiq4uqc72).
+근거: 10/13 Always·Routing 보고, 10/27 통합 보고, Packed 상세 (팀 내부 보고서).
 
 ### 공통 조건과 차이
 
@@ -86,7 +86,7 @@ P8S의 지연 1.09배·prefill 토큰 약 39% 증가는 기존 E17 측정값입�
 
 ## 4. A3는 별도 실험
 
-[A3·A3-1 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.naiwhgc68vcw)는 외부 데이터 **각 1,200질문**, Always Steering A0 ρ=0.06의 실험입니다.
+A3·A3-1 보고는 외부 데이터 **각 1,200질문**, Always Steering A0 ρ=0.06의 실험입니다.
 
 | 데이터 | Base EM (%) | A0 EM (%) | 전체 ΔEM (%p) | C+ ΔEM (%p) | C− ΔEM (%p) |
 |---|---:|---:|---:|---:|---:|

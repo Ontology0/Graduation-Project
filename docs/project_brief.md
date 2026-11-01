@@ -28,7 +28,7 @@
 | 왜 선택적 개입인가? | [10/13 면담](meeting-log/2026-10-13_회의록.md), [10/15 결정](meeting-log/2026-10-15_회의록.md), [외부 평가](research_status.md#3-외부-평가-routing과-packed) | 항상 개입할 때의 손상에서 출발; 모든 데이터에서 해결됐다는 주장은 아님 |
 | 상태 분류보다 개입 이득을 평가 | [A0](../experiments/A0/), [A1 정책·결과](../experiments/A1/%5Bresult%5DA1_staged_routing/) | P8S Router의 Always 대비 유의한 우위는 미검출 |
 | 내부 신호·온라인 개입·후보 선택 | [온라인 Router](../experiments/presentation/E15_Online_StrongRetain_UtilityRouter.ipynb), [E17 Packed](../experiments/E17/E17_packed.ipynb) | 별도 구현·분석이며 결합 성능·보편적 속도 개선은 미검증 |
-| 외부 비교·실패 분석 | [다영 Router 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.ip6i2nm6wvrb), [현경 Packed 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.6grhiq4uqc72) | Router의 대상 라벨 학습과 Packed의 대상 라벨 미사용을 구분; Packed의 C+ 손상은 미해결 |
+| 외부 비교·실패 분석 | [다영 Router 보고 요약](research_status.md#3-외부-평가-routing과-packed), [현경 Packed 보고 요약](research_status.md#packed의-구조와-실패-관찰) | Router의 대상 라벨 학습과 Packed의 대상 라벨 미사용을 구분; Packed의 C+ 손상은 미해결 |
 | 별도 학술 성과 | [10/15 제출 기록](meeting-log/2026-10-15_회의록.md), [KSC 2026](https://www.kiise.or.kr/conference/KSC/2026/) | 투고·심사 중이며 게재·발표 미확정; 논문용 상세 자료 공개 보류 |
 
 모델 가중치 고정은 Router·판독기의 별도 학습까지 없다는 뜻이 아닙니다. 개입 위치와 신호를 읽는 위치도 실험마다 다르므로, 모든 방법을 어텐션 헤드 직접 조작으로 묶지 않습니다.

@@ -28,7 +28,7 @@
 | [9/29 면담](meeting-log/2026-09-29_회의록.md) | head 단위 판독, 강한 개입의 C+ 손상, 스칼라 규칙의 한계 점검 | 판독 신호와 steering 방향 분리, 벡터 방향·동적 개입 검토 | [E13–E18 발표·선행 실험](../experiments/presentation/README.md) |
 | [10/13 면담](meeting-log/2026-10-13_회의록.md) · [10/15 회의](meeting-log/2026-10-15_회의록.md) | Always 대비 Routing, One-pass와 분기 선택, 외부 비교 검토 | Routing 중심 후속 연구; 행동·강도·비용·선택 근거 분석 | [A0](../experiments/A0/) · [A1](../experiments/A1/) · [A3](../experiments/A3/) · [E17 Packed](../experiments/E17/) |
 | [10/20 회의](meeting-log/2026-10-20_회의록.md) · [10/22 회의](meeting-log/2026-10-22_회의록.md) | 한이음 최종본 일정, 논문 리뷰 계획, 개발 산출물·회의록 정리 | Routing·One-pass 후속 과제 지속, 팀원별 관련 논문 리뷰 계획 | [실험 코드](../experiments/README.md) · [한이음 설계](han_eum_docs/hanium-design-v0.3.md) |
-| [10/27 서면 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.xhbic2nnwq8w) | 외부 Router·Packed 비교와 C+ 손상 분석 보고 | 선택 규칙·외부 검증·공정 비교 보완 | [보고 수치와 조건](research_status.md) · [미완료 과제](research_plan.md) |
+| [10/27 서면 보고 요약](research_status.md#3-외부-평가-routing과-packed) | 외부 Router·Packed 비교와 C+ 손상 분석 보고 | 선택 규칙·외부 검증·공정 비교 보완 | [보고 수치와 조건](research_status.md) · [미완료 과제](research_plan.md) |
 
 각 단계의 회의록에는 당시 논의와 후속 과제가, 코드 링크에는 해당 주제의 현재 구현이 담겨 있습니다. 전체 회의 기록은 [날짜별 목록](README.md#회의와-원문-자료)에서 볼 수 있습니다.
 
