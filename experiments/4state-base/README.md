@@ -2,6 +2,70 @@
 
 > 연구·실험: 박세령. 2026-11-01에 상태 기반 연구 코드를 별도 폴더로 모았습니다. 이번 작업에서 모델을 재실행하지 않았으며, 논문 심사용 코드·저장 출력·상세 결과를 새로 공개하지 않습니다.
 
+[LR·방향 기초](#lr과-방향부터-이해하기) · [Vector LR vs Prototype](#vector-lr과-prototype은-무엇이-다른가) · [실험별 판독기](#어느-실험이-lr인가) · [상태 판독과-steering](#판독-방향과-steering-방향은-다르다) · [코드 읽는 순서](#무엇부터-볼까)
+
+## LR과 방향부터 이해하기
+
+![LR은 상태를 분류하는 작은 판독기이고 RL은 강화학습이다. (3, 0)과 (0, 3)은 크기가 같고 방향은 다르다.](assets/lr-and-direction-basics.svg)
+
+- LR은 Logistic Regression, 로지스틱 회귀입니다. 이름에 ‘회귀’가 있지만 여기서는 내부 표현으로 K/C 상태를 분류합니다. 작은 판독기의 가중치를 학습하며 LLM 본체의 가중치는 고정합니다.
+- RL은 Reinforcement Learning, 강화학습입니다. 행동에 대한 보상으로 정책을 학습하는 별개 개념입니다. E17의 LR 판독이나 상태→행동 규칙 자체를 RL이라고 부르지 않습니다.
+- 벡터는 내부 상태를 나타내는 숫자 묶음입니다. 크기는 그 묶음의 길이, 방향은 좌표들의 상대적 비율·부호가 만드는 패턴입니다. `(3, 0)`과 `(0, 3)`은 길이가 모두 3이지만 방향은 다릅니다.
+
+이하 그림은 설명용 개념도입니다. 실제 activation·학습 경계·실험 결과를 시각화한 것이 아니며, 상태별 대표 벡터나 성능 결과를 공개하는 그림도 아닙니다. SVG이므로 확대해 읽을 수 있습니다.
+
+## Vector LR과 Prototype은 무엇이 다른가?
+
+![Vector LR은 학습한 가중치·절편으로 상태를 구분하고, Prototype은 상태별 대표 방향과 코사인 유사도를 비교한다. 둘 다 벡터 정보와 학습 라벨을 사용한다.](assets/vector-lr-vs-prototype.svg)
+
+| 구분 | E17 Vector LR | E17 Prototype |
+|---|---|---|
+| 입력 | 같은 head 집합의 벡터 특징 | 같은 head 집합의 벡터 특징 |
+| 상태를 읽는 방식 | 상태별 가중치·절편을 최적화해 점수 계산 | 상태별 대표 방향과의 cosine similarity 계산 |
+| 방향 정보 활용 | 벡터 좌표의 조합으로 활용 가능 | 대표 벡터와의 각도 관계로 활용 |
+| 상태 라벨 사용 | 있음 | 있음 |
+| 별도 LR 최적화 | 있음 | 없음 |
+| LLM 가중치 재학습 | 없음 | 없음 |
+
+E17의 특징은 각 head의 질문 위치 벡터, 마지막 위치와 질문 위치의 벡터 차이, 문맥 attention mass를 결합합니다. 두 판독기는 같은 특징에서 시작하지만, Prototype은 표준화 뒤 각 벡터의 길이를 1로 맞추고 상태별로 평균한 뒤 대표 벡터도 다시 정규화합니다. Vector LR은 표준화된 벡터로 분류 가중치·절편을 학습합니다. 전처리까지 완전히 동일한 방법이라는 뜻은 아닙니다.
+
+따라서 ‘LR은 방향을 안 쓰고 Prototype만 방향을 쓴다’는 설명은 맞지 않습니다. LR 사용 여부는 판독 규칙의 선택이고, norm만 쓸지 벡터 좌표까지 쓸지는 입력 특징의 선택입니다. `scalar_lr`처럼 요약 숫자를 LR에 넣을 수도 있고, `vector_lr`처럼 벡터 좌표를 넣을 수도 있습니다. 어떤 판독기든 벡터의 모든 정보를 보존한다고 보장하지 않습니다.
+
+### 어느 실험이 LR인가?
+
+| 실험·조건 | 판독 방법 | 혼동하지 않을 점 |
+|---|---|---|
+| [E14](E14_L13_HeadDissection_5Fold_plus_router_metrics.ipynb) selected-head 분류 분석 | Head 벡터 + LR | 별도 상태 판독 진단 |
+| [E14](E14_L13_HeadDissection_5Fold_plus_router_metrics.ipynb) 실제 규칙 Gate | norm·문맥 mass·변화량 + 규칙 | 위 selected-head LR을 그대로 실행한 Gate가 아님 |
+| [E17](E17_FixedGeometry_5Fold.ipynb) `scalar_lr` / `perhead_scalar_lr` | 요약 특징 + LR | LR을 쓰더라도 원래 벡터 좌표를 모두 입력하는 것은 아님 |
+| [E17](E17_FixedGeometry_5Fold.ipynb) `vector_lr` | 벡터 특징 + LR | 학습된 가중치·절편으로 네 상태 판독 |
+| [E17](E17_FixedGeometry_5Fold.ipynb) `prototype` | 상태별 대표 방향 + 유사도 | LR은 없지만 라벨을 쓰는 지도학습 판독기 |
+| [E17](E17_FixedGeometry_5Fold.ipynb) `direction` | 상태 라벨로 만든 평균차 방향에 투영 | `prototype`과도 별개이며, Steering 벡터 자체가 아님 |
+| [E18A](E18A_EarlyK_LateC_4State_5Fold.ipynb) / [E18B](E18B_Readable_5Fold.ipynb) | 위치·층별 hidden 표현 + LR | 상태 판독 진단이지 실제 QA 개입 실험은 아님 |
+
+실험 번호 하나를 ‘LR 실험’ 또는 ‘비-LR 실험’으로 통째로 분류하지 않습니다. 특히 E17 안에 여러 판독 비교군이 있습니다. [E15](E15_Online_StrongRetain_UtilityRouter.ipynb)는 단순한 4-state LR 대체가 아니라, 보조 상태 신호와 행동별 이득 예측을 이용하는 별도 Router입니다.
+
+## 판독 방향과 Steering 방향은 다르다
+
+![L13에서 상태 읽기, 상태에 따른 행동 선택, L14–18 활성값 조절은 세 단계다. 판독 가중치나 Prototype을 그대로 Steering 벡터로 더하지 않는다.](assets/read-route-steer.svg)
+
+| 단계 | 질문 | 사용하는 것 | 바뀌는 것 |
+|---|---|---|---|
+| 판독 | 지금 어떤 K/C 상태인가? | LR의 판독 가중치 또는 Prototype 대표 방향 | 상태 예측 |
+| 정책 | 그 상태에서 개입할 것인가? | `state_map` 또는 `budget` 등 | retain / accept / no-op 선택 |
+| Steering | 선택한 행동을 어떻게 적용할까? | 별도의 개입 벡터·강도·레이어 | 모델의 내부 활성값과 그에 따른 답변 |
+
+Vector LR과 Prototype은 첫 번째 단계의 비교입니다. Budget과 State-map은 두 번째 단계의 비교입니다. E17은 E14의 Steering 벡터·강도·레이어를 고정해 세 번째 단계와 구분합니다. 입력마다 선택한 행동은 다를 수 있으므로 실제 개입 유무·방향까지 모두 같다는 뜻은 아닙니다.
+
+### 판독기와 정책을 함께 맞춰 비교하기
+
+| 판독기 | Budget: 추가 margin 제한 | State-map: 상태에 따른 행동 |
+|---|---|---|
+| Vector LR | 기존 QA 조건 `vector_lr__budget` | 같은 조건의 QA 비교가 아직 필요 |
+| Prototype | 기존 QA 조건 `prototype__budget` | 기존 QA 조건 `prototype__state_map` |
+
+Vector LR + Budget과 Prototype + State-map을 바로 비교하면 판독기와 개입 정책이 동시에 달라집니다. Prototype 자체의 QA 우위를 주장하려면 빠진 Vector LR + State-map 비교와 정책별 Recovery·Damage·C+ 성능·개입률을 확인해야 합니다. Budget도 test 개입률을 완전히 동일하게 맞추는 장치는 아니므로 실제 개입률을 함께 보고합니다.
+
 ## 무엇부터 볼까?
 
 상태 기반 Routing은 단순히 K/C를 분류하는 것에서 끝나지 않습니다. 예측한 상태 또는 행동별 이득을 이용해 개입 여부·방향·강도를 정하고, 실제 생성된 답이 좋아지는지를 평가합니다. 박세령의 이 연구 흐름을 한곳에서 확인할 수 있도록 핵심 노트북 5개를 이 폴더에 직접 포함합니다.

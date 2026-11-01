@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="640" viewBox="0 0 1000 640" role="img" aria-labelledby="title description">
+  <title id="title">LR과 RL은 다르고, 벡터는 크기와 방향을 함께 가진다</title>
+  <desc id="description">LR은 내부 표현을 상태로 분류하는 작은 지도학습 판독기이고 RL은 보상으로 행동을 학습하는 강화학습이다. 예시 벡터 (3, 0)과 (0, 3)은 길이 3으로 같지만 방향이 다르다. 그림의 좌표는 설명용이며 실제 모델 데이터가 아니다.</desc>
+  <defs>
+    <marker id="cyan-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#5eead4"/></marker>
+    <marker id="violet-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#c4b5fd"/></marker>
+    <style>
+      text { font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; fill: #edf3ff; }
+      .eyebrow { font-size: 18px; letter-spacing: 2px; fill: #5eead4; }
+      .title { font-size: 34px; font-weight: 700; }
+      .label { font-size: 27px; font-weight: 600; }
+      .body { font-size: 23px; }
+      .muted { fill: #b6c4da; }
+      .small { font-size: 19px; fill: #b6c4da; }
+    </style>
+  </defs>
+  <rect width="1000" height="640" rx="24" fill="#0b1020"/>
+  <text class="eyebrow" x="40" y="38">01 / 용어부터 구분하기</text>
+  <text class="title" x="40" y="85">LR은 상태 판독기 · 방향은 벡터의 패턴</text>
+  <rect x="36" y="112" width="454" height="164" rx="16" fill="#102b30" stroke="#5eead4" stroke-opacity=".6"/>
+  <text class="label" x="60" y="151">LR · 로지스틱 회귀</text>
+  <text class="body" x="60" y="188">내부 숫자 → K/C 상태를 분류</text>
+  <text class="body muted" x="60" y="223">라벨로 작은 판독기를 학습</text>
+  <text class="small" x="60" y="255">이 실험에서는 LLM 가중치를 고정</text>
+  <rect x="510" y="112" width="454" height="164" rx="16" fill="#171e31" stroke="#46516b"/>
+  <text class="label" x="534" y="151">RL · 강화학습</text>
+  <text class="body" x="534" y="188">행동 → 보상 → 정책을 학습</text>
+  <text class="body muted" x="534" y="223">지금 비교하는 LR과 다른 개념</text>
+  <text class="small" x="534" y="255">상태를 예측한다고 곧 RL은 아님</text>
+  <rect x="36" y="296" width="928" height="274" rx="16" fill="#111a2c" stroke="#29364c"/>
+  <path d="M110 512 H366 M150 540 V330" fill="none" stroke="#42506a" stroke-width="2"/>
+  <path d="M150 506 L326 506" fill="none" stroke="#5eead4" stroke-width="4" marker-end="url(#cyan-arrow)"/>
+  <path d="M150 506 L150 330" fill="none" stroke="#c4b5fd" stroke-width="4" marker-end="url(#violet-arrow)"/>
+  <circle cx="150" cy="506" r="5" fill="#edf3ff"/>
+  <text class="body" x="192" y="481" style="fill:#5eead4">(3, 0)</text>
+  <text class="body" x="170" y="354" style="fill:#c4b5fd">(0, 3)</text>
+  <text class="small" x="115" y="535">0</text>
+  <text class="small" x="282" y="540">좌표 1</text>
+  <text class="small" x="68" y="329">좌표 2</text>
+  <text class="label" x="430" y="345">길이가 같아도 방향은 다르다</text>
+  <text class="body" x="430" y="391">벡터 = 내부 상태를 나타내는 숫자 묶음</text>
+  <text class="body muted" x="430" y="430">크기: 숫자 묶음의 전체 길이</text>
+  <text class="body muted" x="430" y="469">방향: 좌표들의 상대적 비율과 부호</text>
+  <text class="body" x="430" y="520" style="fill:#5eead4">길이만 읽으면 이 두 벡터를 구별 못 함</text>
+  <text class="small" x="40" y="609">설명용 2차원 예시입니다. 실제 Head 표현은 고차원이며, 그림의 좌표에 고정된 지식 의미는 없습니다.</text>
+</svg>

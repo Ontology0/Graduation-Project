@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="800" viewBox="0 0 1000 800" role="img" aria-labelledby="title description">
+  <title id="title">상태 판독, 행동 선택, Steering은 서로 다른 세 단계다</title>
+  <desc id="description">L13의 내부 표현을 LR 또는 Prototype으로 읽어 상태를 예측한다. 다음으로 State-map 또는 Budget 정책이 retain, accept, no-op을 결정한다. 마지막으로 L14부터 18까지의 활성값을 Steering 벡터로 바꾸거나 no-op으로 유지한다. 판독기의 가중치나 대표 벡터를 그대로 Steering 벡터로 더하는 것은 아니다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#b6c4da"/></marker>
+    <style>
+      text { font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; fill: #edf3ff; }
+      .eyebrow { font-size: 18px; letter-spacing: 2px; fill: #5eead4; }
+      .title { font-size: 34px; font-weight: 700; }
+      .label { font-size: 27px; font-weight: 600; }
+      .body { font-size: 23px; }
+      .small { font-size: 20px; fill: #b6c4da; }
+    </style>
+  </defs>
+  <rect width="1000" height="800" rx="24" fill="#0b1020"/>
+  <text class="eyebrow" x="40" y="38">03 / 판독 방향 ≠ STEERING 방향</text>
+  <text class="title" x="40" y="85">읽는 방법과 바꾸는 방법을 분리해서 보자</text>
+  <rect x="36" y="113" width="928" height="154" rx="16" fill="#102b30" stroke="#5eead4" stroke-opacity=".6"/>
+  <text class="label" x="60" y="154" style="fill:#5eead4">1. READ · L13에서 상태 읽기</text>
+  <text class="body" x="60" y="197">Head 벡터 → Vector LR 또는 Prototype → 예측 K/C 상태</text>
+  <text class="small" x="60" y="237">판독 가중치 wₛ / 대표 방향 pₛ는 상태를 구분하는 기준이다.</text>
+  <path d="M500 268 V302" fill="none" stroke="#b6c4da" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="36" y="311" width="928" height="188" rx="16" fill="#2b2417" stroke="#f9c66d" stroke-opacity=".6"/>
+  <text class="label" x="60" y="352" style="fill:#f9c66d">2. ROUTE · 언제, 어느 쪽으로 개입할까?</text>
+  <text class="body" x="60" y="396">K+C− → Retain</text>
+  <text class="body" x="355" y="396">K−C+ → Accept</text>
+  <text class="body" x="650" y="396">나머지 → No-op</text>
+  <path d="M60 414 H940" stroke="#685434"/>
+  <text class="small" x="60" y="449">State-map: 위 상태→행동 규칙으로 결정</text>
+  <text class="small" x="60" y="480">Budget: 같은 판독 뒤 margin이 부족하면 추가로 No-op 처리</text>
+  <path d="M500 500 V534" fill="none" stroke="#b6c4da" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="36" y="543" width="928" height="154" rx="16" fill="#251e39" stroke="#c4b5fd" stroke-opacity=".6"/>
+  <text class="label" x="60" y="584" style="fill:#c4b5fd">3. STEER · L14–18에서 활성값 조절</text>
+  <text class="body" x="60" y="627">h′ = h + Δh</text>
+  <text class="body" x="260" y="627">Δh = 선택한 방향·강도의 개입</text>
+  <text class="body" x="710" y="627">No-op: Δh = 0</text>
+  <text class="small" x="60" y="667">별도의 Steering 벡터를 사용한다. 판독용 wₛ나 pₛ를 그대로 더하는 것이 아니다.</text>
+  <text class="body" x="40" y="745">E17 비교: 판독기·정책은 바꾸고, Steering 벡터·강도·레이어는 고정</text>
+  <text class="small" x="40" y="778">전체 LLM 가중치는 고정 · 개념도이며 실제 실행 결과나 성능 수치를 나타내지 않음</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="770" viewBox="0 0 1000 770" role="img" aria-labelledby="title description">
+  <title id="title">Vector LR과 Prototype은 모두 벡터 정보를 사용하지만 상태를 판독하는 방식이 다르다</title>
+  <desc id="description">같은 Head에서 만든 벡터 특징을 Vector LR은 학습한 가중치와 절편으로, Prototype은 상태별 대표 방향과의 코사인 유사도로 읽는다. 두 방법 모두 상태 라벨을 사용한다. 왼쪽 경계와 오른쪽 대표 방향은 원리를 설명하기 위한 도식이며 실제 실험의 학습 결과가 아니다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#a9b9d0"/></marker>
+    <style>
+      text { font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; fill: #edf3ff; }
+      .eyebrow { font-size: 18px; letter-spacing: 2px; fill: #5eead4; }
+      .title { font-size: 34px; font-weight: 700; }
+      .label { font-size: 28px; font-weight: 600; }
+      .body { font-size: 23px; }
+      .small { font-size: 19px; fill: #b6c4da; }
+      .state { font-size: 20px; }
+    </style>
+  </defs>
+  <rect width="1000" height="770" rx="24" fill="#0b1020"/>
+  <text class="eyebrow" x="40" y="38">02 / 같은 벡터, 다른 판독 방식</text>
+  <text class="title" x="40" y="85">Vector LR도 벡터 방향 정보를 활용한다</text>
+  <rect x="150" y="111" width="700" height="61" rx="14" fill="#1b2840" stroke="#526580"/>
+  <text class="body" x="500" y="149" text-anchor="middle">같은 Head의 질문 벡터 + 변화량 벡터 + 문맥 attention mass</text>
+  <path d="M500 173 V192 H263 V217" fill="none" stroke="#a9b9d0" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M500 192 H737 V217" fill="none" stroke="#a9b9d0" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="36" y="224" width="454" height="402" rx="16" fill="#111f2d" stroke="#5eead4" stroke-opacity=".6"/>
+  <rect x="510" y="224" width="454" height="402" rx="16" fill="#1a1930" stroke="#c4b5fd" stroke-opacity=".6"/>
+  <text class="label" x="60" y="267" style="fill:#5eead4">Vector LR</text>
+  <text class="body" x="60" y="301">네 상태를 가르는 경계를 학습</text>
+  <rect x="91" y="326" width="345" height="176" rx="10" fill="#0b1322"/>
+  <path d="M110 454 L419 373 M235 337 L280 491" fill="none" stroke="#a9b9d0" stroke-width="2" stroke-dasharray="7 5"/>
+  <g fill="#5eead4"><circle cx="157" cy="371" r="6"/><circle cx="179" cy="388" r="6"/><circle cx="189" cy="358" r="6"/></g>
+  <g fill="#f9c66d"><circle cx="335" cy="372" r="6"/><circle cx="357" cy="374" r="6"/><circle cx="382" cy="365" r="6"/></g>
+  <g fill="#93c5fd"><circle cx="162" cy="479" r="6"/><circle cx="188" cy="474" r="6"/><circle cx="206" cy="488" r="6"/></g>
+  <g fill="#f0abfc"><circle cx="327" cy="456" r="6"/><circle cx="351" cy="466" r="6"/><circle cx="373" cy="448" r="6"/></g>
+  <text class="state" x="112" y="350" style="fill:#5eead4">K+C+</text>
+  <text class="state" x="337" y="348" style="fill:#f9c66d">K+C−</text>
+  <text class="state" x="110" y="469" style="fill:#93c5fd">K−C−</text>
+  <text class="state" x="349" y="495" style="fill:#f0abfc">K−C+</text>
+  <text class="body" x="60" y="543">상태 점수 = wₛ · z + bₛ</text>
+  <text class="small" x="60" y="577">라벨로 가중치 wₛ와 절편 bₛ를 최적화</text>
+  <text class="small" x="60" y="607">z: fit 구간 기준으로 표준화한 벡터</text>
+  <text class="label" x="534" y="267" style="fill:#c4b5fd">Prototype</text>
+  <text class="body" x="534" y="301">네 대표 방향 중 가까운 쪽 선택</text>
+  <rect x="565" y="326" width="345" height="176" rx="10" fill="#111224"/>
+  <path d="M737 415 L650 365 M737 415 L825 365 M737 415 L650 465 M737 415 L825 465" fill="none" stroke="#54617c" stroke-width="2" stroke-dasharray="5 4"/>
+  <circle cx="737" cy="415" r="4" fill="#edf3ff"/>
+  <circle cx="650" cy="365" r="9" fill="#5eead4"/>
+  <circle cx="825" cy="365" r="9" fill="#f9c66d"/>
+  <circle cx="650" cy="465" r="9" fill="#93c5fd"/>
+  <circle cx="825" cy="465" r="9" fill="#f0abfc"/>
+  <path d="M737 415 L837 398" fill="none" stroke="#edf3ff" stroke-width="3" marker-end="url(#arrow)"/>
+  <text class="state" x="843" y="418">새 입력</text>
+  <text class="state" x="592" y="350" style="fill:#5eead4">K+C+</text>
+  <text class="state" x="839" y="350" style="fill:#f9c66d">K+C−</text>
+  <text class="state" x="592" y="493" style="fill:#93c5fd">K−C−</text>
+  <text class="state" x="839" y="493" style="fill:#f0abfc">K−C+</text>
+  <text class="body" x="534" y="543">상태 점수 = cos(z, pₛ)</text>
+  <text class="small" x="534" y="577">상태별 단위 벡터를 평균 → 대표 방향 pₛ</text>
+  <text class="small" x="534" y="607">LR 최적화는 없지만 라벨은 사용</text>
+  <rect x="36" y="648" width="928" height="62" rx="14" fill="#132c30"/>
+  <text class="body" x="500" y="687" text-anchor="middle">둘 다 지도학습 판독기 · 차이는 ‘방향 사용 여부’가 아니라 ‘읽는 규칙’</text>
+  <text class="small" x="40" y="745">설명용 2차원 도식 · 실제 activation, 학습 경계, 실험 결과가 아닙니다.</text>
+</svg>
