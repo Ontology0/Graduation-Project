@@ -28,11 +28,11 @@
 
 ## 회의와 원문 자료
 
-[교수님 미팅 자료 원문](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit)은 7월 탐색부터 10월 27일 보고까지 여러 탭으로 구성돼 있습니다. 최신 결과는 14회차 보고를 기준으로 읽고, 과거 설계·철회된 설정과 구분하세요. 제공된 발표·미팅 PDF의 사용 범위는 [근거 목록](research_status.md#출처와-읽는-순서)에 정리했습니다.
+교수님 미팅 자료 원문은 팀 내부에서 관리합니다. 공개된 연구 요약은 [연구 결과와 근거](research_status.md)에서 확인할 수 있습니다. 최신 결과는 10월 27일 14회차 보고를 기준으로 정리했으며, 과거 설계·철회된 설정과 구분합니다. 발표·미팅 자료의 버전과 사용 범위는 [근거 목록](research_status.md#출처와-읽는-순서)에 정리했습니다.
 
 | 날짜 | 기록 |
 |---|---|
-| [10/27 서면 보고](https://docs.google.com/document/d/1Vtvi7ep749i36YIoLx4nPc7nyiawetBDexZ_sst6XEQ/edit?tab=t.xhbic2nnwq8w) | 외부 Router·Packed 평가, X1 손상과 후속 과제; 교수님 결정 회의록과 구분 |
+| [10/27 서면 보고 요약](research_status.md#3-외부-평가-routing과-packed) | 외부 Router·Packed 평가, X1 손상과 후속 과제; 교수님 결정 회의록과 구분 |
 | [10/22 팀 회의](meeting-log/2026-10-22_회의록.md) | 10/15 후속 연구·논문 리뷰·저장소 정리 |
 | [10/20 팀 회의](meeting-log/2026-10-20_회의록.md) | 한이음 최종본 일정·개발 산출물 점검 |
 | [10/15 팀 회의](meeting-log/2026-10-15_회의록.md) | Routing 후속 과제·4-state 논문 심사용 제출 |
