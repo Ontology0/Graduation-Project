@@ -1,0 +1,65 @@
+{
+  "collection": "4state-base",
+  "research_owner": "박세령",
+  "collected_on": "2026-11-01",
+  "notebooks_executed_during_collection": false,
+  "source_commit": "66b1dc7652e42618ecb84128060abb98c722bff4",
+  "publication_scope": "Existing public presentation notebooks only; no new execution outputs, manuscript, review-only notebooks, or result archives.",
+  "files": [
+    {
+      "path": "E14_L13_HeadDissection_5Fold_plus_router_metrics.ipynb",
+      "source_repository_path": "experiments/presentation/E14_L13_HeadDissection_5Fold_plus_router_metrics.ipynb",
+      "source_title": "E14_L13_HeadDissection_5Fold_plus_router_metrics.ipynb",
+      "source_url": "https://drive.google.com/file/d/1D68pg1E_N3NJBZinjNB2XiyKA62ZuPM8/view?usp=drivesdk",
+      "source_modified_time": "2026-09-28T18:31:11.079Z",
+      "sha256": "31f915037e0946ac9479b48b05da5b6f5e7f8aa6daec7181da326aca9cafa294",
+      "copied_from": "existing_public_notebook",
+      "drive_cell_source_comparison": "not_rechecked_in_this_collection",
+      "changes": "No cell-source changes. Preserves the existing public copy with execution outputs, counts and execution metadata removed."
+    },
+    {
+      "path": "E15_Online_StrongRetain_UtilityRouter.ipynb",
+      "source_repository_path": "experiments/presentation/E15_Online_StrongRetain_UtilityRouter.ipynb",
+      "source_title": "E15_Online_StrongRetain_UtilityRouter.ipynb",
+      "source_url": "https://drive.google.com/file/d/15Za8w_bDe5t6mduP_5SevfsWKCQSRKZS/view?usp=drivesdk",
+      "source_modified_time": "2026-10-13T05:03:03.554Z",
+      "sha256": "008c02d9ddaa230661c4b9ba09e8ee38e61536dfb45265b1c8898309b264edd0",
+      "copied_from": "existing_public_notebook",
+      "drive_cell_source_comparison": "identical_to_downloaded_original",
+      "changes": "No cell-source changes. Preserves the existing public copy with execution outputs, counts and execution metadata removed."
+    },
+    {
+      "path": "E17_FixedGeometry_5Fold.ipynb",
+      "source_repository_path": "experiments/presentation/E17_FixedGeometry_5Fold.ipynb",
+      "source_title": "E17_FixedGeometry_5Fold.ipynb",
+      "source_url": "https://drive.google.com/file/d/1EQ_y8fGHL4CT5bAdvqafEOwuc3oh668o/view?usp=drivesdk",
+      "source_modified_time": "2026-09-28T20:54:41.443Z",
+      "sha256": "73cc7af9e0800f1f781923feefc4d4cbe22083da655093230f84a29a43dbcac8",
+      "copied_from": "existing_public_notebook",
+      "drive_cell_source_comparison": "identical_to_downloaded_original",
+      "changes": "No cell-source changes. Preserves the existing public copy with execution outputs, counts and execution metadata removed."
+    },
+    {
+      "path": "E18A_EarlyK_LateC_4State_5Fold.ipynb",
+      "source_repository_path": "experiments/presentation/E18A_EarlyK_LateC_4State_5Fold.ipynb",
+      "source_title": "E18A_EarlyK_LateC_4State_5Fold.ipynb",
+      "source_url": "https://drive.google.com/file/d/1dRLmwwkg5MEbUFvlQUbm9Zx1Zwn3Xl8l/view?usp=drivesdk",
+      "source_modified_time": "2026-10-05T13:42:43.136Z",
+      "sha256": "8aff38db61da0c3a3ca6db6472487c44cf49e912384e1587ea7ee220132b60bf",
+      "copied_from": "existing_public_notebook",
+      "drive_cell_source_comparison": "identical_to_downloaded_original",
+      "changes": "No cell-source changes. Preserves the existing public copy with execution outputs, counts and execution metadata removed."
+    },
+    {
+      "path": "E18B_Readable_5Fold.ipynb",
+      "source_repository_path": "experiments/presentation/E18B_Readable_5Fold.ipynb",
+      "source_title": "E18B_Readable_5Fold.ipynb",
+      "source_url": "https://drive.google.com/file/d/13kQv_NjW42hMZmJKox3dvEjmidZV_kSM/view?usp=drivesdk",
+      "source_modified_time": "2026-10-06T04:53:04.096Z",
+      "sha256": "6e18db660bd828305ef9399d413ff207c0853dadb39d2dc728fffccf244ecdcd",
+      "copied_from": "existing_public_notebook",
+      "drive_cell_source_comparison": "identical_to_downloaded_original",
+      "changes": "No cell-source changes. Preserves the existing public copy with execution outputs, counts and execution metadata removed."
+    }
+  ]
+}

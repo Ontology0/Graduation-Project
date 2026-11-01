@@ -44,6 +44,8 @@ flowchart LR
 | **Routing** | 조절할지, 어느 방향·강도로 조절할지 선택 | 행동별 이득 예측·외부 평가, 온라인 선택 고도화 |
 | **Packed** | 문서를 본 경우와 보지 않은 경우의 답변 분기를 비교 | 두 구간을 한 입력 처리 호출에 담는 별도 경로·선택 규칙 분석 |
 
+상태 기반 연구는 [K/C 판독 → 행동 선택 → 실제 답변 제어](experiments/4state-base/README.md)로 이어집니다. `4state-base/`에 박세령의 관련 실험 5개를 모았습니다. 예측 상태를 retain/accept/no-op에 연결하는 E17 FixedGeometry와 행동별 이득을 예측하는 E15 Online Utility Router를 구분해 볼 수 있습니다. E17 FixedGeometry는 E17 Packed와 다른 실험입니다.
+
 **Routing과 Packed를 합친 최종 방법은 아직 검증하지 않았습니다.** 상태를 잘 분류하는 것과 실제 답을 개선하는 것도 다릅니다. 용어·구현 구분은 [처음 읽는 안내](docs/getting_started.md)에 정리했습니다.
 
 ## 어디부터 보면 되나요?

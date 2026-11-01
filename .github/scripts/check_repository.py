@@ -24,6 +24,7 @@ MAINTAINED_DOCS = (
     "docs/archive/README.md",
     "experiments/README.md",
     "experiments/presentation/README.md",
+    "experiments/4state-base/README.md",
     "SOTA/README.md",
     "legacy/README.md",
 )

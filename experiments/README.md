@@ -10,6 +10,7 @@
 
 | 질문 | 시작점 | 결과·구현 상태 |
 |---|---|---|
+| 예측한 K/C 상태에 따라 다른 개입을 하는가? | [4state-base](4state-base/README.md) → [E17 FixedGeometry](4state-base/E17_FixedGeometry_5Fold.ipynb) | 박세령의 상태 기반 연구 묶음; 상태→행동 후 실제 QA, Packed와 다른 경로 |
 | 어떤 행동이 도움이 되고 언제 선택하는가? | [A0](A0/A0_headroom_check.ipynb) → [A1](A1/A1_staged_routing.ipynb) | 코드·P8S CSV·Parquet 포함; 저장 행동 결과를 이용한 정책 평가 |
 | 추론 도중 실제로 행동을 결정하는가? | [E15 온라인 Router](presentation/E15_Online_StrongRetain_UtilityRouter.ipynb) | 실제 generation 경로; A1과 입력 순서·실행 조건이 다름 |
 | 외부에서도 같은 방향이 통하는가? | [A3](A3/A3_Always_Steering_External_Eval.ipynb) · [ConFiQA Router 실행본](https://drive.google.com/file/d/1ghpS2MP4XSeBh8R8t_Ay7KSN-o4PZcAG/view) | 서로 다른 방법·표본 수; [조건별 결과](../docs/research_status.md)와 대조 |
@@ -24,6 +25,7 @@
 
 | 실험 | 목적 | 코드·산출물 |
 |---|---|---|
+| [4state-base](4state-base/README.md) | 박세령의 상태 판독→행동 선택→실제 답변 제어 연구 | E14·E15·E17·E18A·E18B 노트북 5개, 방법·실행 범위·출처 안내 |
 | [E0](E0/E0_prompt_bias.ipynb) | 프롬프트 지시·few-shot이 응답 선택에 주는 편향 | 프롬프트 비교 노트북 |
 | [E1](E1/E1a_hook_relabel.ipynb) | hidden 추출·hook·K 라벨 재판정 | 선행 데이터 생성·점검 노트북 |
 | [P8S probe](p8s_probe/p8s_probe.ipynb) | Q↔CQ 전이, 같은 prefill에서 K 판독 가능성 | [CSV·프로파일](p8s_probe/result/) |
