@@ -1,6 +1,6 @@
 # 실험 안내
 
-> 업데이트: 2026-10-27 · GitHub `5988255`까지의 업로드 반영. 최신 보고 수치는 [연구 결과와 근거](../docs/research_status.md)를 참고하세요.
+> 업데이트: 2026-11-05 · E21 설계와 실행 노트북 추가. 최신 보고 수치는 [연구 결과와 근거](../docs/research_status.md)를 참고하세요.
 
 회의에서 정한 과제가 어떤 코드·결과로 이어졌는지는 [연구 활동과 주요 산출물](../docs/review_guide.md)에서 확인할 수 있습니다.
 
@@ -17,7 +17,7 @@
 | 문맥/기억 분기는 어떻게 선택하는가? | [E17 Packed](E17/E17_packed.ipynb) · [C+ 진단](E17/E17-0_Cplus_diagnosis.ipynb) | 개발·분석 코드; 외부 손상 분석은 보고 문서와 연결 |
 | 왜 이런 신호와 개입을 쓰는가? | [P9](P9/) · [E2](E2/) · [발표·선행 실험](presentation/README.md) | 프롬프트·라벨·레이어·헤드·강도에 관한 근거 탐색 |
 
-`presentation/`은 공유 Drive에서 가져온 선행·발표 코드 8개이며 전체 최신 연구를 대표하는 단일 실행 패키지가 아닙니다. 가져온 코드 셀은 유지하고 출력·실행자 메타데이터를 제거했으며, [원본 출처](drive_sources.json)를 연결했습니다. 논문용 코드·결과는 심사 중이므로 공개 보류합니다.
+`presentation/`은 공유 Drive에서 가져온 선행·발표 코드 8개이며 전체 최신 연구를 대표하는 단일 실행 패키지가 아닙니다. 가져온 코드 셀은 유지하고 출력·실행자 메타데이터를 제거했으며, [원본 출처](drive_sources.json)를 연결했습니다. 기존 심사용 논문 원본과 결과는 공개 보류합니다. E21은 성능 측정 전의 후속 실험 설계와 구현입니다.
 
 ## 전체 실험 목록
 
@@ -38,6 +38,7 @@
 | [A3 외부 평가](A3/A3_Always_Steering_External_Eval.ipynb) | Always Steering의 P8S·NQ-Swap·ConFiQA-QA 전이 | 평가 코드, 결과는 미팅 보고에 정리 |
 | [A3-1](A3/A3-1_Strength_and_Mixture.ipynb) | 개입 강도와 C− 비율별 이득·손상 | 후속 탐색 코드 |
 | [E17 진단](E17/E17-0_Cplus_diagnosis.ipynb) · [Packed](E17/E17_packed.ipynb) | C+ 보호·강도 상한 분석, 문맥/closed-book 분기 선택 | 개발·ablation·온라인 packed 노트북 |
+| [E21 S4R](E21/E21_S4R_실험설계.md) | 4-state 판독 확률로 retain/accept/no-op 행동의 회복·손상을 예측해 같은 prefill에서 선택 | [실행 노트북](E21/E21_4State_SinglePrefill_Router.ipynb); CPU·대역 모델 검증 완료, 실제 Llama 8B GPU 성능 미측정 |
 | [SOTA 하네스](../SOTA/README.md) | 동일 조건에서 기준선·기존 방법 비교 | Python 초안; 패키지 구조·외부 입력 정리 필요 |
 
 ### 앞선 탐색
