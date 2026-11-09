@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2144 266" width="536mm" height="66.5mm" role="img" aria-label="같은 데이터 재평가, 개입 없음 대비 변화(%p). 전체: Packed +1.77/+3.93, 판독 없는 Packed +1.65/+4.00, State-based +1.90/+4.10. 틀린 문서 C−: +7.83/+10.83, +6.90/+9.70, +6.90/+9.40. 맞는 문서 C+: −4.30/−2.97, −3.60/−1.70, −3.10/−1.20. 앞은 ConFiQA-QA, 뒤는 NQ-Swap.">
+<text x="0.0" y="85.6" font-size="31.0" fill="#5de5ff" text-anchor="start" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >Packed</text>
+<text x="0.0" y="108.8" font-size="19.8" fill="#a9b7c2" text-anchor="start" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >문서 본 답·안 본 답 비교 · 기준값은 대상 dev로 정함 · 3회 평균</text>
+<text x="612.0" y="82.9" font-size="19.8" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >ConFiQA-QA</text>
+<text x="612.0" y="106.9" font-size="19.8" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >NQ-Swap</text>
+<text x="0.0" y="145.6" font-size="31.0" fill="#9aaaba" text-anchor="start" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >Packed · 판독 없이</text>
+<text x="0.0" y="168.8" font-size="19.8" fill="#a9b7c2" text-anchor="start" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >State-based와 같은 후보에서 판독 보호만 뺌</text>
+<text x="612.0" y="142.9" font-size="19.8" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >ConFiQA-QA</text>
+<text x="612.0" y="166.9" font-size="19.8" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >NQ-Swap</text>
+<text x="0.0" y="205.6" font-size="31.0" fill="#cdff5f" text-anchor="start" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >State-based</text>
+<text x="0.0" y="228.8" font-size="19.8" fill="#a9b7c2" text-anchor="start" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >L13 판독이 K−C+면 문서 쪽으로 개입 · 판독기는 P8S로 학습</text>
+<text x="612.0" y="202.9" font-size="19.8" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >ConFiQA-QA</text>
+<text x="612.0" y="226.9" font-size="19.8" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >NQ-Swap</text>
+<text x="624.0" y="20.8" font-size="26.8" fill="#f2f5f5" text-anchor="start" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >전체 정답률 변화</text>
+<text x="624.0" y="44.8" font-size="19.8" fill="#a9b7c2" text-anchor="start" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >%p · 같은 기준선(개입 없음) 대비</text>
+<path d="M624.0 58.0V232.0" stroke="#a9b7c2" stroke-width="2.0"/>
+<text x="624.0" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0</text>
+<path d="M790.7 58.0V232.0" stroke="#35434d" stroke-width="1.2"/>
+<text x="790.7" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+2</text>
+<path d="M957.3 58.0V232.0" stroke="#35434d" stroke-width="1.2"/>
+<text x="957.3" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+4</text>
+<rect x="624.0" y="67.6" width="147.5" height="16.8" rx="2.4" fill="#5de5ff"/>
+<text x="1102.0" y="84.4" font-size="24.0" fill="#5de5ff" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+1.77</text>
+<rect x="624.0" y="91.6" width="327.5" height="16.8" rx="2.4" fill="#5de5ff"/>
+<text x="1102.0" y="108.4" font-size="24.0" fill="#5de5ff" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+3.93</text>
+<rect x="624.0" y="127.6" width="137.5" height="16.8" rx="2.4" fill="#9aaaba"/>
+<text x="1102.0" y="144.4" font-size="24.0" fill="#9aaaba" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+1.65</text>
+<rect x="624.0" y="151.6" width="333.3" height="16.8" rx="2.4" fill="#9aaaba"/>
+<text x="1102.0" y="168.4" font-size="24.0" fill="#9aaaba" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+4.00</text>
+<rect x="624.0" y="187.6" width="158.3" height="16.8" rx="2.4" fill="#cdff5f"/>
+<text x="1102.0" y="204.4" font-size="24.0" fill="#cdff5f" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+1.90</text>
+<rect x="624.0" y="211.6" width="341.7" height="16.8" rx="2.4" fill="#cdff5f"/>
+<text x="1102.0" y="228.4" font-size="24.0" fill="#cdff5f" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+4.10</text>
+<text x="1144.0" y="20.8" font-size="26.8" fill="#f2f5f5" text-anchor="start" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >틀린 문서(C−)에서</text>
+<text x="1144.0" y="44.8" font-size="19.8" fill="#a9b7c2" text-anchor="start" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >%p · 클수록 틀린 문서에 덜 흔들림</text>
+<path d="M1144.0 58.0V232.0" stroke="#a9b7c2" stroke-width="2.0"/>
+<text x="1144.0" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0</text>
+<path d="M1316.4 58.0V232.0" stroke="#35434d" stroke-width="1.2"/>
+<text x="1316.4" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+5</text>
+<path d="M1488.8 58.0V232.0" stroke="#35434d" stroke-width="1.2"/>
+<text x="1488.8" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+10</text>
+<rect x="1144.0" y="67.6" width="270.0" height="16.8" rx="2.4" fill="#5de5ff"/>
+<text x="1622.0" y="84.4" font-size="24.0" fill="#5de5ff" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+7.83</text>
+<rect x="1144.0" y="91.6" width="373.4" height="16.8" rx="2.4" fill="#5de5ff"/>
+<text x="1622.0" y="108.4" font-size="24.0" fill="#5de5ff" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+10.83</text>
+<rect x="1144.0" y="127.6" width="237.9" height="16.8" rx="2.4" fill="#9aaaba"/>
+<text x="1622.0" y="144.4" font-size="24.0" fill="#9aaaba" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+6.90</text>
+<rect x="1144.0" y="151.6" width="334.5" height="16.8" rx="2.4" fill="#9aaaba"/>
+<text x="1622.0" y="168.4" font-size="24.0" fill="#9aaaba" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+9.70</text>
+<rect x="1144.0" y="187.6" width="237.9" height="16.8" rx="2.4" fill="#cdff5f"/>
+<text x="1622.0" y="204.4" font-size="24.0" fill="#cdff5f" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+6.90</text>
+<rect x="1144.0" y="211.6" width="324.1" height="16.8" rx="2.4" fill="#cdff5f"/>
+<text x="1622.0" y="228.4" font-size="24.0" fill="#cdff5f" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+9.40</text>
+<text x="1664.0" y="20.8" font-size="26.8" fill="#f2f5f5" text-anchor="start" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >맞는 문서(C+)에서</text>
+<text x="1664.0" y="44.8" font-size="19.8" fill="#a9b7c2" text-anchor="start" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >%p · 0 아래는 맞히던 답의 손상</text>
+<path d="M1725.5 58.0V232.0" stroke="#35434d" stroke-width="1.2"/>
+<text x="1725.5" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >−4</text>
+<path d="M1879.4 58.0V232.0" stroke="#35434d" stroke-width="1.2"/>
+<text x="1879.4" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >−2</text>
+<path d="M2033.2 58.0V232.0" stroke="#a9b7c2" stroke-width="2.0"/>
+<text x="2033.2" y="256.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0</text>
+<rect x="1702.5" y="67.6" width="330.8" height="16.8" rx="2.4" fill="#ff7aa9"/>
+<text x="2142.0" y="84.4" font-size="24.0" fill="#ff7aa9" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >−4.30</text>
+<rect x="1804.8" y="91.6" width="228.5" height="16.8" rx="2.4" fill="#ff7aa9"/>
+<text x="2142.0" y="108.4" font-size="24.0" fill="#ff7aa9" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >−2.97</text>
+<rect x="1756.3" y="127.6" width="276.9" height="16.8" rx="2.4" fill="#ff7aa9"/>
+<text x="2142.0" y="144.4" font-size="24.0" fill="#ff7aa9" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >−3.60</text>
+<rect x="1902.5" y="151.6" width="130.8" height="16.8" rx="2.4" fill="#ff7aa9"/>
+<text x="2142.0" y="168.4" font-size="24.0" fill="#ff7aa9" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >−1.70</text>
+<rect x="1794.8" y="187.6" width="238.5" height="16.8" rx="2.4" fill="#ff7aa9"/>
+<text x="2142.0" y="204.4" font-size="24.0" fill="#ff7aa9" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >−3.10</text>
+<rect x="1940.9" y="211.6" width="92.3" height="16.8" rx="2.4" fill="#ff7aa9"/>
+<text x="2142.0" y="228.4" font-size="24.0" fill="#ff7aa9" text-anchor="end" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >−1.20</text>
+</svg>

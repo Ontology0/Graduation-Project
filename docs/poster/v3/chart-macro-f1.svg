@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 348" width="320mm" height="87mm" role="img" aria-label="4-state Macro-F1. 무작위 추측 0.2477, L13 출력 전체 0.6215, 선발 헤드 조합 0.6306.">
+<path d="M80.0 260.0H1264.0" stroke="#35434d" stroke-width="1.2"/>
+<text x="68.0" y="267.4" font-size="21.2" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.00</text>
+<path d="M80.0 204.0H1264.0" stroke="#35434d" stroke-width="1.2" stroke-dasharray="4.8 6.4"/>
+<text x="68.0" y="211.4" font-size="21.2" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.25</text>
+<path d="M80.0 148.0H1264.0" stroke="#35434d" stroke-width="1.2" stroke-dasharray="4.8 6.4"/>
+<text x="68.0" y="155.4" font-size="21.2" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.50</text>
+<path d="M80.0 92.0H1264.0" stroke="#35434d" stroke-width="1.2" stroke-dasharray="4.8 6.4"/>
+<text x="68.0" y="99.4" font-size="21.2" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.75</text>
+<path d="M80.0 36.0H1264.0" stroke="#35434d" stroke-width="1.2" stroke-dasharray="4.8 6.4"/>
+<text x="68.0" y="43.4" font-size="21.2" fill="#a9b7c2" text-anchor="end" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >1.00</text>
+<rect x="178.7" y="204.5" width="197.3" height="55.5" rx="6.0" fill="#9aaaba"/>
+<text x="277.3" y="195.7" font-size="33.9" fill="#f2f5f5" text-anchor="middle" font-weight="600" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" paint-order="stroke" stroke="#10171e" stroke-width="10">0.2477</text>
+<text x="277.3" y="292.8" font-size="28.2" fill="#f2f5f5" text-anchor="middle" font-weight="600" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >무작위 추측</text>
+<text x="277.3" y="320.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >균등 무작위 20,000회 평균</text>
+<rect x="573.3" y="120.8" width="197.3" height="139.2" rx="6.0" fill="#5de5ff"/>
+<text x="672.0" y="112.0" font-size="33.9" fill="#f2f5f5" text-anchor="middle" font-weight="600" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" paint-order="stroke" stroke="#10171e" stroke-width="10">0.6215</text>
+<text x="672.0" y="292.8" font-size="28.2" fill="#f2f5f5" text-anchor="middle" font-weight="600" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >L13 출력 전체</text>
+<text x="672.0" y="320.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >4,096차원 · Probe</text>
+<rect x="968.0" y="118.7" width="197.3" height="141.3" rx="6.0" fill="#cdff5f"/>
+<text x="1066.7" y="109.9" font-size="39.5" fill="#cdff5f" text-anchor="middle" font-weight="800" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" paint-order="stroke" stroke="#10171e" stroke-width="10">0.6306</text>
+<text x="1066.7" y="292.8" font-size="28.2" fill="#f2f5f5" text-anchor="middle" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >선발 헤드 조합</text>
+<text x="1066.7" y="320.8" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >헤드 1~32개 · 헤드별 128차원 · Probe</text>
+<path d="M672.0 74.7V66.7H1066.7V74.7" fill="none" stroke="#a9b7c2" stroke-width="1.2"/>
+<text x="869.3" y="61.1" font-size="21.2" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >+0.0091</text>
+</svg>

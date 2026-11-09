@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 104" width="190mm" height="26mm" role="img" aria-label="라벨 비율별 Macro-F1. 무작위 0.25, 라벨 5% 0.54, 10% 0.59, 20% 0.61, 약 80% 0.63.">
+<path d="M0 76.0H760.0" stroke="#35434d" stroke-width="1.2"/>
+<rect x="31.9" y="64.0" width="88.2" height="12.0" rx="4.0" fill="#9aaaba"/>
+<text x="76.0" y="57.6" font-size="22.6" fill="#f2f5f5" text-anchor="middle" font-weight="600" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.25</text>
+<text x="76.0" y="97.6" font-size="19.8" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >무작위</text>
+<rect x="183.9" y="50.1" width="88.2" height="25.9" rx="4.0" fill="#3fa9c0"/>
+<text x="228.0" y="43.7" font-size="22.6" fill="#f2f5f5" text-anchor="middle" font-weight="600" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.54</text>
+<text x="228.0" y="97.6" font-size="19.8" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >라벨 5%</text>
+<rect x="335.9" y="47.7" width="88.2" height="28.3" rx="4.0" fill="#3fa9c0"/>
+<text x="380.0" y="41.3" font-size="22.6" fill="#f2f5f5" text-anchor="middle" font-weight="600" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.59</text>
+<text x="380.0" y="97.6" font-size="19.8" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >라벨 10%</text>
+<rect x="487.9" y="46.7" width="88.2" height="29.3" rx="4.0" fill="#5de5ff"/>
+<text x="532.0" y="40.3" font-size="22.6" fill="#f2f5f5" text-anchor="middle" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.61</text>
+<text x="532.0" y="97.6" font-size="19.8" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >라벨 20%</text>
+<rect x="639.9" y="45.8" width="88.2" height="30.2" rx="4.0" fill="#cdff5f"/>
+<text x="684.0" y="39.4" font-size="22.6" fill="#f2f5f5" text-anchor="middle" font-weight="700" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >0.63</text>
+<text x="684.0" y="97.6" font-size="19.8" fill="#a9b7c2" text-anchor="middle" font-weight="500" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" >라벨 약 80%</text>
+</svg>

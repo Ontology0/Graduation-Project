@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alltology — 기억과 문서가 다를 때, LLM은 무엇을 믿어야 할까? · A1</title>
+  <style>
+    @page { size: 594mm 841mm; margin: 0; }
+    @font-face { font-family: "Pretendard"; font-weight: 400; src: url("assets/Pretendard-Regular.woff2") format("woff2"); }
+    @font-face { font-family: "Pretendard"; font-weight: 600; src: url("assets/Pretendard-SemiBold.woff2") format("woff2"); }
+    @font-face { font-family: "Pretendard"; font-weight: 700 900; src: url("assets/Pretendard-Bold.woff2") format("woff2"); }
+    * { box-sizing: border-box; }
+    :root {
+      --black: #080b10;
+      --panel: #10171e;
+      --box: #161f28;
+      --white: #f2f5f5;
+      --muted: #a9b7c2;
+      --line: #35434d;
+      --lime: #cdff5f;
+      --cyan: #5de5ff;
+      --pink: #ff7aa9;
+      --gray: #9aaaba;
+    }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .poster {
+      width: 594mm;
+      height: 841mm;
+      padding: 22mm;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: 10mm 72mm 152mm 160mm 139mm 157mm 70mm;
+      gap: 6mm;
+      overflow: hidden;
+    }
+    h1, h2, h3, p, ul, ol { margin: 0; padding: 0; }
+    li { list-style: none; }
+    svg { display: block; }
+    img { display: block; }
+    a { color: inherit; text-decoration: none; }
+    mark { background: var(--lime); color: var(--black); padding: 0 1.8mm; border-radius: 1mm; }
+    .good { color: var(--lime); }
+    .bad { color: var(--pink); }
+    .cy { color: var(--cyan); }
+    .mu { color: var(--muted); }
+
+    /* top bar */
+    .topbar { display: flex; align-items: center; justify-content: space-between; border-bottom: .35mm solid var(--line); font-size: 14pt; color: var(--muted); }
+    .topbar .team { display: flex; align-items: center; font-size: 15pt; color: var(--muted); }
+    .topbar .team > span { padding: 0 4mm; border-left: .3mm solid var(--line); line-height: 1.2; }
+    .topbar .team > span:first-child { border-left: 0; padding-left: 0; }
+    .topbar .team > span:last-child { padding-right: 0; }
+    .topbar .team b { color: var(--white); font-weight: 700; margin-right: 2mm; }
+
+    /* hero */
+    .hero { display: grid; grid-template-columns: 370mm 166mm; gap: 14mm; align-items: start; }
+    .wordmark { display: flex; align-items: center; gap: 3mm; font-size: 20pt; font-weight: 800; letter-spacing: 3pt; color: var(--lime); height: 7mm; }
+    .wordmark svg { width: 12mm; height: 10mm; }
+    h1 { margin-top: 1mm; font-size: 50pt; font-weight: 800; letter-spacing: -2pt; line-height: 1.06; }
+    h1 span { color: var(--lime); }
+    .formal { margin-top: 3mm; font-size: 26pt; font-weight: 700; line-height: 1.3; letter-spacing: -.3pt; }
+    .define { margin-top: 2mm; font-size: 17pt; line-height: 1.4; color: var(--muted); }
+    .hero-right { display: flex; flex-direction: column; gap: 4mm; padding-top: 2mm; }
+    .qr-card { display: flex; align-items: center; gap: 5mm; padding: 4mm; background: var(--panel); border: .4mm solid var(--cyan); border-radius: 1.5mm; }
+    .qr-card img { width: 36mm; height: 36mm; background: #fff; padding: 1.5mm; border-radius: 1mm; flex: none; }
+    .qr-card b { display: block; font-size: 15pt; color: var(--cyan); line-height: 1.3; }
+    .qr-card span { display: block; font-size: 14pt; color: var(--muted); line-height: 1.4; margin-top: 1.5mm; }
+    .paper { padding: 3mm 4mm; border: .5mm solid var(--lime); border-radius: 1.5mm; }
+    .paper b { display: block; font-size: 15pt; color: var(--lime); line-height: 1.3; }
+    .paper span { display: block; font-size: 14pt; color: var(--muted); line-height: 1.3; margin-top: 1mm; }
+
+    /* section panels */
+    .sec { background: var(--panel); border: .35mm solid var(--line); border-radius: 2mm; padding: 5mm 6.65mm; display: flex; flex-direction: column; }
+    .sec-head { display: flex; align-items: center; gap: 4mm; height: 13mm; flex: none; }
+    .sec-head .no { display: inline-flex; align-items: center; justify-content: center; width: 13mm; height: 13mm; border-radius: 1mm; background: var(--lime); color: var(--black); font-size: 20pt; font-weight: 800; }
+    .sec-head h2 { font-size: 30pt; font-weight: 800; letter-spacing: -.6pt; line-height: 1.1; }
+    .sec-head .tag { margin-left: auto; font-size: 14pt; letter-spacing: 1.2pt; color: var(--cyan); }
+    .box { background: var(--box); border: .3mm solid var(--line); border-radius: 1.5mm; padding: 4mm; }
+    .box h3 { font-size: 18pt; font-weight: 700; line-height: 1.25; }
+    .body { font-size: 17pt; line-height: 1.4; }
+    .small { font-size: 15pt; line-height: 1.4; color: var(--muted); }
+    .tiny { font-size: 14pt; line-height: 1.4; color: var(--muted); }
+
+    /* section 1 */
+    .s1-grid { display: grid; grid-template-columns: 196mm 166mm 164mm; gap: 5mm; margin-top: 3mm; flex: 1; min-height: 0; }
+    .col { display: flex; flex-direction: column; gap: 3mm; }
+    .matrix { display: grid; grid-template-columns: 34mm 1fr 1fr; grid-template-rows: 14mm 35.5mm 35.5mm; gap: 2mm; margin-top: 3mm; }
+    .matrix .h { display: flex; flex-direction: column; justify-content: center; font-size: 15pt; font-weight: 700; color: var(--muted); line-height: 1.2; }
+    .matrix .h small { font-size: 14pt; font-weight: 400; margin-top: .8mm; }
+    .matrix .ch { align-items: center; text-align: center; }
+    .matrix .cell { position: relative; border: .3mm solid var(--line); border-radius: 1.5mm; padding: 2.2mm 3mm; background: var(--panel); display: flex; flex-direction: column; justify-content: flex-start; }
+    .matrix .cell.lime { border: .6mm solid var(--lime); }
+    .matrix .cell.cyan { border: .6mm solid var(--cyan); }
+    .matrix .state { font-size: 20pt; font-weight: 800; line-height: 1.1; }
+    .matrix .mean { font-size: 16pt; line-height: 1.3; margin-top: 1mm; }
+    .matrix .ex { font-size: 15pt; line-height: 1.3; color: var(--white); margin-top: 1mm; }
+    .matrix .act { font-size: 17pt; font-weight: 700; line-height: 1.2; margin-top: auto; }
+    .matrix .n { position: absolute; right: 3mm; bottom: 2.2mm; font-size: 14pt; color: var(--muted); }
+    .always-sub { font-size: 14pt; color: var(--muted); line-height: 1.3; margin-top: 1mm; }
+    .always-chart { width: 150mm; height: 22mm; margin: 2mm auto 0; }
+    .so { font-size: 17pt; font-weight: 700; line-height: 1.3; margin-top: 2mm; }
+    table.prior { width: 100%; border-collapse: collapse; margin-top: 2mm; font-size: 14pt; line-height: 1.25; }
+    table.prior th { font-size: 14pt; font-weight: 600; color: var(--muted); text-align: left; padding: 0 1.5mm 1mm; border-bottom: .3mm solid var(--line); }
+    table.prior td { padding: 1.1mm 1.5mm; vertical-align: top; border-bottom: .3mm solid var(--line); }
+    table.prior tr:last-child td { border-bottom: 0; }
+    table.prior tr.ours td, table.prior tr.ours:last-child td { border-top: .6mm solid var(--lime); border-bottom: .6mm solid var(--lime); }
+    table.prior tr.ours td:first-child { color: var(--lime); font-weight: 700; }
+    table.prior td.lim { color: var(--white); }
+    .difs { display: flex; flex-direction: column; gap: 3mm; margin-top: 3mm; counter-reset: d; }
+    .difs li { display: grid; grid-template-columns: 8mm 1fr; column-gap: 3mm; row-gap: 1mm; align-items: start; }
+    .difs li::before { counter-increment: d; content: counter(d); display: inline-flex; align-items: center; justify-content: center; width: 7mm; height: 7mm; border-radius: 50%; background: var(--lime); color: var(--black); font-weight: 800; font-size: 14pt; grid-row: 1 / 3; margin-top: .5mm; }
+    .difs b { grid-column: 2; font-size: 18pt; line-height: 1.25; }
+    .difs p { grid-column: 2; font-size: 17pt; line-height: 1.38; }
+    .effect { margin-top: auto; padding-top: 3mm; border-top: .3mm solid var(--line); font-size: 17pt; line-height: 1.38; }
+    .effect b { color: var(--lime); margin-right: 2mm; }
+
+    /* section 2 */
+    .pipeline { width: 536mm; height: 50mm; margin-top: 3mm; }
+    .pipe-cap { font-size: 17pt; line-height: 1.4; margin-top: 3mm; }
+    .s2-grid { display: grid; grid-template-columns: 206mm 156mm 164mm; gap: 5mm; margin-top: 3mm; flex: 1; min-height: 0; }
+    .box h3.cy { color: var(--cyan); }
+    .heads { display: grid; grid-template-columns: 56mm 1fr; gap: 5mm; margin-top: 2.5mm; align-items: start; }
+    .headgrid { display: grid; grid-template-columns: repeat(8, 5.5mm); grid-auto-rows: 5.5mm; gap: 1.5mm; }
+    .headgrid span { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: .3mm solid var(--line); font-size: 13pt; font-weight: 700; color: var(--black); }
+    .headgrid span.on { background: var(--lime); border-color: var(--lime); }
+    .roles { display: grid; grid-template-columns: 14mm 1fr 10mm; column-gap: 2mm; row-gap: .8mm; font-size: 14pt; line-height: 1.25; align-items: baseline; }
+    .roles .note { grid-column: 1 / -1; font-size: 14pt; color: var(--muted); line-height: 1.3; margin-top: .5mm; }
+    .roles b { color: var(--lime); }
+    .roles em { font-style: normal; color: var(--muted); text-align: right; }
+    .why-heads { font-size: 15pt; line-height: 1.35; margin-top: 1.4mm; }
+    table.train { width: 100%; border-collapse: collapse; margin-top: 2.5mm; font-size: 15pt; line-height: 1.3; }
+    table.train td { padding: 1.8mm 1mm; vertical-align: top; border-bottom: .3mm solid var(--line); }
+    table.train tr:last-child td { border-bottom: 0; }
+    table.train td:first-child { width: 28mm; font-weight: 700; }
+    table.train td:last-child { color: var(--muted); }
+    .layer-zoom { width: 156mm; height: 47.5mm; margin-top: 2mm; }
+
+    /* section 3 */
+    .lead { font-size: 18pt; line-height: 1.3; color: var(--muted); margin-top: 1mm; }
+    .lead b { color: var(--white); }
+    .s3-grid { display: grid; grid-template-columns: 320mm 206mm; gap: 10mm; margin-top: 3mm; flex: 1; min-height: 0; }
+    .chart-title { font-size: 19pt; font-weight: 700; line-height: 1.25; }
+    .chart-sub { font-size: 14pt; color: var(--muted); line-height: 1.35; margin-top: 1mm; }
+    .macro { width: 320mm; height: 87mm; margin-top: 1mm; }
+    .s3-right { display: flex; flex-direction: column; gap: 3mm; }
+    table.metrics { width: 100%; border-collapse: collapse; margin-top: 2mm; font-size: 16pt; line-height: 1.3; }
+    table.metrics td { padding: 1.5mm 0; border-bottom: .3mm solid var(--line); vertical-align: top; }
+    table.metrics tr:last-child td { border-bottom: 0; }
+    table.metrics td:last-child { text-align: right; font-weight: 700; white-space: nowrap; padding-left: 3mm; }
+    .box h3.s { font-size: 17pt; }
+    .ratio { width: 190mm; height: 26mm; margin: 2mm auto 0; }
+    .s3-cap { font-size: 17pt; line-height: 1.38; margin-top: auto; }
+    .s3-cap b { color: var(--white); }
+
+    /* section 4 */
+    .cond { font-size: 17pt; line-height: 1.3; color: var(--muted); margin-top: 1mm; }
+    .cond b { color: var(--white); font-weight: 700; }
+    .delta { width: 536mm; height: 66.5mm; margin-top: 3mm; }
+    .s4-bottom { display: grid; grid-template-columns: 300mm minmax(0, 1fr); gap: 6mm; margin-top: 3mm; flex: 1; min-height: 0; align-items: stretch; }
+    .sb { display: flex; flex-direction: column; padding: 3mm 4mm; }
+    .sb h3 { font-size: 17pt; }
+    .sb h3 .sub { color: var(--muted); font-weight: 400; font-size: 15pt; margin-left: 1.5mm; }
+    table.sbt { width: 100%; border-collapse: collapse; margin-top: 1.5mm; font-size: 15pt; line-height: 1.25; }
+    table.sbt th { font-size: 14pt; font-weight: 400; color: var(--muted); text-align: right; padding: 0 0 .8mm 2mm; border-bottom: .3mm solid var(--line); white-space: nowrap; }
+    table.sbt th:first-child { text-align: left; padding-left: 0; }
+    table.sbt td { padding: .3mm 0 .3mm 2mm; text-align: right; white-space: nowrap; }
+    table.sbt td.cmp, table.sbt td.mt { text-align: left; padding-left: 0; font-weight: 700; color: var(--white); }
+    table.sbt td.cmp { vertical-align: middle; white-space: normal; line-height: 1.2; }
+    table.sbt td.ds { text-align: left; color: var(--muted); }
+    table.sbt tr.grp td { border-top: .3mm solid var(--line); }
+    table.sbt td b { font-weight: 700; }
+    table.sbt td span { font-size: 14pt; color: var(--muted); margin-left: 1.2mm; }
+    .sb-note { font-size: 14pt; line-height: 1.3; color: var(--muted); margin-top: auto; }
+    .sb-note b { font-weight: 700; }
+
+    /* section 5 */
+    .s5-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; margin-top: 2mm; flex: 1; min-height: 0; }
+    .takeaway h3 { font-size: 24pt; font-weight: 700; line-height: 1.3; }
+    .takeaway p { font-size: 17pt; line-height: 1.4; color: var(--muted); margin-top: 3mm; }
+    .next { display: flex; flex-direction: column; gap: 2.5mm; counter-reset: n; }
+    .next li { display: grid; grid-template-columns: 8mm 1fr; column-gap: 3mm; align-items: start; font-size: 17pt; line-height: 1.38; }
+    .next li::before { counter-increment: n; content: counter(n); display: inline-flex; align-items: center; justify-content: center; width: 7mm; height: 7mm; border-radius: 50%; background: var(--lime); color: var(--black); font-weight: 800; font-size: 14pt; margin-top: .6mm; }
+    .next li span { color: var(--muted); }
+    .source { margin-top: 3mm; padding-top: 2mm; border-top: .3mm solid var(--line); font-size: 13pt; color: var(--muted); line-height: 1.3; flex: none; }
+  </style>
+</head>
+<body>
+<main class="poster">
+
+  <header class="topbar" data-fit="topbar">
+    <span>이화여자대학교 · 2026 캡스톤디자인 · 연구 트랙 · 지도교수 황의원</span>
+    <div class="team"><span><b>팀 Alltology</b></span><span><b>박세령</b>4-state와 헤드 분석 실험, 논문·발표</span><span><b>손현경</b>Packed 외부 평가, C+ 손상 분석</span><span><b>이다영</b>Always·Router 외부 비교, 비교 하네스</span></div>
+  </header>
+
+  <section class="hero" data-fit="hero">
+    <div>
+      <div class="wordmark"><svg viewBox="0 0 60 50" aria-hidden="true"><path d="M7 39 28 7 51 39H7 M18 24H40" fill="none" stroke="#cdff5f" stroke-width="3"/><circle cx="28" cy="7" r="5" fill="#cdff5f"/><circle cx="7" cy="39" r="5" fill="#5de5ff"/><circle cx="51" cy="39" r="5" fill="#cdff5f"/></svg><span>ALLTOLOGY</span></div>
+      <h1>기억과 문서가 다를 때,<br><span>LLM은 무엇을 믿어야 할까?</span></h1>
+      <p class="formal">LLM 내부 신호로 <mark>지식–문맥 4-state</mark>를 읽고, 상태에 맞는 <mark>선택적 개입</mark>을 고르는 연구</p>
+      <p class="define">K = 모델이 기억한 답 · C = 검색 결과처럼 질문과 함께 받은 문서. 어느 쪽이 맞는지는 입력마다 다르고, 모델은 미리 알지 못한다.</p>
+    </div>
+    <div class="hero-right">
+      <a class="qr-card" href="https://github.com/Ontology0/Graduation-Project"><img src="repository-qr.svg" alt="공개 GitHub 저장소 QR 코드"><div><b>코드와 실험 기록</b><span>공개 저장소에서 노트북과 결과 파일을 볼 수 있다</span></div></a>
+      <div class="paper"><b>지식–문맥 4-state 판독 논문 · KSC 2026 투고 · 심사 중</b><span>2026 한국소프트웨어종합학술대회</span></div>
+    </div>
+  </section>
+
+  <section class="sec" data-fit="s1">
+    <div class="sec-head"><span class="no">1</span><h2>배경과 차별점</h2><span class="tag">왜 상태를 읽어야 하나</span></div>
+    <div class="s1-grid">
+      <div class="col">
+        <div class="box" style="flex:1">
+          <h3>기억(K)과 문서(C)의 정오에 따라 네 가지 상태가 있다</h3>
+          <div class="matrix">
+            <div></div>
+            <div class="h ch">문서가 맞음 C+<small>정답이 든 문서</small></div>
+            <div class="h ch">문서가 틀림 C−<small>정답을 다른 답으로 바꾼 문서</small></div>
+            <div class="h">기억이 맞음 K+<small>문서 없이<br>답해도 정답</small></div>
+            <div class="cell"><div class="state">K+C+</div><div class="mean">둘 다 맞음</div><div class="ex mu">어느 쪽을 따라도 정답</div><span class="n">362입력</span></div>
+            <div class="cell lime"><div class="state">K+C−</div><div class="ex" style="margin-top:1.5mm">“호주의 수도는?”<br>기억 <span class="good">캔버라</span>&nbsp;·&nbsp;문서 <span class="bad">시드니</span></div><div class="act good">기억을 따라야 한다</div><span class="n">362입력</span></div>
+            <div class="h">기억이 틀림 K−<small>문서 없이<br>답하면 오답</small></div>
+            <div class="cell cyan"><div class="state">K−C+</div><div class="ex" style="margin-top:1.5mm">“도서관 마감은?”<br>기억 <span class="bad">18시</span>&nbsp;·&nbsp;문서 <span class="good">20시</span></div><div class="act cy">문서를 따라야 한다</div><span class="n">250입력</span></div>
+            <div class="cell"><div class="state">K−C−</div><div class="mean">둘 다 틀림</div><div class="ex mu">하나를 골라도 정답이 아니다<br>추가 근거 필요</div><span class="n">250입력</span></div>
+          </div>
+          <p class="small" style="margin-top:3mm">굵은 테두리 두 칸이 주요 목표 상태다. 틀린 쪽을 따르면 맞힐 수 있던 답도 틀린다. 입력&nbsp;수는 자체 실험셋 P8S 기준, 예시는 설명용 가상 입력.</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="box">
+          <h3 style="font-size:17pt">모든 입력에 같은 개입을 하자, 맞는 문서 쪽 답이 줄었다</h3>
+          <p class="always-sub">Always Steering: 모든 입력의 중간 계산값을 같은 방향으로 민다 · <span style="white-space:nowrap">ConFiQA-QA</span> 1,000질문(결과 ②) · 정답률 변화 %p</p>
+          <img class="always-chart" src="chart-always.svg" alt="Always Steering: 틀린 문서에서 +8.20%p, 맞는 문서에서 −2.90%p">
+          <p class="so">그래서 입력마다 상태를 읽고, 개입을 골라야 한다.</p>
+        </div>
+        <div class="box" style="flex:1">
+          <h3>기존 접근과의 설계 전제 차이</h3>
+          <table class="prior">
+            <thead><tr><th style="width:56mm">접근</th><th style="width:50mm">K·C 상태 판독</th><th>한계</th></tr></thead>
+            <tbody>
+              <tr><td>문맥 충실 디코딩</td><td>구분하지 않음</td><td class="lim">틀린 문서를 따라간다</td></tr>
+              <tr><td>Always Steering</td><td>없음</td><td class="lim">맞는 문서의 답이 준다</td></tr>
+              <tr class="ours"><td>이 연구 (제안)<br>4-state Routing</td><td>Probe 판독(결과 ①)</td><td class="lim">통합 검증 진행 중</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col">
+        <div class="box" style="flex:1; display:flex; flex-direction:column">
+          <h3>이 연구의 차별점</h3>
+          <ol class="difs">
+            <li><b>네 상태를 모두 읽은 뒤 개입하는 구조</b><p>K+C−에서는 기억을, K−C+에서는 문서를 따르도록 상태별로 개입 방향을 고른다.</p></li>
+            <li><b>어텐션 헤드 신호로, 한 번의 입력 처리 안에서 읽는다</b><p>L13 헤드 신호를 읽어 L14–18에 반영하는 One-pass 구조. 가중치는 고정하고 작은 Probe와 Router만 학습한다.</p></li>
+            <li><b>판독과 답변 개선을 따로 측정한다</b><p>판독은 4-state Macro-F1, 답변은 정답률(EM) 변화로 보고하고, C+ 손상을 함께 적는다.</p></li>
+          </ol>
+          <p class="effect"><b>기대 효과</b>틀린 문서에 흔들리는 답은 줄이고, 맞는 문서로 답하던 능력은 지킨다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" data-fit="s2">
+    <div class="sec-head"><span class="no">2</span><h2>제안 기법</h2><span class="tag">구조와 학습 대상</span></div>
+    <svg class="pipeline" viewBox="0 0 2144 200" role="img" aria-label="질문과 문서가 Llama-3.1-8B-Instruct에 들어간다. L0–L12가 입력을 처리하고, L13의 어텐션 헤드 32개 중 선발한 조합의 신호를 Probe가 읽어 네 상태를 판독한다. Routing이 개입 안 함·기억 유지·문서 수용 중 하나를 고르고, L14–18의 Steering이 고른 방향을 중간 계산값에 더한 뒤 답변을 생성한다. 가중치는 고정한다.">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#a9b7c2"/></marker>
+      </defs>
+      <g font-family="Pretendard, 'Apple SD Gothic Neo', sans-serif">
+        <path d="M247 34V20H1897V34" fill="none" stroke="#35434d" stroke-width="1.4"/>
+        <rect x="500" y="6" width="1144" height="28" fill="#10171e"/>
+        <text x="1072" y="27" font-size="20" text-anchor="middle" fill="#a9b7c2">Llama-3.1-8B-Instruct · 레이어 32개 · 가중치 고정 · 한 번의 입력 처리 안에서 읽고 개입한다 (One-pass)</text>
+        <rect x="0" y="42" width="224" height="100" rx="6" fill="#161f28" stroke="#35434d" stroke-width="1.2"/>
+        <text x="112" y="82" font-size="24" font-weight="700" text-anchor="middle" fill="#f2f5f5">질문 + 문서</text>
+        <text x="112" y="108" font-size="20" text-anchor="middle" fill="#a9b7c2">문서는 맞을 수도,</text>
+        <text x="112" y="130" font-size="20" text-anchor="middle" fill="#a9b7c2">틀릴 수도 있다</text>
+        <path d="M226 92H243" stroke="#a9b7c2" stroke-width="2.4" marker-end="url(#ar)"/>
+        <rect x="247" y="42" width="224" height="100" rx="6" fill="#161f28" stroke="#35434d" stroke-width="1.2"/>
+        <text x="359" y="88" font-size="24" font-weight="700" text-anchor="middle" fill="#f2f5f5">L0–L12</text>
+        <text x="359" y="118" font-size="20" text-anchor="middle" fill="#a9b7c2">입력을 처리</text>
+        <path d="M473 92H490" stroke="#a9b7c2" stroke-width="2.4" marker-end="url(#ar)"/>
+        <rect x="494" y="42" width="344" height="100" rx="6" fill="#102226" stroke="#5de5ff" stroke-width="1.6"/>
+        <text x="666" y="78" font-size="24" font-weight="700" text-anchor="middle" fill="#f2f5f5">L13 · 어텐션 헤드 32개</text>
+        <text x="666" y="106" font-size="20" text-anchor="middle" fill="#a9b7c2">선발한 헤드 조합의 신호를 읽는다</text>
+        <text x="666" y="129" font-size="20" text-anchor="middle" fill="#a9b7c2">분할마다 1~32개 · 헤드별 128차원</text>
+        <path d="M840 92H857" stroke="#a9b7c2" stroke-width="2.4" marker-end="url(#ar)"/>
+        <rect x="861" y="42" width="344" height="100" rx="6" fill="#182218" stroke="#cdff5f" stroke-width="2.4"/>
+        <text x="1033" y="78" font-size="24" font-weight="700" text-anchor="middle" fill="#f2f5f5">Probe → 네 상태 판독</text>
+        <text x="1033" y="106" font-size="20" text-anchor="middle" fill="#a9b7c2">별도로 학습한 작은 선형 분류기</text>
+        <text x="1033" y="129" font-size="20" text-anchor="middle" fill="#cdff5f">K+C+ · K+C− · K−C+ · K−C−</text>
+        <path d="M1207 92H1224" stroke="#a9b7c2" stroke-width="2.4" marker-end="url(#ar)"/>
+        <rect x="1228" y="42" width="344" height="100" rx="6" fill="#182218" stroke="#cdff5f" stroke-width="2.4"/>
+        <text x="1400" y="78" font-size="24" font-weight="700" text-anchor="middle" fill="#f2f5f5">Routing · 개입 선택 <tspan fill="#a9b7c2" font-weight="400" font-size="20">(제안)</tspan></text>
+        <text x="1400" y="106" font-size="20" text-anchor="middle" fill="#a9b7c2">개입 안 함 · 기억을 지키는 방향 ·</text>
+        <text x="1400" y="129" font-size="20" text-anchor="middle" fill="#a9b7c2">문서를 받아들이는 방향 중 하나</text>
+        <path d="M1574 92H1591" stroke="#a9b7c2" stroke-width="2.4" marker-end="url(#ar)"/>
+        <rect x="1595" y="42" width="304" height="100" rx="6" fill="#161f28" stroke="#35434d" stroke-width="1.2"/>
+        <text x="1747" y="78" font-size="24" font-weight="700" text-anchor="middle" fill="#f2f5f5">L14–18 · Steering</text>
+        <text x="1747" y="106" font-size="20" text-anchor="middle" fill="#a9b7c2">계산값에 고른 방향을 더한다</text>
+        <text x="1747" y="129" font-size="20" text-anchor="middle" fill="#a9b7c2">가중치는 그대로</text>
+        <path d="M1901 92H1918" stroke="#a9b7c2" stroke-width="2.4" marker-end="url(#ar)"/>
+        <rect x="1920" y="42" width="224" height="100" rx="6" fill="#161f28" stroke="#35434d" stroke-width="1.2"/>
+        <text x="2032" y="88" font-size="26" font-weight="800" text-anchor="middle" fill="#f2f5f5">답변</text>
+        <text x="2032" y="118" font-size="20" text-anchor="middle" fill="#a9b7c2">L19–31을 지나 생성</text>
+        <text x="666" y="170" font-size="20" font-weight="700" text-anchor="middle" fill="#5de5ff">읽는 위치 · L13</text>
+        <text x="666" y="195" font-size="20" text-anchor="middle" fill="#a9b7c2">너무 이르면 단서가 부족하고, 너무 늦으면 반영할 계산이 남지 않는다</text>
+        <text x="1400" y="170" font-size="20" text-anchor="middle" fill="#a9b7c2">읽는 위치와 개입하는 위치를 분리</text>
+        <text x="1747" y="170" font-size="20" font-weight="700" text-anchor="middle" fill="#f2f5f5">개입하는 위치 · L14–18</text>
+      </g>
+    </svg>
+    <p class="pipe-cap"><b>제안 구조.</b> L13 헤드 신호로 네 상태를 읽고 이어지는 레이어에서 상태에 맞는 개입을 고른다. 판독(①)과 개입 선택(②)을 각각 검증했고, 둘을 K−C+ 한 상태로 이은 State-based는 ②에 있다. 네 상태 통합은 다음 단계다.</p>
+    <div class="s2-grid">
+      <div class="box">
+        <h3>32개 헤드 중 역할별로 반복 선택된 후보 4개</h3>
+        <div class="heads">
+          <div class="headgrid">
+            <span></span><span></span><span></span><span class="on"></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span class="on"></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span class="on"></span><span class="on"></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="roles">
+            <b>H20</b><span>문서 정답 여부 · 충돌 여부</span><em>5/5</em>
+            <b>H10</b><span>문서 정답 여부</span><em>5/5</em>
+            <b>H19</b><span>문서 정답 여부</span><em>5/5</em>
+            <b>H3</b><span>충돌 여부</span><em>4/5</em>
+            <span class="note">격자는 헤드 0–31 순 · 5회 중 선택 횟수 · 판독용 조합과 별개</span>
+          </div>
+        </div>
+        <p class="why-heads">L13 출력 전체와 판독 성능은 비슷하지만(0.6215 → 0.6306), 헤드 단위로 읽으면 어떤 헤드가 문서 정오·충돌 정보를 담는지 알 수 있다.</p>
+      </div>
+      <div class="box">
+        <h3>무엇을 학습하고 무엇을 고정하는가</h3>
+        <table class="train">
+          <tr><td>LLM 가중치</td><td>고정</td></tr>
+          <tr><td>Probe</td><td>선형 분류기 · 정답 상태로 학습</td></tr>
+          <tr><td>Router</td><td>이득 예측기 · 학습 분할의 정답으로 학습</td></tr>
+          <tr><td>Packed</td><td>방향은 라벨 없이 갱신 · 기준값은 대상 dev로 정함</td></tr>
+        </table>
+      </div>
+      <div class="box">
+        <h3>레이어 안에서, 어디를 읽고 어디에 더하나</h3>
+        <svg class="layer-zoom" viewBox="0 0 624 190" role="img" aria-label="한 레이어 안의 계산: 이전 레이어 출력이 어텐션 헤드 32개를 지나 잔차에 더해지고, MLP를 지나 다시 더해져 레이어 출력이 된다. L13에서는 어텐션 헤드 신호를 읽어 Probe로 보내고, L14–18에서는 레이어 출력에 고른 방향을 더한다. 가중치는 바꾸지 않는다.">
+          <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#a9b7c2"/></marker></defs>
+          <g font-family="Pretendard, 'Apple SD Gothic Neo', sans-serif">
+            <!-- residual stream -->
+            <path d="M100 46V24H412V50 M292 24V50" fill="none" stroke="#5a6672" stroke-width="1.6" stroke-dasharray="4 4"/>
+            <text x="300" y="18" font-size="20" text-anchor="middle" fill="#a9b7c2">잔차 연결 · 이전 표현을 그대로 더함</text>
+            <!-- row of blocks (y 24–84) -->
+            <rect x="0" y="30" width="100" height="64" rx="5" fill="#161f28" stroke="#35434d" stroke-width="1.2"/>
+            <text x="50" y="58" font-size="20" font-weight="600" text-anchor="middle" fill="#f2f5f5">이전 레이어</text>
+            <text x="50" y="80" font-size="20" font-weight="600" text-anchor="middle" fill="#f2f5f5">출력</text>
+            <path d="M102 62H110" stroke="#a9b7c2" stroke-width="2" marker-end="url(#ar2)"/>
+            <rect x="112" y="30" width="156" height="64" rx="5" fill="#102226" stroke="#5de5ff" stroke-width="2.4"/>
+            <text x="190" y="55" font-size="20" font-weight="700" text-anchor="middle" fill="#f2f5f5">어텐션 헤드 32개</text>
+            <circle cx="134" cy="78" r="4.5" fill="#5de5ff"/><circle cx="150" cy="78" r="4.5" fill="#5de5ff"/><circle cx="166" cy="78" r="4.5" fill="#5de5ff"/><circle cx="182" cy="78" r="4.5" fill="#35434d"/><circle cx="198" cy="78" r="4.5" fill="#5de5ff"/><circle cx="214" cy="78" r="4.5" fill="#35434d"/><circle cx="230" cy="78" r="4.5" fill="#35434d"/><circle cx="246" cy="78" r="4.5" fill="#5de5ff"/>
+            <path d="M270 62H278" stroke="#a9b7c2" stroke-width="2" marker-end="url(#ar2)"/>
+            <circle cx="292" cy="62" r="12" fill="#161f28" stroke="#a9b7c2" stroke-width="1.6"/>
+            <path d="M286 62H298 M292 56V68" stroke="#a9b7c2" stroke-width="1.8"/>
+            <path d="M306 62H314" stroke="#a9b7c2" stroke-width="2" marker-end="url(#ar2)"/>
+            <rect x="316" y="30" width="72" height="64" rx="5" fill="#161f28" stroke="#35434d" stroke-width="1.2"/>
+            <text x="352" y="69" font-size="20" font-weight="600" text-anchor="middle" fill="#f2f5f5">MLP</text>
+            <path d="M390 62H398" stroke="#a9b7c2" stroke-width="2" marker-end="url(#ar2)"/>
+            <circle cx="412" cy="62" r="12" fill="#161f28" stroke="#a9b7c2" stroke-width="1.6"/>
+            <path d="M406 62H418 M412 56V68" stroke="#a9b7c2" stroke-width="1.8"/>
+            <path d="M426 62H434" stroke="#a9b7c2" stroke-width="2" marker-end="url(#ar2)"/>
+            <rect x="436" y="30" width="188" height="64" rx="5" fill="#182218" stroke="#cdff5f" stroke-width="2.4"/>
+            <text x="530" y="57" font-size="20" font-weight="700" text-anchor="middle" fill="#f2f5f5">레이어 출력</text>
+            <text x="530" y="81" font-size="20" text-anchor="middle" fill="#a9b7c2">4,096차원</text>
+            <!-- callouts -->
+            <path d="M190 96V112" stroke="#5de5ff" stroke-width="1.6"/>
+            <text x="112" y="134" font-size="21" font-weight="700" fill="#5de5ff">L13에서 읽기</text>
+            <text x="112" y="158" font-size="20" fill="#f2f5f5">헤드 신호 → Probe</text>
+            <text x="112" y="180" font-size="20" fill="#a9b7c2">헤드별 128차원 · 선발 헤드만</text>
+            <path d="M530 96V112" stroke="#cdff5f" stroke-width="1.6"/>
+            <text x="624" y="134" font-size="21" font-weight="700" text-anchor="end" fill="#cdff5f">L14–18에서 개입</text>
+            <text x="624" y="158" font-size="20" text-anchor="end" fill="#f2f5f5">출력에 방향을 더한다</text>
+            <text x="624" y="180" font-size="20" text-anchor="end" fill="#a9b7c2">가중치는 그대로</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" data-fit="s3">
+    <div class="sec-head"><span class="no">3</span><h2>결과 ① 상태를 읽을 수 있는가</h2><span class="tag">판독 성능 · 4-state Macro-F1</span></div>
+    <p class="lead">선발 헤드 조합의 Probe는 네 상태를 <b>Macro-F1 0.6306</b>으로 구분한다(무작위 0.2477). Macro-F1은 네 상태를 고르게 맞히는 정도를 보는 0~1 점수로, 정답률이 아니다.</p>
+    <div class="s3-grid">
+      <div>
+        <p class="chart-title">4-state Macro-F1 · 자체 실험셋 P8S 612질문 × 문서 2종 = 1,224입력</p>
+        <p class="chart-sub">Llama-3.1-8B-Instruct · 질문 단위 5분할 교차검증 · 학습에 안 쓴 질문의 예측만 모아 계산 · 같은 질문의 두 문서는 같은 분할</p>
+        <img class="macro" src="chart-macro-f1.svg" alt="4-state Macro-F1: 무작위 0.2477, L13 출력 전체 0.6215, 선발 헤드 조합 0.6306">
+      </div>
+      <div class="s3-right">
+        <div class="box">
+          <h3 class="s">라벨을 20%만 써도 판독 성능은 비슷했다</h3>
+          <p class="tiny">20%는 질문 122개로 학습해 나머지 490질문으로 평가(5회 평균), 약 80%는 질문 단위 5분할 교차검증 평균 · 평가 집합은 다름</p>
+          <img class="ratio" src="chart-label-ratio.svg" alt="라벨 비율별 Macro-F1: 무작위 0.25, 5% 0.54, 10% 0.59, 20% 0.61, 약 80% 0.63">
+        </div>
+        <p class="s3-cap">상태별 입력 수가 250~362개로 달라 네 상태를 같은 비중으로 보는 Macro-F1을 쓴다(같은 평가의 4-state 정확도 0.6422). Probe 없이 헤드 신호에 고정 기준만 둔 규칙은 0.3860에 그쳐, 판독에는 학습한 Probe가 필요하다. 답변 정답률은 결과 ②에서 따로 본다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" data-fit="s4">
+    <div class="sec-head"><span class="no">4</span><h2>결과 ② 답이 실제로 좋아지는가</h2><span class="tag">같은 데이터 재평가 · ConFiQA-QA · NQ-Swap</span></div>
+    <p class="cond">ConFiQA-QA 1,000질문 / NQ-Swap 1,000문항, 각 2,000입력 · Llama-3.1-8B-Instruct · 모든 방법을 같은 채점기(원래 사실 정답 EM)로 다시 채점 · 개입 전 <b>53.80%</b> / <b>48.70%</b> · 기준값은 각 실험의 원래 값 고정</p>
+    <img class="delta" src="chart-replay-em.svg" alt="같은 데이터 재평가, 개입 없음 대비 변화. Packed, 판독 없는 Packed, State-based를 ConFiQA-QA와 NQ-Swap에서 전체, 틀린 문서 C−, 맞는 문서 C+로 비교">
+    <div class="s4-bottom">
+      <div class="box sb">
+        <h3>같은 질문끼리 보면, State-based는 전체는 같고 C+ 손상이 적다</h3>
+        <table class="sbt">
+          <thead><tr><th colspan="2">State-based − 비교 대상, %p · 회색 95% 신뢰구간</th><th>맞는 문서 C+</th><th>틀린 문서 C−</th><th>전체</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2" class="cmp">Packed 대비</td><td class="ds">ConFiQA-QA</td><td><b>+1.20</b><span>0.23~2.20</span></td><td><b class="bad">−0.93</b><span>−1.97~0.13</span></td><td><b>+0.13</b><span>−0.58~0.85</span></td></tr>
+            <tr><td class="ds">NQ-Swap</td><td><b>+1.77</b><span>0.64~2.99</span></td><td><b class="bad">−1.43</b><span>−2.70~−0.23</span></td><td><b>+0.17</b><span>−0.67~1.05</span></td></tr>
+            <tr class="grp"><td rowspan="2" class="cmp">판독 없는<br>Packed 대비</td><td class="ds">ConFiQA-QA</td><td><b>+0.50</b><span>0.10~1.00</span></td><td><b>0.00</b><span>0.00~0.00</span></td><td><b>+0.25</b><span>0.05~0.50</span></td></tr>
+            <tr><td class="ds">NQ-Swap</td><td><b>+0.50</b><span>0.10~0.98</span></td><td><b class="bad">−0.30</b><span>−0.70~0.00</span></td><td><b>+0.10</b><span>−0.10~0.35</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="box sb">
+        <h3>이전 보고 · Always와 Router<span class="sub">ConFiQA-QA</span></h3>
+        <table class="sbt">
+          <thead><tr><th>개입 전 대비 %p</th><th>전체</th><th>틀린 문서 C−</th><th>맞는 문서 C+</th></tr></thead>
+          <tbody>
+            <tr><td class="mt mu">Always</td><td><b>+2.65</b></td><td><b>+8.20</b></td><td><b class="bad">−2.90</b></td></tr>
+            <tr><td class="mt">Router</td><td><b>+3.80</b></td><td><b>+6.80</b></td><td><b>+0.80</b><span>하한 −0.60</span></td></tr>
+          </tbody>
+        </table>
+        <p class="sb-note">문서→질문 순서 프롬프트로 개입 전이 51.65%라 위와 섞지 않는다. Router는 학습 분할 정답으로 학습, <span style="white-space:nowrap">Always 대비 +1.15(0.10~2.20),</span> C+ 하한이 허용선 −2 안(비열등).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" data-fit="s5">
+    <div class="sec-head"><span class="no">5</span><h2>정리와 다음 단계</h2><span class="tag">현재 결론 · 남은 검증</span></div>
+    <div class="s5-grid">
+      <div class="takeaway">
+        <h3>상태를 읽을 수 있다는 것과<br>좋은 답을 고를 수 있다는 것은 다르다.</h3>
+        <p>판독을 붙이면 Packed의 C+ 손상이 줄지만(State-based), 개입 전 수준에는 못 미친다.</p>
+      </div>
+      <ol class="next">
+        <li><div>최근 1~2년 선행 연구를 같은 모델·데이터로 재현해 전체·상태별 성능 비교 <span>(진행 중)</span></div></li>
+        <li><div>네 상태가 모두 있는 환경에서 4-state Routing의 상태별 효과 검증</div></li>
+        <li><div>구성요소 추가·제거 비교와 온라인 추론 비용 측정으로 실제 개선에 필요한 요소만 남기기</div></li>
+      </ol>
+    </div>
+    <p class="source">수치 출처 · 중간발표 자료(자체 실험셋 P8S 판독 실험) · 같은 데이터 재평가(2026.11.09) · Always·Router 외부 평가 보고(2026.10)</p>
+  </section>
+
+</main>
+<script>
+document.fonts.ready.then(() => {
+  const errors = [...document.querySelectorAll('[data-fit]')].filter(element =>
+    element.scrollHeight > element.clientHeight + 1 || element.scrollWidth > element.clientWidth + 1
+  ).map(element => ({
+    section: element.dataset.fit,
+    height: element.clientHeight,
+    contentHeight: element.scrollHeight,
+    width: element.clientWidth,
+    contentWidth: element.scrollWidth
+  }));
+  document.body.dataset.layoutErrors = JSON.stringify(errors);
+});
+</script>
+</body>
+</html>
