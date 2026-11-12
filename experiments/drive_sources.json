@@ -3,6 +3,20 @@
   "notebooks_executed_during_import": false,
   "files": [
     {
+      "path": "E21/E21_S4R_실험설계.md",
+      "source_title": "E21_S4R_실험설계.md",
+      "source_url": "https://drive.google.com/file/d/1jpN9eP3MkgTpsyTmW-pC7XIbBwXG2C9Z/view",
+      "source_modified_time": "2026-11-03T22:36:50.635Z",
+      "changes": "Source text preserved."
+    },
+    {
+      "path": "E21/E21_4State_SinglePrefill_Router.ipynb",
+      "source_title": "E21_4State_SinglePrefill_Router.ipynb",
+      "source_url": "https://drive.google.com/file/d/1qlwL4aRbaNAvdCs_M17jCZRqLd4jD7zy/view",
+      "source_modified_time": "2026-11-03T22:36:41.653Z",
+      "changes": "Cell source preserved; outputs, execution counts and execution metadata removed."
+    },
+    {
       "path": "presentation/E15_Online_StrongRetain_UtilityRouter.ipynb",
       "source_title": "E15_Online_StrongRetain_UtilityRouter.ipynb",
       "source_url": "https://drive.google.com/file/d/15Za8w_bDe5t6mduP_5SevfsWKCQSRKZS/view?usp=drivesdk",
