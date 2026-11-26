@@ -20,6 +20,7 @@
 | [scripts/prepare_nqswap.sh](scripts/prepare_nqswap.sh) | `pminervini/NQ-Swap`(split `dev`, 4,746행) → `$DATA_ROOT/NQ-Swap/dev.jsonl`(행 변형 없음, revision·sha256을 `dev.meta.json`에 기록) |
 | [scripts/run_nqswap_llama.sh](scripts/run_nqswap_llama.sh) | dump → 방향 추정 + α⁺ 탐색 + test → α⁻ 탐색 + test → unsteered test → 요약 |
 | [scripts/table1.py](scripts/table1.py) | val grid에서 α⁻ 선택, test 결과로 Acc_par/Acc_ctx 계산(모델 실행 없음) |
+| [REPORT.md](REPORT.md) | 재현 결과 보고: 판정, 주요 발견, SOTA 비교 방침, 다음 단계 |
 | [scripts/rescore_paper_metric.py](scripts/rescore_paper_metric.py) | 같은 test 출력을 논문 Appendix C 방식으로 재채점(par-only/ctx-only/both/neither). α는 바꾸지 않음 |
 
 ## 실행
@@ -150,13 +151,13 @@ N은 두 방식 모두 test 전체 행 수입니다. upstream의 행별 test 출
 5. **생성 길이:** upstream은 `max_new_tokens=200`으로 생성합니다(논문 Table 13도 200). 반면 논문 Appendix C.2의 판정 창은 256 토큰입니다. 생성이 200 토큰에서 끝나므로 논문 방식 재채점도 최대 200 토큰만 봅니다. 201–256번째 토큰에만 답이 나오는 행은 neither가 되어, 논문 수치보다 낮게 나올 수 있습니다. 256 토큰으로 맞추려면 upstream 상수를 바꿔 다시 생성해야 하는데, upstream을 수정하지 않는 원칙에 따라 그렇게 하지 않습니다.
 6. **α⁺ 선택 지표:** upstream은 val `correct/stage2_runs`, Table 1의 Acc_par는 `correct/N`입니다. upstream을 그대로 쓰되, `/N` 기준이었다면 고를 α를 요약에 함께 기록합니다(`alpha_plus_if_selected_by_val_acc_par`).
 7. **α⁻ 선택:** 논문 Appendix B는 (α⁺, α⁻)를 val에서 각각 고른다고 씁니다. upstream `train_val_test`는 `correct` 기준 선택만 있어 음수 grid에서는 α⁻를 고를 수 없습니다. 그래서 `scripts/table1.py`가 val `wrong/N`(Acc_ctx 정의) 최대값으로 고릅니다. 이 부분은 **이 저장소의 선택**이며 원 코드에 없습니다.
-8. **Batch 크기:** 논문은 64(A100 80GB)입니다. 노트북은 GPU 메모리에 따라 16(≥70 GB), 8(≥35 GB, A100 40GB), 4(L4)를 고릅니다. 이번 실행은 batch 16으로 했습니다(로그 기준). left padding과 bf16 때문에 batch 구성이 greedy 출력을 미세하게 바꿀 수 있습니다.
+8. **Batch 크기:** 논문은 64(A100 80GB)입니다. 하지만 공개 코드에서 64는 A100 80GB에서도 stage2에서 OOM이 나고(35.33 GiB 할당), 40 GB GPU에서는 32도 OOM입니다. 이번 실행은 batch 16으로 했습니다. 노트북은 GPU 메모리에 따라 16(≥70 GB), 8(≥35 GB), 4(L4)를 고릅니다. left padding과 bf16 때문에 batch 구성이 greedy 출력을 미세하게 바꿀 수 있습니다.
 9. **Layer:** 논문은 clean/conflict cosine 최소 layer를 고르고, Llama 기본값은 10입니다. 여기서는 요청 조건대로 10으로 고정합니다.
 10. **미기재 환경:** 논문에는 모델 revision과 transformers 버전이 없습니다. 노트북은 `transformers==4.46.3`으로 고정하고, 모델과 데이터 commit SHA를 파일로 남깁니다.
 
 ## 결과
 
-2026-11-26 Colab에서 실행한 결과입니다. 단일 실행(seed 42)이며, 논문의 Random split처럼 반복하지 않았습니다.
+2026-11-26 Colab에서 실행한 결과입니다. 단일 실행(seed 42)이며, 논문의 Random split처럼 반복하지 않았습니다. 판정과 SOTA 비교 방침은 [재현 결과 보고](REPORT.md)를 따릅니다.
 
 ### 실행 조건
 
@@ -165,18 +166,21 @@ N은 두 방식 모두 test 전체 행 수입니다. upstream의 행별 test 출
 | 모델 | `meta-llama/Llama-3.1-8B-Instruct@0e9e39f249a16976918f6564b8830bc894c89659` |
 | 데이터 | `pminervini/NQ-Swap@3801dbf037c6f58b0e79246f2a8073ebe5656dad`, dev 4,746행 |
 | cohort | `stage1_correct_use_wrong_context` 2,331행 → train 1,632 / val 350 / test 349 |
-| layer · batch | 10 · 16(dump 이후 모든 단계, 로그 기준) |
+| layer · batch | 10 · 16 (64는 stage2에서 35.33 GiB 할당 OOM, 40 GB GPU에서는 32도 OOM) |
 | α grid | α⁺ 0..3, α⁻ −3..−0.2, step 0.2 |
-| GPU · transformers | 로그에 기록되지 않음(노트북은 `transformers==4.46.3`으로 고정) |
+| GPU | Colab NVIDIA A100-SXM4-80GB |
+| 패키지 | transformers 4.46.3 · torch 2.14.1+cu130 · tokenizers 0.20.3 · accelerate 1.15.0 |
 
 ### Table 1 비교 (test, n=349, upstream 채점)
 
-| 설정 | Acc_par | Acc_ctx | 논문 | 차이 | 판정 |
-|---|---:|---:|---:|---:|---|
-| Unsteered (α=0) | 32.4 | 48.7 | 33.7 / 49.4 | −1.3 / −0.7 | 재현 |
-| ctx 방향 (α⁻=−0.8) | 14.6 | **54.2** | 55.5 | −1.3 | 재현 |
-| par 방향 (α⁺=2.4, upstream 선택) | **36.1** | 3.4 | 56.8 | −20.7 | 미재현 |
-| par 방향 (α⁺=1.6, val Acc_par/N 기준) | **47.6** | 7.7 | 56.8 | −9.2 | 부분 재현 |
+| 설정 | Acc_par | Acc_ctx | 논문 | 판정 |
+|---|---:|---:|---:|---|
+| Unsteered (α=0) | 32.4 | 48.7 | 33.7 / 49.4 | ✅ 재현 (−1.3 / −0.7%p) |
+| Steer ctx (α⁻=−0.8) | 14.6 | **54.2** | 55.5 | ✅ 재현 (−1.3%p) |
+| Steer par (α⁺=2.4, upstream 기준 선택) | **36.1** | 3.4 | 56.8 | ❌ −20.7%p |
+| Steer par (α⁺=1.6, Acc_par/N 기준 선택) | **47.6** | 7.7 | 56.8 | △ 부분 재현 (−9.2%p) |
+
+요약하면 **Unsteered와 Steer ctx는 ±1.3%p 이내로 재현되었고, Steer par는 부분적으로만 재현되었습니다.** SOTA 비교의 주 비교값은 α⁺=1.6과 α⁻=−0.8 결과입니다. α⁺=2.4는 "공개 코드 그대로 실행" 결과로 따로 둡니다([보고서 §5](REPORT.md)).
 
 - upstream 채점: 첫 문장 substring, `org_answer`가 있으면 `sub_answer`가 함께 있어도 parametric으로 셉니다. 분모는 test 전체 행이며 `not_run`도 포함합니다.
 - α⁻는 `table1.py`가 val Acc_ctx로 골랐습니다(val 58.6%).
@@ -184,10 +188,13 @@ N은 두 방식 모두 test 전체 행 수입니다. upstream의 행별 test 출
 
 ### 주요 발견
 
-1. **α⁺ 선택 규칙이 par 결과를 크게 좌우합니다.** upstream은 val에서 `correct / stage2_runs`가 최대인 α를 고릅니다(2.4에서 0.808). 그런데 steering이 stage1 clean 프롬프트 재실행에도 적용되어 α가 커질수록 stage1 탈락(`not_run`)이 늘어납니다. α=2.4에서는 test의 51.0%가 `not_run`이 되어 분모 N 기준 Acc_par가 36.1에 그칩니다. val `correct / N`으로 고르면 α=1.6이 되고(181/350), 이때 test `not_run`은 30.4%, Acc_par는 47.6입니다.
-2. **논문 Table 1 수치는 코드 채점 방식과 일치합니다.** 같은 출력을 논문 Appendix C 방식(출력 전체, par-only/ctx-only)으로 재채점하면 unsteered가 17.2 / 28.7로 떨어집니다. 출력 47.6%가 두 답을 모두 포함하기 때문입니다. 논문의 unsteered 33.7 / 49.4는 upstream 채점(32.4 / 48.7)과 거의 같고, Appendix C 방식과는 크게 다릅니다.
-3. **par 방향의 남은 차이(−9.2%p)는 대부분 stage1 탈락에서 옵니다.** α=1.6에서도 `not_run`이 30.4%이고, stage2를 실행한 행 중 68.3%가 parametric입니다(166/243). 논문은 개입을 conflict 프롬프트 마지막 토큰에만 적용한다고 쓰지만, 코드는 모든 위치·생성 step·stage1에 적용합니다([차이 3](#논문과-upstream-코드의-차이)).
-4. **짧은 답의 우연 일치는 영향이 작습니다.** 정규화 후 3자 이하 alias가 있는 행은 18/349이고, 단어 경계(`\b`) 판정과 substring 판정의 라벨 분포 차이는 0.6%p 이하입니다.
+1. **논문 Table 1 수치는 논문 Appendix C의 채점 방식이 아니라 공개 코드의 채점 방식(첫 문장, both도 정답 처리)과 일치합니다.** 같은 출력을 Appendix C 방식(출력 전체, par-only/ctx-only)으로 재채점하면 Unsteered가 17.2 / 28.7로 떨어집니다. 출력의 47.6%가 두 답을 모두 포함하기 때문입니다. 반면 upstream 채점으로는 32.4 / 48.7로, 논문의 33.7 / 49.4와 일치합니다.
+2. **par 재현 차이는 채점이 아니라 steering 절차에서 생깁니다.**
+   - **α 선택 기준이 가장 큰 요인입니다.** upstream은 val `correct / stage2_runs`가 최대인 α를 고릅니다(2.4에서 0.808). 반면 논문의 Acc_par는 `correct / N`입니다. 이 기준으로 고르면 α=1.6이 되고(val 181/350), 차이가 −20.7%p에서 −9.2%p로 줄어듭니다.
+   - **공개 코드는 문맥 없는 질문을 다시 풀 때(stage1)도 개입합니다.** 그래서 |α|가 커지면 원래 맞히던 질문도 틀리고, 그 행은 stage2 없이(`not_run`) 0점으로 분모에 남습니다. test에서 α=2.4는 51.0%, α=1.6은 30.4%(106행)가 탈락했고, val에서 α=−3.0은 350행 중 306행이 탈락했습니다. α=1.6에서 stage2를 실행한 행만 보면 68.3%(166/243)가 parametric입니다.
+   - 논문 본문은 conflict 프롬프트의 마지막 토큰에만 개입한다고 쓰지만, 코드는 모든 위치와 모든 생성 step에 개입합니다([차이 3](#논문과-upstream-코드의-차이)).
+3. **논문 설정의 batch 64는 공개 코드로 실행할 수 없었습니다.** A100 80GB에서도 stage2(긴 문맥, 약 2,150 토큰) batch에서 35.33 GiB 할당 OOM이 났고, 40 GB GPU에서는 32도 OOM이었습니다. 그래서 batch 16으로 실행했습니다.
+4. **짧은 답의 우연 일치는 영향이 작습니다.** 정규화 후 3자 이하 alias가 있는 행은 18/349입니다. 단어 경계(`\b`) 판정과 substring 판정의 라벨별 차이는 0.6%p 이내입니다(최대: α=2.4의 par-only 36.1 → 36.7).
 
 ### 두 채점 방식의 4가지 라벨 분포 (test, %)
 
@@ -198,7 +205,7 @@ N은 두 방식 모두 test 전체 행 수입니다. upstream의 행별 test 출
 | par (α=1.6) | 47.6 / 7.7 | 49.6 / 6.9 | 4.6 | 39.0 |
 | ctx (α=−0.8) | 14.6 / 54.2 | 9.7 / 47.3 | 23.2 | 19.8 |
 
-논문 방식은 `not_run`을 neither로 셉니다. 따라서 steering 결과의 neither 대부분은 stage1 탈락입니다.
+논문 방식은 `not_run`을 neither로 셉니다. 따라서 steering 결과의 neither 대부분은 stage1 탈락입니다. 예를 들어 α=2.4의 neither 58.5% 중 51.0%p가 `not_run`이고, 실제로 두 답 모두 말하지 않은 출력은 7.4%입니다.
 
 ### 결과 파일
 
