@@ -1,0 +1,220 @@
+{
+  "model": "llama3-8b-it",
+  "layer": "10",
+  "alpha_plus": 2.4,
+  "alpha_plus_selection": "upstream: val stage2_correct / stage2_runs",
+  "alpha_plus_if_selected_by_val_acc_par": 1.6,
+  "alpha_minus": -0.8,
+  "alpha_minus_selection": "scripts/table1.py: val N_wrong / N",
+  "unsteered": {
+    "file": "/content/drive/MyDrive/sota_lou/steer_result/base/llama3-8b-it/NQ-Swap/dev__dir_dev__test_dev/L10_alpha0_steer_result.json",
+    "alpha": 0.0,
+    "n_test": 349,
+    "acc_par": 32.378223495702,
+    "acc_ctx": 48.710601719197705,
+    "neither": 17.478510028653297,
+    "stage1_fail_not_run": 1.4326647564469914,
+    "stage1_rerun_pass_rate": 0.9856733524355301
+  },
+  "steer_par": {
+    "file": "/content/drive/MyDrive/sota_lou/steer_result/par/llama3-8b-it/NQ-Swap/dev__dir_dev__test_dev/L10_alpha2.4_steer_result.json",
+    "alpha": 2.4,
+    "n_test": 349,
+    "acc_par": 36.10315186246418,
+    "acc_ctx": 3.438395415472779,
+    "neither": 9.455587392550143,
+    "stage1_fail_not_run": 51.00286532951289,
+    "stage1_rerun_pass_rate": 0.4899713467048711
+  },
+  "steer_ctx": {
+    "file": "/content/drive/MyDrive/sota_lou/steer_result/ctx/llama3-8b-it/NQ-Swap/dev__dir_dev__test_dev/L10_alpha-0.8_steer_result.json",
+    "alpha": -0.8,
+    "n_test": 349,
+    "acc_par": 14.613180515759312,
+    "acc_ctx": 54.154727793696274,
+    "neither": 17.478510028653297,
+    "stage1_fail_not_run": 13.753581661891117,
+    "stage1_rerun_pass_rate": 0.8624641833810889
+  },
+  "paper": {
+    "unsteered": {
+      "acc_par": 33.7,
+      "acc_ctx": 49.4
+    },
+    "ours": {
+      "acc_par": 56.8,
+      "acc_ctx": 55.5
+    }
+  },
+  "paper_metric": {
+    "protocol": "Appendix C: lowercase, strip punctuation except intra-token hyphens, drop leading article, collapse whitespace; substring match on full stage2_output_raw (max_new_tokens=200 < paper's 256-token window); not_run -> neither; N = all test rows",
+    "manifest": "/content/drive/MyDrive/sota_lou/dump/llama3-8b-it/NQ-Swap/dev/internal_aware_data__stage1_correct_use_wrong_context.json",
+    "runs": {
+      "unsteered": {
+        "file": "/content/drive/MyDrive/sota_lou/steer_result/base/llama3-8b-it/NQ-Swap/dev__dir_dev__test_dev/L10_alpha0_steer_result.json",
+        "alpha": 0.0,
+        "n_test": 349,
+        "upstream": {
+          "acc_par": 32.378223495702,
+          "acc_ctx": 48.710601719197705,
+          "counts": {
+            "correct": 113,
+            "wrong": 170,
+            "skipped": 61,
+            "not_run": 5
+          }
+        },
+        "paper": {
+          "acc_par": 17.191977077363898,
+          "acc_ctx": 28.653295128939828,
+          "counts": {
+            "par_only": 60,
+            "ctx_only": 100,
+            "both": 166,
+            "neither": 23
+          },
+          "dist_pct": {
+            "par_only": 17.191977077363898,
+            "ctx_only": 28.653295128939828,
+            "both": 47.56446991404012,
+            "neither": 6.590257879656161
+          }
+        },
+        "aux": {
+          "short_answer_max_len": 3,
+          "rows_with_short_answer": {
+            "any": 18,
+            "par": 14,
+            "ctx": 11
+          },
+          "word_boundary": {
+            "acc_par": 17.191977077363898,
+            "acc_ctx": 28.36676217765043,
+            "counts": {
+              "par_only": 60,
+              "ctx_only": 99,
+              "both": 166,
+              "neither": 24
+            },
+            "dist_pct": {
+              "par_only": 17.191977077363898,
+              "ctx_only": 28.36676217765043,
+              "both": 47.56446991404012,
+              "neither": 6.876790830945558
+            }
+          }
+        }
+      },
+      "steer_par": {
+        "file": "/content/drive/MyDrive/sota_lou/steer_result/par/llama3-8b-it/NQ-Swap/dev__dir_dev__test_dev/L10_alpha2.4_steer_result.json",
+        "alpha": 2.4,
+        "n_test": 349,
+        "upstream": {
+          "acc_par": 36.10315186246418,
+          "acc_ctx": 3.438395415472779,
+          "counts": {
+            "correct": 126,
+            "wrong": 12,
+            "skipped": 33,
+            "not_run": 178
+          }
+        },
+        "paper": {
+          "acc_par": 36.10315186246418,
+          "acc_ctx": 2.865329512893983,
+          "counts": {
+            "par_only": 126,
+            "ctx_only": 10,
+            "both": 9,
+            "neither": 204
+          },
+          "dist_pct": {
+            "par_only": 36.10315186246418,
+            "ctx_only": 2.865329512893983,
+            "both": 2.5787965616045847,
+            "neither": 58.45272206303725
+          }
+        },
+        "aux": {
+          "short_answer_max_len": 3,
+          "rows_with_short_answer": {
+            "any": 18,
+            "par": 14,
+            "ctx": 11
+          },
+          "word_boundary": {
+            "acc_par": 36.67621776504298,
+            "acc_ctx": 2.865329512893983,
+            "counts": {
+              "par_only": 128,
+              "ctx_only": 10,
+              "both": 7,
+              "neither": 204
+            },
+            "dist_pct": {
+              "par_only": 36.67621776504298,
+              "ctx_only": 2.865329512893983,
+              "both": 2.005730659025788,
+              "neither": 58.45272206303725
+            }
+          }
+        }
+      },
+      "steer_ctx": {
+        "file": "/content/drive/MyDrive/sota_lou/steer_result/ctx/llama3-8b-it/NQ-Swap/dev__dir_dev__test_dev/L10_alpha-0.8_steer_result.json",
+        "alpha": -0.8,
+        "n_test": 349,
+        "upstream": {
+          "acc_par": 14.613180515759312,
+          "acc_ctx": 54.154727793696274,
+          "counts": {
+            "correct": 51,
+            "wrong": 189,
+            "skipped": 61,
+            "not_run": 48
+          }
+        },
+        "paper": {
+          "acc_par": 9.742120343839542,
+          "acc_ctx": 47.277936962750715,
+          "counts": {
+            "par_only": 34,
+            "ctx_only": 165,
+            "both": 81,
+            "neither": 69
+          },
+          "dist_pct": {
+            "par_only": 9.742120343839542,
+            "ctx_only": 47.277936962750715,
+            "both": 23.20916905444126,
+            "neither": 19.770773638968482
+          }
+        },
+        "aux": {
+          "short_answer_max_len": 3,
+          "rows_with_short_answer": {
+            "any": 18,
+            "par": 14,
+            "ctx": 11
+          },
+          "word_boundary": {
+            "acc_par": 9.455587392550143,
+            "acc_ctx": 47.277936962750715,
+            "counts": {
+              "par_only": 33,
+              "ctx_only": 165,
+              "both": 81,
+              "neither": 70
+            },
+            "dist_pct": {
+              "par_only": 9.455587392550143,
+              "ctx_only": 47.277936962750715,
+              "both": 23.20916905444126,
+              "neither": 20.05730659025788
+            }
+          }
+        }
+      }
+    }
+  }
+}
