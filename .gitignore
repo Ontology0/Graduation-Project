@@ -44,3 +44,6 @@ prompts_out.txt
 wandb/
 /runs/
 logs/
+
+# Lou reproduction: upstream split cache (seed 42), reproducible
+SOTA/lou/steer_result/**/_runtime_split/

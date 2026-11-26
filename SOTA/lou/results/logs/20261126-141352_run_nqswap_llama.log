@@ -1,0 +1,22 @@
+[run_nqswap_llama 14:13:52] model=llama3-8b-it layer=10 batch=16 alpha=±3/0.2 steps=summary
+NQ-Swap test, llama3-8b-it, layer 10, n_test=349
+                              Acc_par  Acc_ctx           paper
+Unsteered (alpha=0)              32.4     48.7    33.7    49.4
+Steer par (alpha=2.4)            36.1             56.8        
+Steer ctx (alpha=-0.8)                    54.2            55.5
+[note] val Acc_par/N would select alpha+=1.6 instead of 2.4
+-> /content/drive/MyDrive/sota_lou/steer_result/table1_summary.json
+
+NQ-Swap test re-score (n_test=349); upstream = first sentence, 'correct' includes both | paper = full output (<=200 tok), App. C
+run                       up par  up ctx  pp par  pp ctx  par-only  ctx-only   both  neither        Table1
+unsteered (a=0)             32.4    48.7    17.2    28.7      17.2      28.7   47.6      6.6     33.7/49.4
+steer_par (a=2.4)           36.1     3.4    36.1     2.9      36.1       2.9    2.6     58.5      par 56.8
+steer_ctx (a=-0.8)          14.6    54.2     9.7    47.3       9.7      47.3   23.2     19.8      ctx 55.5
+
+[aux, not the reported metric] word-boundary match (\b) on the same normalized text; rows with a normalized answer of <= 3 chars
+run                       wb par  wb ctx  par-only  ctx-only   both  neither  short any   par   ctx
+unsteered (a=0)             17.2    28.4      17.2      28.4   47.6      6.9         18    14    11
+steer_par (a=2.4)           36.7     2.9      36.7       2.9    2.0     58.5         18    14    11
+steer_ctx (a=-0.8)           9.5    47.3       9.5      47.3   23.2     20.1         18    14    11
+-> /content/drive/MyDrive/sota_lou/steer_result/table1_summary.json (paper_metric)
+[run_nqswap_llama 14:13:53] done
