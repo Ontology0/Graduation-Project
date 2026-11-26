@@ -1,0 +1,7 @@
+models/
+data/
+dump/
+output/
+results/raw/
+*.npz*.pdf
+*.pdf
