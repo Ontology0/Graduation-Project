@@ -3,5 +3,9 @@ data/
 dump/
 output/
 results/raw/
-*.npz*.pdf
+*.npz
 *.pdf
+# Split cache rewritten by upstream on every run (seed 42); reproducible, not committed.
+steer_result/**/_runtime_split/
+# Root .gitignore ignores logs/; keep only the curated logs under results/.
+!results/logs/
